@@ -1,4 +1,4 @@
-import Step from './step';
+import { Step } from './step';
 
 class Tutorial {
 	constructor(name, config) {
