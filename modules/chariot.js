@@ -1,5 +1,6 @@
 import Tutorial from './tutorial';
 import QueryParse from 'query-parse';
+
 class Chariot {
     constructor(config) {
     	self.tutorials = {};
@@ -33,5 +34,5 @@ class Chariot {
 		}
     }
 }
- 
+
 export default Chariot;

@@ -1,4 +1,10 @@
+import Chariot from './chariot';
+import QueryParse from 'query-parse';
+import Step from './step';
 
-import Chariot  from './chariot';
-window.Chariot = Chariot;
-
+var exports = {
+  chariot: Chariot,
+  step: Step
+};
+window.Chariot = exports;
+module.exports = exports;
