@@ -4,6 +4,7 @@ class Chariot {
     constructor(config) {
     	self.tutorials = {};
         readConfig(config);
+        listenForPushState();
     }
 
     readConfig(config) {
@@ -26,11 +27,11 @@ class Chariot {
 		history.pushState = function(state) {
 		    parameter = QueryParse.toObject(window.location.search);
 		    if (parameter['tutorial'] && config) {
-		    	this.startTutorial(name);
+		    	self.startTutorial(name);
 		    }
 		    return pushState.apply(history, arguments);
 		}
     }
 }
  
-export { Chariot };
+export default Chariot;

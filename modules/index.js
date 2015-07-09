@@ -1,6 +1,4 @@
 
-import { Chariot }  from './chariot';
-console.log(Chariot);
-debugger;
-window.Chariot = Chariot
+import Chariot  from './chariot';
+window.Chariot = Chariot;
 
