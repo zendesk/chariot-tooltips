@@ -15,21 +15,25 @@ class Step {
 
 	}
 
-	overlay(elem) {
-		var clone = $(ele).clone(),
-		style = document.defaultView.getComputedStyle($(ele)[0],"").cssText,
-		overlay = $("<div class='overlay'></div>"),
-		left = $(ele).offset().left,
-		top = $(ele).offset().top
-
-		clone[0].style.cssText=style;
-		//clone.css({'z-index': 20, position:'absolute', top: top, left, left});
+	static cloneElement(elem) {
+		var clone = $(elem).clone(),
+			style = document.defaultView.getComputedStyle($(elem)[0],"").cssText;
+		clone[0].style.cssText = style;
 		clone.css({'z-index': 20, position:'absolute'});
-		clone.offset($(ele).offset());
+		clone.offset($(elem).offset());
+		return clone;
+	}
+
+	static overlay(clones) {
+		var overlay = $("<div class='overlay'></div>");
+		// left = $(elem).offset().left,
+		// top = $(elem).offset().top
+
+		//clone.css({'z-index': 20, position:'absolute', top: top, left, left});
 		overlay.css({top: 0, left: 0, background: 'black', 'z-index':10, opacity: 0.5, position:'absolute', height: '1000px', width: '100%'});
-		$("body").append(clone);
+		$("body").append(clones);
 		$("body").append(overlay);
 	}
 }
 
-export { Step };
+export default Step;
