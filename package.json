@@ -1,6 +1,6 @@
 {
   "name": "chariot",
-  "main": "dist/module.js",
+  "main": "dist/chariot.js",
   "version": "1.0.0",
   "devDependencies": {
     "grunt": "^0.4.5",
