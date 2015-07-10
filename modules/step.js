@@ -8,6 +8,7 @@ class Step {
 		self.tooltip = config.tooltip;
 		self.cta = config.cta || 'Next';
 		self.name = config.name;
+		self.tutorial = tutorial;
 	}
 
 	renderTooltip() {
@@ -19,7 +20,6 @@ class Step {
 			<div class='ch-tooltip-next'>${self.cta}</div>
 		</div>
 		`);
-
 	}
 
 	render() {
