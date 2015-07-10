@@ -10,7 +10,7 @@ class Chariot {
     }
 
     readConfig(config) {
-        if (!config.tutorials || typeof config.tutorials !== "object") {
+        if (!config.tutorials || typeof config.tutorials !== 'object') {
             throw new Error("Config must contains a tutorials hash");
         }
         for (let tutorialName in config.tutorials) {

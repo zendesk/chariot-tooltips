@@ -3,14 +3,18 @@ var OnboardingConfig = {
     ticketing: {
       steps: [
         {
-          elements: {
+          name: 'Internal or Public?',
+          selectors: {
             assignee: "#input",
             assignLabel: "#label"
           },
           tooltip: {
             position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-            text: I18n.translate('Some text'),
-            anchorElement: "assignee"
+            text: 'Some text',
+            xOffset: '10',
+            yOffset: '10',
+            anchorElement: "assignee",
+            iconUrl: '/assets/whatever'
           },
           before: function() {
             // any arbitrary code to run before showing this step (after the timeout between steps)
@@ -18,13 +22,13 @@ var OnboardingConfig = {
           },
         },
         {
-          elems: {
+          selectors: {
             assignee: "#input",
             assignLabel: "#label"
           },
           tooltip: {
             position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-            text: I18n.translate('Some text'),
+            text: 'Some text',
             anchorElement: "assignee"
           },
           before: function() {
@@ -33,6 +37,9 @@ var OnboardingConfig = {
           },
         }
       ],
+      complete: function(){
+
+      },
       overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
     }
   }

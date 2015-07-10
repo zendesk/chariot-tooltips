@@ -1,28 +1,49 @@
+import $ from 'jquery';
+import Tooltip from './tooltip';
+
 let MAX_ATTEMPTS = 1000;
 
 class Step {
-  constructor(config = {}) {
-    this.elements = config.elements;
+  constructor(config = {}, tutorial) {
+    this.selectors = config.selectors;
     this.text = config.text;
-    this.before = typeof before == Function ? before : function(){};
-    this.tooltip = config.tooltip;
+    this.before = typeof before == 'function' ? before : function(){};
+    this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
+    this.name = config.name;
+    this.tutorial = tutorial;
+  }
+
+  renderTooltip() {
+    this.tooltip.render();
   }
 
   render() {
+    this.before();
+    this.renderOverlay();
+  }
 
+  renderOverlay() {
     var delay = 500;
     this.intervalId = window.setInterval(this.waitForElements.bind(this), delay);
     this.numAttempts = 0;
-
     this.overlay();
   }
 
+  next() {
+    this.tutorial.next(this);
+  }
+
+  getSelectorByName(name) {
+    return this.selectors[name] || null;
+  }
+
+  /// PRIVATE
+
   waitForElements() {
     if(this.numAttempts < MAX_ATTEMPTS) {
-      // for (let elem of this.elements) {
-      for (let elementName in this.elements) {
-        var elem = this.elements[elementName];
+      for (let elementName in this.selectors) {
+        var elem = this.selectors[elementName];
         var element = $(elem);
         if(element.length == 0) {
           this.numAttempts++;
@@ -31,17 +52,13 @@ class Step {
       }
     }
     clearInterval(this.intervalId);
-    this.cloneElements(this.elements);
-  }
-
-  next() {
-
+    this.cloneElements(this.selectors);
+    this.renderTooltip();
   }
 
   cloneElements(elements) {
-    // for (let elem of elements) {
     for (let elementName in elements) {
-      var elem = this.elements[elementName];
+      var elem = elements[elementName];
       this.cloneElement(elem);
     }
   }
@@ -59,10 +76,6 @@ class Step {
 
   overlay() {
     var overlay = $("<div class='overlay'></div>");
-    // left = $(elem).offset().left,
-    // top = $(elem).offset().top
-
-    //clone.css({'z-index': 20, position:'absolute', top: top, left, left});
     overlay.css({top: 0, left: 0, background: 'black', 'z-index':10, opacity: 0.5, position:'absolute', height: '100%', width: '100%'});
     $("body").append(overlay);
   }
