@@ -3,22 +3,22 @@ import QueryParse from 'query-parse';
 
 class Chariot {
     constructor(config) {
-    	self.tutorials = {};
-        readConfig(config);
-        listenForPushState();
+    	this.tutorials = {};
+        this.readConfig(config);
+        this.listenForPushState();
     }
 
     readConfig(config) {
         if (!config.tutorials || typeof config.tutorials !== 'object') {
 			throw new Error("Config must contains a tutorials Array");
         }
-    	for (let tutorialName of config.tutorials) {
-    		self.tutorials[tutorialName] = new Tutorial(tutorialName, config.tutorials[tutorialName]);
+    	for (let tutorialName in config.tutorials) {
+    		this.tutorials[tutorialName] = new Tutorial(tutorialName, config.tutorials[tutorialName]);
     	}
     }
 
     startTutorial(name) {
-    	self.tutorials[tutorialName].start();
+    	this.tutorials[tutorialName].start();
     }
 
     listenForPushState() {
@@ -28,7 +28,7 @@ class Chariot {
 		history.pushState = function(state) {
 		    parameter = QueryParse.toObject(window.location.search);
 		    if (parameter['tutorial'] && config) {
-		    	self.startTutorial(name);
+		    	this.startTutorial(name);
 		    }
 		    return pushState.apply(history, arguments);
 		}
