@@ -16,13 +16,14 @@ class Step {
 			<div class='ch-tooltip-icon'><img class='ch-tooltip-icon-img' src="${self.iconUrl}"/></div>
 			<div class='ch-tooltip-title'>${self.name}</div>
 			<div class='ch-tooltip-body'>${self.text}</div>
-			<div class='ch-tooltip-steps'></div>
+			<div class='ch-tooltip-steps'>"${tutorial.currentStep(self)} of ${tutorial.steps.length}"</div>
 			<div class='ch-tooltip-next'>${self.cta}</div>
 		</div>
 		`);
 	}
 
 	render() {
+		self.before();
 		renderTooltip();
 	}
 

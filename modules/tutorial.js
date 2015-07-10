@@ -34,7 +34,9 @@ class Tutorial {
 		}
 	}
 
-	
+	currentStep(step) {
+		return self.steps.indexOf(step) + 1;
+	}
 }
 
-export { Tutorial };
+export default Tutorial;
