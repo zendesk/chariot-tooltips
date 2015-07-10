@@ -6,7 +6,7 @@ class Tutorial {
 		self.steps = [];
 		if (typeof config.steps === 'object') {
 			for(let step of config.steps) {
-				self.steps.push(new Step(config.step));
+				self.steps.push(new Step(config.step, tutorial));
 			}
 		}
 		if (typeof config.complete === 'function') {
