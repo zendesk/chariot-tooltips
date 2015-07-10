@@ -1,22 +1,37 @@
+import $ from 'jquery';
+
 class Step {
-	constructor(config = {}) {
-		self.elem = config.elem;
+	constructor(config = {}, tutorial) {
+		self.elems = config.elems;
 		self.text = config.text;
 		self.before = typeof before == Function ? before : function(){};
 		self.tooltip = config.tooltip;
 		self.cta = config.cta || 'Next';
+		self.name = config.name;
+	}
+
+	renderTooltip() {
+		let $tooltip = $(`<div class='ch-tooltip'>
+			<div class='ch-tooltip-icon'><img class='ch-tooltip-icon-img' src="${self.iconUrl}"/></div>
+			<div class='ch-tooltip-title'>${self.name}</div>
+			<div class='ch-tooltip-body'>${self.text}</div>
+			<div class='ch-tooltip-steps'></div>
+			<div class='ch-tooltip-next'>${self.cta}</div>
+		</div>
+		`);
+
 	}
 
 	render() {
-
+		renderTooltip();
 	}
 
 	next() {
-
+		self.tutorial.next(self);
 	}
 
 	static cloneElement(elem) {
-		var clone = $(elem).clone(),
+		let clone = $(elem).clone(),
 			style = document.defaultView.getComputedStyle($(elem)[0],"").cssText;
 		clone[0].style.cssText = style;
 		clone.css({'z-index': 20, position:'absolute'});
@@ -25,7 +40,7 @@ class Step {
 	}
 
 	static overlay(clones) {
-		var overlay = $("<div class='overlay'></div>");
+		let overlay = $("<div class='overlay'></div>");
 		// left = $(elem).offset().left,
 		// top = $(elem).offset().top
 
