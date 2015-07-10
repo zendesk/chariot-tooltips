@@ -9,6 +9,7 @@
     "grunt-contrib-watch": "^0.6.1"
   },
   "dependencies": {
+    "jquery": "^2.1.4",
     "phantomjs": "^1.9.17",
     "query-parse": "^0.1.1"
   }
