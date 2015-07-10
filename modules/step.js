@@ -4,7 +4,7 @@ class Step {
 	constructor(config = {}, tutorial) {
 		self.elems = config.elems;
 		self.text = config.text;
-		self.before = typeof before == Function ? before : function(){};
+		self.before = typeof before == 'function' ? before : function(){};
 		self.tooltip = config.tooltip;
 		self.cta = config.cta || 'Next';
 		self.name = config.name;
