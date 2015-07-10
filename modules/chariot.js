@@ -35,12 +35,8 @@ class Chariot {
             }
         }
 
-        var pushState = history.pushState;
+        let pushState = history.pushState;
         history.pushState = function(state) {
-            // let parameter = QueryParse.toObject(window.location.search);
-            // if (parameter['tutorial'] && config) {
-            //     this.startTutorial(name);
-            // }
             processGetParams();
             return pushState.apply(history, arguments);
         }
@@ -51,7 +47,6 @@ class Chariot {
     listenToHashChange() {
         let processLocationHash = e => {
             let parameter = QueryParse.toObject(location.hash);
-            // if (location.hash === "#tutorial=ticketing") {
             let tutorialName = parameter['#tutorial'];
             if (tutorialName !== undefined) {
                 this.startTutorial(tutorialName);

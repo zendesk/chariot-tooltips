@@ -2,7 +2,7 @@ import Chariot from './chariot';
 import QueryParse from 'query-parse';
 import Step from './step';
 
-var exports = {
+let exports = {
   chariot: Chariot,
   step: Step
 };

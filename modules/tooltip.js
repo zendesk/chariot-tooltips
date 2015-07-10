@@ -10,7 +10,7 @@ class Tooltip {
     this.yOffset = config.yOffset;
     this.width = config.width;
     this.height = config.height;
-    this.anchorSelector = step.getSelectorByName(config.anchorElement);
+    // this.anchorSelector = step.getSelectorByName(config.anchorElement);
   }
   render() {
     let $tooltip = $(`<div class='ch-tooltip'>
@@ -25,8 +25,6 @@ class Tooltip {
     $('body').append($tooltip);
 
     $tooltip.css(this.computeTooltipStyles($tooltip));
-
-
   }
 
   computeTooltipStyles($tooltip) {
@@ -38,7 +36,8 @@ class Tooltip {
   }
 
   calculateLeft($tooltip) {
-    let $anchor = $(this.anchorSelector);
+    // let $anchor = $(this.anchorSelector);
+    let $anchor = this.step.getClonedElement(this.anchorElement);
     let offset = 0;
     switch(this.position) {
       case 'left':
@@ -58,7 +57,8 @@ class Tooltip {
   }
 
   calculateTop($tooltip) {
-    let $anchor = $(this.anchorSelector);
+    // let $anchor = $(this.anchorSelector);
+    let $anchor = this.step.getClonedElement(this.anchorElement);
     let offset = 0;
     switch(this.position) {
       case 'top':
