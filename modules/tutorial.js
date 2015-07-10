@@ -1,19 +1,17 @@
-import { Step } from './step';
+import Step from './step';
 
 class Tutorial {
-	constructor(name, config) {
-		this.name = name;
-		this.steps = [];
-		if (typeof config.steps == Array) {
-			for(let step of config.steps) {
-				this.steps.push(new Step(config.step));
-			}
-		}
-	}
+  constructor(name, config) {
+    this.name = name;
+    this.steps = [];
+    for(let step of config.steps) {
+      this.steps.push(new Step(step));
+    }
+  }
 
-	start(){
-
-	}
+  start() {
+    this.steps[0].render();
+  }
 }
 
-export { Tutorial };
+export default Tutorial;
