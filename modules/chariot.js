@@ -9,9 +9,9 @@ class Chariot {
     }
 
     readConfig(config) {
-    	if (!config.tutorials || typeof config.tutorials !== Object) {
+        if (!config.tutorials || typeof config.tutorials !== 'object') {
 			throw new Error("Config must contains a tutorials Array");
-    	}
+        }
     	for (let tutorialName of config.tutorials) {
     		self.tutorials[tutorialName] = new Tutorial(tutorialName, config.tutorials[tutorialName]);
     	}
