@@ -1,18 +1,18 @@
 var OnboardingConfig = {
-  tutorials: [
+  tutorials: 
     {
       ticketing: {
         steps: [
           {
             name: 'Internal or Public?',
             iconUrl: '/assets/whatever',
-            elems: {
+            selectors: {
               assignee: "#input",
               assignLabel: "#label"
             },
             tooltip: {
               position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-              text: I18n.translate('Some text'),
+              text: 'Some text',
               xOffset: '10',
               yOffset: '10',
               anchorElement: "assignee"
@@ -23,13 +23,13 @@ var OnboardingConfig = {
             },
           },
           {
-            elems: {
+            selectors: {
               assignee: "#input",
               assignLabel: "#label"
             },
             tooltip: {
               position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-              text: I18n.translate('Some text'),
+              text: 'Some text',
               anchorElement: "assignee"
             },  
             before: function() {
@@ -44,5 +44,5 @@ var OnboardingConfig = {
         overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
       }
     }
-  ]
+  
 };
