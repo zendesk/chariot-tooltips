@@ -4,6 +4,8 @@ var OnboardingConfig = {
       ticketing: {
         steps: [
           {
+            name: 'Internal or Public?',
+            iconUrl: '/assets/whatever',
             elems: {
               assignee: "#input",
               assignLabel: "#label"
@@ -11,6 +13,8 @@ var OnboardingConfig = {
             tooltip: {
               position: 'right', // 'top' | 'left' | 'bottom' | 'right'
               text: I18n.translate('Some text'),
+              xOffset: '10',
+              yOffset: '10',
               anchorElement: "assignee"
             },  
             before: function() {
@@ -34,6 +38,9 @@ var OnboardingConfig = {
             },
           }
         ],
+        complete: function(){
+
+        },
         overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
       }
     }
