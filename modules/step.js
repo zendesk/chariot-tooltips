@@ -1,34 +1,33 @@
 import $ from 'jquery';
+import Tooltip from './tooltip';
+
 
 class Step {
 	constructor(config = {}, tutorial) {
-		self.elems = config.elems;
-		self.text = config.text;
-		self.before = typeof before == 'function' ? before : function(){};
-		self.tooltip = config.tooltip;
-		self.cta = config.cta || 'Next';
-		self.name = config.name;
-		self.tutorial = tutorial;
+		this.selectors = config.selectors;
+		this.text = config.text;
+		this.before = typeof before == 'function' ? before : function(){};
+		this.tooltip = new Tooltip(config.tooltip, this);
+		this.cta = config.cta || 'Next';
+		this.name = config.name;
+		this.tutorial = tutorial;
 	}
 
 	renderTooltip() {
-		let $tooltip = $(`<div class='ch-tooltip'>
-			<div class='ch-tooltip-icon'><img class='ch-tooltip-icon-img' src="${self.iconUrl}"/></div>
-			<div class='ch-tooltip-title'>${self.name}</div>
-			<div class='ch-tooltip-body'>${self.text}</div>
-			<div class='ch-tooltip-steps'>"${tutorial.currentStep(self)} of ${tutorial.steps.length}"</div>
-			<div class='ch-tooltip-next'>${self.cta}</div>
-		</div>
-		`);
+		this.tooltip.render();
 	}
 
 	render() {
-		self.before();
+		this.before();
 		renderTooltip();
 	}
 
 	next() {
-		self.tutorial.next(self);
+		this.tutorial.next(this);
+	}
+
+	getSelectorByName(name) {
+		return this.selectors[name] || null;
 	}
 
 	static cloneElement(elem) {
