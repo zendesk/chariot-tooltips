@@ -3,15 +3,22 @@
   "main": "dist/chariot.js",
   "version": "1.0.0",
   "devDependencies": {
+    "babel": "^5.6.14",
     "babelify": "^6.1.2",
     "browserify": "^10.2.6",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.2.0",
-    "vinyl-source-stream": "^1.1.0"
+    "gulp-mocha": "^2.1.2",
+    "gulp-run": "^1.6.8",
+    "gulp-testem": "0.0.1",
+    "gulp-util": "^3.0.6",
+    "mocha": "^2.2.5",
+    "mocha-traceur": "^2.1.0",
+    "vinyl-source-stream": "^1.1.0",
+    "phantomjs": "^1.9.17"
   },
   "dependencies": {
     "jquery": "^2.1.4",
-    "phantomjs": "^1.9.17",
     "query-parse": "^0.1.1",
     "standard": "^4.5.3"
   }

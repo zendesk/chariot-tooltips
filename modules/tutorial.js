@@ -35,6 +35,7 @@ class Tutorial {
   }
 
   currentStep(step) {
+    if (step === null) return null;
     return this.steps.indexOf(step) + 1;
   }
 }
