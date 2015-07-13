@@ -5,7 +5,7 @@ class Tutorial {
     this.name = name;
     this.steps = [];
     if (typeof config.steps === 'object') {
-      for(let step of config.steps) {
+      for (let step of config.steps) {
         this.steps.push(new Step(step, this));
       }
     }
@@ -22,13 +22,11 @@ class Tutorial {
     let index = self.steps.indexOf(currentStep);
     if (index < 0) {
       throw new Error('currentStep not found');
-    }
-    else if (index === this.steps-1) {
+    } else if (index === this.steps - 1) {
       // this is the last step
       currentStep.tearDown();
       this.complete();
-    }
-    else {
+    } else {
       currentStep.tearDown();
       this.steps[index + 1].render();
     }

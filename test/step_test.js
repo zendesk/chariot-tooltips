@@ -25,28 +25,28 @@ describe('Step', function() {
       return 'before';
     }
   };
-  context('constructor', function(){
+  context('constructor', function() {
     let step = null,
       tutorial = null;
-    before(function(){
+    before(function() {
       tutorial = new Tutorial('test', {});
       step = new Step(stepConfiguration, tutorial);
     });
 
-    it('reads name', function(){
+    it('reads name', function() {
       expect(step.name).to.equal(stepConfiguration.name);
     });
-    it('reads selectors', function(){
+    it('reads selectors', function() {
       expect(step.selectors).to.equal(stepConfiguration.selectors);
     });
-    it('reads before', function(){
+    it('reads before', function() {
       expect(step.before).to.be.a('Function');
       expect(step.before()).to.equal(stepConfiguration.before());
     });
-    it('reads cta', function(){
+    it('reads cta', function() {
       expect(step.cta).to.equal(stepConfiguration.cta);
     });
-    it('reads tutorial', function(){
+    it('reads tutorial', function() {
       expect(step.tutorial).to.equal(tutorial);
     });
   });
