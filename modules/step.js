@@ -4,6 +4,8 @@ import Tooltip from './tooltip';
 let MAX_ATTEMPTS = 1000;
 let DOM_QUERY_DELAY = 500;
 
+let Promise = require('es6-promise').Promise;
+
 class Step {
   constructor(config = {}, tutorial) {
     this.selectors = config.selectors;
@@ -27,9 +29,7 @@ class Step {
   }
 
   renderOverlay() {
-    this.intervalId = window.setInterval(this.waitForElements.bind(this),
-      DOM_QUERY_DELAY);
-    this.numAttempts = 0;
+    this.waitForElements();
     this.overlay();
   }
 
@@ -48,34 +48,53 @@ class Step {
   // PRIVATE
 
   waitForElements() {
-    if (this.numAttempts < MAX_ATTEMPTS) {
-      for (let elementName in this.selectors) {
-        let elem = this.selectors[elementName];
-        let element = $(elem);
-        if (element.length === 0) {
-          this.numAttempts++;
-          return;
-        }
+    let promises = [];
+    for (let selectorName in this.selectors) {
+      let promise = new Promise((resolve, reject) => {
+        this.waitForElement(selectorName, 0, resolve, reject);
+      });
+      promises.push(promise);
+    }
+
+    Promise.all(promises).then(() => {
+      this.cloneElements(this.selectors);
+      this.setupRepositionHandlers();
+    });
+  }
+
+  waitForElement(selectorName, numAttempts, resolve, reject) {
+    let selector = this.selectors[selectorName];
+    let element = $(selector);
+    if(element.length == 0) {
+      ++numAttempts;
+      if(numAttempts == MAX_ATTEMPTS) {
+        reject();
+      } else {
+        window.setTimeout(() => {
+          this.waitForElement(selectorName, numAttempts, resolve, reject);
+        }, DOM_QUERY_DELAY);
       }
-    }
-    clearInterval(this.intervalId);
-    this.cloneElements(this.selectors);
-    this.renderTooltip();
-  }
-
-  cloneElements(elements) {
-    for (let elementName in elements) {
-      let elem = elements[elementName];
-      let clone = this.cloneElement(elem);
-      this.clonedElements[elementName] = clone;
+    } else {
+      resolve();
     }
   }
 
-  cloneElement(elem) {
-    let element = $(elem);
-    let clone = element.clone();
-    let style = document.defaultView.getComputedStyle(element[0], '').cssText;
+  cloneElements(selectors) {
+    for (let selectorName in selectors) {
+      let sel = selectors[selectorName];
+      let clone = this.cloneElement(sel);
+      this.clonedElements[selectorName] = clone;
+    }
+  }
 
+  cloneElement(sel) {
+    let element = $(sel);
+    if(element.length == 0) {
+      console.log("Can't find selector to clone: " + sel);
+      return null;
+    }
+    let clone = element.clone(),
+      style = document.defaultView.getComputedStyle(element[0],"").cssText;
     clone[0].style.cssText = style;
     clone.css({
       'z-index': 20,
@@ -100,6 +119,21 @@ class Step {
       width: '100%'
     });
     $('body').append(overlay);
+  }
+
+  setupRepositionHandlers() {
+    $(window).resize(() => {
+      this.repositionElements();
+    });
+    // TODO: Also reposition if any of the individual elements change position
+  }
+
+  repositionElements() {
+    for (let selectorName in this.selectors) {
+      let element = $(selectorName);
+      let clone = this.clonedElements[selectorName];
+      clone.offset(element.offset());
+    }
   }
 }
 

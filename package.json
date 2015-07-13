@@ -8,6 +8,7 @@
     "babelify": "^6.1.2",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
+    "es6-promise": "^2.3.0",
     "glob": "^5.0.13",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.2.0",

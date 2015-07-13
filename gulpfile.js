@@ -11,9 +11,9 @@ var testem = require('gulp-testem');
 var sass = require('gulp-sass');
 
 reportOptions = {
-  err: true, // default = true, false means don't write err 
-  stderr: true, // default = true, false means don't write stderr 
-  stdout: true // default = true, false means don't write stdout 
+  err: true, // default = true, false means don't write err
+  stderr: true, // default = true, false means don't write stderr
+  stdout: true // default = true, false means don't write stdout
 }
 
 gulp.task("default", ['js', 'sass']);
