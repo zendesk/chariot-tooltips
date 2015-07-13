@@ -11,22 +11,22 @@ var testem = require('gulp-testem');
 var sass = require('gulp-sass');
 
 reportOptions = {
-    err: true, // default = true, false means don't write err 
-    stderr: true, // default = true, false means don't write stderr 
-    stdout: true // default = true, false means don't write stdout 
+  err: true, // default = true, false means don't write err 
+  stderr: true, // default = true, false means don't write stderr 
+  stdout: true // default = true, false means don't write stdout 
 }
 
-gulp.task("default", ['js','sass']);
+gulp.task("default", ['js', 'sass']);
 
 //################ BUILD ####################
 
 gulp.task('watch', ['js:watch', 'sass:watch']);
 
-gulp.task('js', function () {
-  browserify({    
-      entries: './modules/index.js',
-      debug: true
-    })
+gulp.task('js', function() {
+  browserify({
+    entries: './modules/index.js',
+    debug: true
+  })
     .transform(babelify)
     .bundle()
     .pipe(source('chariot.js'))
@@ -34,17 +34,17 @@ gulp.task('js', function () {
     .pipe(connect.reload())
 });
 
-gulp.task('js:watch', function(){
+gulp.task('js:watch', function() {
   return gulp.watch('modules/**/*.js', ['js']);
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', function() {
   gulp.src('./stylesheets/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./dist/stylesheets'));
 });
- 
-gulp.task('sass:watch', function () {
+
+gulp.task('sass:watch', function() {
   gulp.watch('./stylesheets/**/*.scss', ['sass']);
 });
 
@@ -57,34 +57,31 @@ gulp.task('connect', ['watch'], function() {
   });
 });
 
-
 gulp.task('test', function() {
   return gulp.src(['test/**/*.js'])
     .pipe(mocha({
-        compilers: {
-            js: babel
-        }
-      })
-    ) 
-  }
-);
+      compilers: {
+        js: babel
+      }
+    }))
+});
 
-gulp.task('testem', ['compile-test'], function () {
+gulp.task('testem', ['compile-test'], function() {
   gulp.src([''])
     .pipe(testem({
-        configFile: 'testem.yml'
+      configFile: 'testem.yml'
     }));
 });
 
-gulp.task("compile-test", function () {
+gulp.task("compile-test", function() {
   glob("./test/*.js", function(er, files) {
-    return browserify({    
-      entries: files,
-      debug: true
-    })
-    .transform(babelify)
-    .bundle()
-    .pipe(source('test.js'))
-    .pipe(gulp.dest('./dist/test'))
+    return browserify({
+        entries: files,
+        debug: true
+      })
+      .transform(babelify)
+      .bundle()
+      .pipe(source('test.js'))
+      .pipe(gulp.dest('./dist/test'))
   });
 });

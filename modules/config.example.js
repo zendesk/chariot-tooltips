@@ -37,10 +37,9 @@ var OnboardingConfig = {
           },
         }
       ],
-      complete: function(){
-
+      complete: function() {
       },
-      overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
+      overlay: { transparent: '#000000' } // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
     }
   }
 };
