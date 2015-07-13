@@ -11,7 +11,6 @@ describe('Tutorial', function() {
   describe('currentStep', function(){
 		it('empty argument', function(){
 			var tutorial = new Tutorial('test', {});
-			debugger;
 			assert.equal(tutorial.currentStep(null), null);
 		});
   });

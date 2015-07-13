@@ -1,0 +1,23 @@
+.ch-tooltip {
+  width: 200px;
+  height: 200px;
+  position:absolute;
+  z-index: 100;
+
+  background: green;
+  .ch-tooltip-icon {
+    background: white;
+  }
+  .ch-tooltip-title{
+    background: grey;
+  }
+  .ch-tooltip-body{ 
+    background: orange;
+  }
+  .ch-tooltip-steps{
+    background: purple;
+  }
+  .ch-tooltip-next{
+    background: green;
+  }
+}

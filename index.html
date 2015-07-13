@@ -1,15 +1,17 @@
 <html>
 <head>
 <script type="text/javascript" src="./dist/chariot.js"></script>
+<link rel="stylesheet" type="text/css" href="./dist/stylesheets/tooltip.css">
+
 <style>
 	.outter {
 		position: absolute;
-		top: 10px;
-		left: 10px;
+		top: 50px;
+		left: 50px;
 		z-index: 3;
 		width: 500px;
 		height: 500px;
-		background: black;
+		background: red;
 	}
 	.inner {
 	 	width: 250px;
@@ -17,17 +19,74 @@
 		background: blue;
 	}
 </style>
+<script>
+
+function click() {
+	console.log('hi');
+	history.pushState({}, "page 2", "index.html?tutorial=ticketing");
+}
+
+</script>
+
 </head>
 
 <body>
-
+<a href='javascript:click()'>Add history</a>
 <div class='outter'>
 	<div class="inner">
 
 	</div>
 </div>
 
+<script>
 
+new Chariot.chariot({
+  tutorials: {
+    ticketing: {
+      steps: [
+        {
+          name: 'Internal or Public?',
+          selectors: {
+            inner: ".inner",
+          },
+          tooltip: {
+            position: 'right', // 'top' | 'left' | 'bottom' | 'right'
+            text: 'Some text',
+            xOffset: 10,
+            yOffset: 0,
+            anchorElement: "inner",
+            iconUrl: '/assets/whatever'
+          },
+          before: function() {
+            // any arbitrary code to run before showing this step (after the timeout between steps)
+            // eg. populate an image outside of the #elem
+          },
+        },
+        {
+          selectors: {
+            assignee: "#input",
+            assignLabel: "#label"
+          },
+          tooltip: {
+            position: 'right', // 'top' | 'left' | 'bottom' | 'right'
+            text: 'Some text',
+            anchorElement: "assignee"
+          },
+          before: function() {
+            // any arbitrary code to run before showing this step (after the timeout between steps)
+            // eg. populate an image outside of the #elem
+          },
+        }
+      ],
+      complete: function(){
+
+      },
+      overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
+    }
+  }
+});
+</script>
 </body>
+
 
 </html>

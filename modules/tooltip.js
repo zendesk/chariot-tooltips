@@ -6,11 +6,11 @@ class Tooltip {
     this.tutorial = tutorial;
     this.position = config.position;
     this.text = config.text;
-    this.xOffset = config.xOffset;
-    this.yOffset = config.yOffset;
-    this.width = config.width;
-    this.height = config.height;
-    // this.anchorSelector = step.getSelectorByName(config.anchorElement);
+    this.xOffset = parseInt(config.xOffset);
+    this.yOffset = parseInt(config.yOffset);
+    this.width = parseInt(config.width);
+    this.height = parseInt(config.height);
+    this.anchorElement = config.anchorElement;
   }
   render() {
     let $tooltip = $(`<div class='ch-tooltip'>
