@@ -9,7 +9,7 @@ class Step {
     this.selectors = config.selectors;
     this.tutorial = tutorial;
     this.text = config.text;
-    this.before = typeof before == 'function' ? before : function(){};
+    this.before = typeof config.before == 'function' ? config.before : function(){};
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
     this.name = config.name;
