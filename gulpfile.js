@@ -50,7 +50,7 @@ gulp.task('sass:watch', function() {
 
 //################ TEST ####################
 
-gulp.task('connect', ['watch'], function() {
+gulp.task('connect', function() {
   connect.server({
     root: [__dirname],
     livereload: true

@@ -59,6 +59,7 @@ class Step {
     Promise.all(promises).then(() => {
       this.cloneElements(this.selectors);
       this.setupRepositionHandlers();
+      this.renderTooltip();
     });
   }
 
