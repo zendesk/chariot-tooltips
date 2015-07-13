@@ -42,8 +42,9 @@ class Chariot {
 
     let pushState = history.pushState;
     history.pushState = function(state) {
+      let res = pushState.apply(history, arguments);
       processGetParams();
-      return pushState.apply(history, arguments);
+      return res;
     };
 
     processGetParams();

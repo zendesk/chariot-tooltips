@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "devDependencies": {
     "babel": "^5.6.14",
-    "babel-eslint": "^3.1.23",
     "babelify": "^6.1.2",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
+    "es6-promise": "^2.3.0",
     "glob": "^5.0.13",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.2.0",
@@ -19,7 +19,6 @@
     "mocha": "^2.2.5",
     "mocha-traceur": "^2.1.0",
     "phantomjs": "^1.9.17",
-    "semistandard": "^6.1.2",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
