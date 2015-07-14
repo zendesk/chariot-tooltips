@@ -19,7 +19,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 gulp.task('js', function() {
   browserify({
     entries: './modules/index.js',
-    //debug: true
+    debug: true
   })
     .transform(babelify)
     .bundle()
@@ -35,7 +35,8 @@ gulp.task('js:watch', function() {
 gulp.task('sass', function() {
   gulp.src('./stylesheets/**/*.scss')
     .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./dist/stylesheets'));
+    .pipe(gulp.dest('./dist/stylesheets'))
+    .pipe(connect.reload())
 });
 
 gulp.task('sass:watch', function() {
@@ -44,7 +45,7 @@ gulp.task('sass:watch', function() {
 
 //################ TEST ####################
 
-gulp.task('connect', function() {
+gulp.task('connect', ['js', 'sass', 'watch'], function() {
   connect.server({
     root: [__dirname],
     livereload: true
@@ -68,7 +69,7 @@ gulp.task('testem', ['compile-test'], function() {
 });
 
 gulp.task("compile-test", function() {
-  glob("./test/*.js", function(er, files) {
+  glob("./test/**/*.js", function(er, files) {
     return browserify({
         entries: files,
         debug: true

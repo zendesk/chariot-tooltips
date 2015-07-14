@@ -2,4 +2,6 @@ language: node_js
 node_js:
   - '0.12.6'
 script:
-  - gulp test
+  - npm run jscs
+  - node_modules/.bin/gulp compile-test
+  - npm run ci

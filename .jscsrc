@@ -16,7 +16,7 @@
       "beforeAlternate": true
     },
     "disallowSpacesInCallExpression": true,
-    "disallowEmptyBlocks": true,
+    "disallowEmptyBlocks": null,
     "requireSpacesInsideObjectBrackets": "all",
     "requireCurlyBraces": null,
     "requireLineFeedAtFileEnd": true,

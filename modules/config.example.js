@@ -14,7 +14,8 @@ var OnboardingConfig = {
             xOffset: '10',
             yOffset: '10',
             anchorElement: "assignee",
-            iconUrl: '/assets/whatever'
+            iconUrl: '/assets/whatever',
+            cta: 'Next'
           },
           before: function() {
             // any arbitrary code to run before showing this step (after the timeout between steps)
@@ -22,6 +23,7 @@ var OnboardingConfig = {
           },
         },
         {
+          name: 'External or Private?',
           selectors: {
             assignee: "#input",
             assignLabel: "#label"
@@ -29,7 +31,8 @@ var OnboardingConfig = {
           tooltip: {
             position: 'right', // 'top' | 'left' | 'bottom' | 'right'
             text: 'Some text',
-            anchorElement: "assignee"
+            anchorElement: "assignee",
+            cta: 'Done'
           },
           before: function() {
             // any arbitrary code to run before showing this step (after the timeout between steps)
@@ -38,6 +41,8 @@ var OnboardingConfig = {
         }
       ],
       complete: function() {
+        var url = location.protocol+location.hostname+location.pathname;
+        history.replaceState({path: url}, null, url);
       },
       overlay: { transparent: '#000000' } // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
     }

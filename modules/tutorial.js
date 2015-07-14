@@ -11,7 +11,7 @@ class Tutorial {
         this.steps.push(new Step(step, this));
       }
     }
-    this.complete = typeof config.complete === 'function' ? config.complete : ()=>{};
+    this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
   }
 
   start() {
@@ -45,6 +45,7 @@ class Tutorial {
     currentStep.tearDown();
     if (index === this.steps.length - 1) {
       this.end();
+      this.tearDown();
     } else {
       this.steps[index + 1].render();
     }
@@ -58,6 +59,9 @@ class Tutorial {
   end() {
     this.$overlay.remove();
     this.complete();
+  }
+
+  tearDown() {
   }
 }
 

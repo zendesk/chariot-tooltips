@@ -9,10 +9,13 @@ let Promise = require('es6-promise').Promise;
 
 class Step {
   constructor(config = {}, tutorial) {
+    if (config.before && typeof config.before !== 'function') {
+      throw "before must be a function";
+    }
     this.selectors = config.selectors;
     this.tutorial = tutorial;
     this.text = config.text;
-    this.before = typeof config.before === 'function' ? config.before : ()=>{};
+    this.before = config.before;
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
     this.name = config.name;
@@ -24,8 +27,7 @@ class Step {
   }
 
   render() {
-    this.before();
-    // this.intervalId = window.setInterval(this.waitForElements.bind(this), DOM_QUERY_DELAY);
+    if (this.before) this.before();
     this.waitForElements();
   }
 
@@ -69,9 +71,9 @@ class Step {
   waitForElement(selectorName, numAttempts, resolve, reject) {
     let selector = this.selectors[selectorName];
     let element = $(selector);
-    if(element.length == 0) {
+    if (element.length == 0) {
       ++numAttempts;
-      if(numAttempts == MAX_ATTEMPTS) {
+      if (numAttempts == MAX_ATTEMPTS) {
         reject();
       } else {
         window.setTimeout(() => {
@@ -93,12 +95,12 @@ class Step {
 
   cloneElement(sel) {
     let $element = $(sel);
-    if($element.length == 0) {
+    if ($element.length == 0) {
       console.log("Can't find selector to clone: " + sel);
       return null;
     }
     let clone = $element.clone(),
-      style = document.defaultView.getComputedStyle($element[0],"").cssText;
+      style = document.defaultView.getComputedStyle($element[0], "").cssText;
     clone[0].style.cssText = style;
     clone.css({
       'z-index': CLONE_Z_INDEX,
