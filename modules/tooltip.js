@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { TOOLTIP_Z_INDEX } from './constants';
 
 class Tooltip {
   constructor(config, step, tutorial) {
@@ -6,41 +7,50 @@ class Tooltip {
     this.tutorial = tutorial;
     this.position = config.position;
     this.text = config.text;
-    this.xOffset = parseInt(config.xOffset);
-    this.yOffset = parseInt(config.yOffset);
+    this.xOffset = config.xOffset ? parseInt(config.xOffset) : 10;
+    this.yOffset = config.yOffset ? parseInt(config.yOffset) : 10;
     this.width = parseInt(config.width);
     this.height = parseInt(config.height);
     this.anchorElement = config.anchorElement;
+    this.name = config.name;
+    this.cta = config.cta;
   }
+
   render() {
-    let $tooltip = $(`<div class='ch-tooltip'>
-      <div class='ch-tooltip-icon'>
-        <img class='ch-tooltip-icon-img' src="${this.iconUrl}"/>
+    let $tooltip = $(`<div class='chariot-tooltip'>
+      <div class='chariot-tooltip-icon'>
+        <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
       </div>
-      <div class='ch-tooltip-title'>${        this.name}</div>
-      <div class='ch-tooltip-body'>${        this.text}</div>
-      <div class='ch-tooltip-steps'>
+      <div class='chariot-tooltip-title'>${this.name}</div>
+      <div class='chariot-tooltip-body'>${this.text}</div>
+      <div class='chariot-tooltip-steps'>
         "${this.tutorial.currentStep(this)} of ${this.tutorial.steps.length}"
       </div>
-      <div class='ch-tooltip-next'>${        this.cta}</div>
+      <button class='chariot-tooltip-next'>${this.cta}</button>
     </div>
     `);
+    this.$tooltip = $tooltip;
 
     $('body').append($tooltip);
 
     $tooltip.css(this.computeTooltipStyles($tooltip));
+
+    // Add event handlers
+    $('.chariot-tooltip-next').click(() => {
+      this.next();
+    });
   }
 
   computeTooltipStyles($tooltip) {
     return {
       position: 'absolute',
       top: this.calculateTop($tooltip),
-      left: this.calculateLeft($tooltip)
+      left: this.calculateLeft($tooltip),
+      'z-index': TOOLTIP_Z_INDEX
     }
   }
 
   calculateLeft($tooltip) {
-    // let $anchor = $(this.anchorSelector);
     let $anchor = this.step.getClonedElement(this.anchorElement);
     let offset = 0;
     switch (this.position) {
@@ -62,7 +72,6 @@ class Tooltip {
   }
 
   calculateTop($tooltip) {
-    // let $anchor = $(this.anchorSelector);
     let $anchor = this.step.getClonedElement(this.anchorElement);
     let offset = 0;
     switch (this.position) {
@@ -82,7 +91,14 @@ class Tooltip {
     }
     return offset;
   }
+
+  next() {
+    this.step.next();
+  }
+
+  tearDown() {
+    this.$tooltip.remove();
+  }
 }
 
-export
-default Tooltip;
+export default Tooltip;

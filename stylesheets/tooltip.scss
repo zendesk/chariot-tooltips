@@ -1,23 +1,23 @@
-.ch-tooltip {
+.chariot-tooltip {
   width: 200px;
   height: 200px;
   position:absolute;
   z-index: 100;
-
   background: green;
-  .ch-tooltip-icon {
+
+  .chariot-tooltip-icon {
     background: white;
   }
-  .ch-tooltip-title{
+  .chariot-tooltip-title{
     background: grey;
   }
-  .ch-tooltip-body{ 
+  .chariot-tooltip-body{
     background: orange;
   }
-  .ch-tooltip-steps{
+  .chariot-tooltip-steps{
     background: purple;
   }
-  .ch-tooltip-next{
+  .chariot-tooltip-next{
     background: green;
   }
 }

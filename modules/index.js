@@ -1,9 +1,7 @@
 import Chariot from './chariot';
-import Step from './step';
 
 let exports = {
-  chariot: Chariot,
-  step: Step
+  chariot: Chariot
 };
 window.Chariot = exports;
 module.exports = exports;

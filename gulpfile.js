@@ -10,12 +10,6 @@ var mocha = require('gulp-mocha');
 var testem = require('gulp-testem');
 var sass = require('gulp-sass');
 
-reportOptions = {
-  err: true, // default = true, false means don't write err
-  stderr: true, // default = true, false means don't write stderr
-  stdout: true // default = true, false means don't write stdout
-}
-
 gulp.task("default", ['js', 'sass']);
 
 //################ BUILD ####################
@@ -25,7 +19,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 gulp.task('js', function() {
   browserify({
     entries: './modules/index.js',
-    debug: true
+    //debug: true
   })
     .transform(babelify)
     .bundle()

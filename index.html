@@ -5,19 +5,28 @@
 
 <style>
 	.outer {
-		position: absolute;
-		top: 50px;
-		left: 50px;
+		position: relative;
+		top: 200px;
+		left: 100px;
 		z-index: 3;
 		width: 500px;
 		height: 500px;
 		background: red;
 	}
 	.inner {
+    float: left;
 	 	width: 250px;
 		height: 250px;
-		background: blue;
 	}
+  .top-left {
+    background: blue;
+  }
+  .top-right {
+    background: yellow;
+  }
+  .bottom-left {
+    background: purple;
+  }
 </style>
 <script>
 
@@ -33,9 +42,10 @@ function click() {
 <body>
 <a href='javascript:click()'>Add history</a>
 <div class='outer'>
-	<div class="inner">
-
-	</div>
+  <div class="inner top-left"></div>
+  <div class="inner top-right"></div>
+  <div class="inner bottom-left"></div>
+  <!-- <div class="inner bottom-right"></div> -->
 </div>
 
 <script>
@@ -47,15 +57,17 @@ new Chariot.chariot({
         {
           name: 'Internal or Public?',
           selectors: {
-            inner: ".inner",
+            topLeft: ".top-left",
           },
           tooltip: {
             position: 'right', // 'top' | 'left' | 'bottom' | 'right'
+            name: 'Name',
             text: 'Some text',
             xOffset: 10,
             yOffset: 0,
-            anchorElement: "inner",
-            iconUrl: '/assets/whatever'
+            anchorElement: "topLeft",
+            iconUrl: '/assets/whatever',
+            cta: 'Next'
           },
           before: function() {
             // any arbitrary code to run before showing this step (after the timeout between steps)
@@ -64,18 +76,19 @@ new Chariot.chariot({
         },
         {
           selectors: {
-            assignee: "#input",
-            assignLabel: "#label"
+            topRight: ".top-right",
+            bottomLeft: ".bottom-left"
           },
           tooltip: {
-            position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-            text: 'Some text',
-            anchorElement: "assignee"
-          },
-          before: function() {
-            // any arbitrary code to run before showing this step (after the timeout between steps)
-            // eg. populate an image outside of the #elem
-          },
+            position: 'top',
+            name: 'Tooltip #2',
+            text: 'Another one',
+            xOffset: 10,
+            yOffset: 0,
+            anchorElement: "topRight",
+            iconUrl: '/assets/whatever',
+            cta: 'Next'
+          }
         }
       ],
       complete: function(){

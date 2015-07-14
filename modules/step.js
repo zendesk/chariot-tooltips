@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Tooltip from './tooltip';
+import { CLONE_Z_INDEX } from './constants';
 
 let MAX_ATTEMPTS = 1000;
 let DOM_QUERY_DELAY = 500;
@@ -11,8 +12,7 @@ class Step {
     this.selectors = config.selectors;
     this.tutorial = tutorial;
     this.text = config.text;
-    this.before = typeof config.before === 'function' ?
-      config.before : function() {};
+    this.before = typeof config.before === 'function' ? config.before : ()=>{};
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
     this.name = config.name;
@@ -25,12 +25,8 @@ class Step {
 
   render() {
     this.before();
-    this.renderOverlay();
-  }
-
-  renderOverlay() {
+    // this.intervalId = window.setInterval(this.waitForElements.bind(this), DOM_QUERY_DELAY);
     this.waitForElements();
-    this.overlay();
   }
 
   next() {
@@ -43,6 +39,13 @@ class Step {
 
   getClonedElement(name) {
     return this.clonedElements[name];
+  }
+
+  tearDown() {
+    for (let elementName in this.clonedElements) {
+      this.clonedElements[elementName].remove();
+    }
+    this.tooltip.tearDown();
   }
 
   // PRIVATE
@@ -89,37 +92,22 @@ class Step {
   }
 
   cloneElement(sel) {
-    let element = $(sel);
-    if(element.length == 0) {
+    let $element = $(sel);
+    if($element.length == 0) {
       console.log("Can't find selector to clone: " + sel);
       return null;
     }
-    let clone = element.clone(),
-      style = document.defaultView.getComputedStyle(element[0],"").cssText;
+    let clone = $element.clone(),
+      style = document.defaultView.getComputedStyle($element[0],"").cssText;
     clone[0].style.cssText = style;
     clone.css({
-      'z-index': 20,
+      'z-index': CLONE_Z_INDEX,
       position: 'absolute'
     });
-    clone.offset(element.offset());
+    clone.offset($element.offset());
 
     $('body').append(clone);
     return clone;
-  }
-
-  overlay() {
-    let overlay = $("<div class='overlay'></div>");
-    overlay.css({
-      top: 0,
-      left: 0,
-      background: 'black',
-      'z-index': 10,
-      opacity: 0.5,
-      position: 'absolute',
-      height: '100%',
-      width: '100%'
-    });
-    $('body').append(overlay);
   }
 
   setupRepositionHandlers() {
@@ -138,5 +126,4 @@ class Step {
   }
 }
 
-export
-default Step;
+export default Step;
