@@ -10,7 +10,6 @@ class Chariot {
     this.tutorials = {};
     this.readConfig(config);
     this.listenForPushState();
-    this.listenToHashChange();
   }
 
   readConfig(config) {
@@ -48,20 +47,6 @@ class Chariot {
     };
 
     processGetParams();
-  }
-
-  listenToHashChange() {
-    let processLocationHash = e => {
-      let parameter = QueryParse.toObject(location.hash);
-      let tutorialName = parameter['#tutorial'];
-      if (tutorialName !== undefined) {
-        this.startTutorial(tutorialName);
-      }
-    };
-
-    window.onhashchange = processLocationHash;
-
-    processLocationHash();
   }
 }
 

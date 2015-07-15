@@ -27,7 +27,7 @@ This will start a simple server that serves `index.html`, and loads `chariot.js`
 # Test
 
 ## Command Line
-To run test in command line, run: 
+To run test in command line, run:
 
 	gulp test
 
@@ -43,3 +43,10 @@ Run the following to build `chariot.js` into thd `/dist` directory.
 
 	gulp
 
+# Release
+Run the following style-checker before pushing your branch.
+
+  npm run jscs
+
+To automatically fix the style errors:
+  npm run jscs-fix

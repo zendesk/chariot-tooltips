@@ -3,6 +3,7 @@ import Tooltip from '../modules/tooltip';
 import chai from 'chai';
 import sinon from 'sinon';
 import Style from '../modules/libs/style';
+import $ from 'jquery';
 
 let expect = chai.expect;
 
@@ -67,17 +68,14 @@ describe('Tooltip', function() {
   context('render', () => {
     it('sets css styles', () => {
       let css = sinon.stub().returns();
-      let $markup = { css: () => ({}) };
+      let $markup = $();
       sinon.stub(tooltip, 'tooltipMarkup', () => { return $markup });
       sinon.stub(tooltip, 'getAnchorElement', () => ({}));
       sinon.stub(Style, "calculateTop", () => {return 0});
       sinon.stub(Style, "calculateLeft", () => {return 0});
       sinon.spy($markup, 'css');
       tooltip.render();
-      expect($markup.css.calledWith({ position: 'absolute',
-        top: 0,
-        left: 0 }
-      ));
+      expect($markup.css.calledWith({ top: 0, left: 0, 'z-index': tooltip.z_index })).to.be.true;
     })
   });
 });
