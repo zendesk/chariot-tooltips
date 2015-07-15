@@ -1,3 +1,4 @@
+require('./test_helper');
 var assert = require("assert");
 import Tutorial from '../modules/tutorial'
 describe('Tutorial', function() {

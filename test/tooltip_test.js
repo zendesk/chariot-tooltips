@@ -1,5 +1,8 @@
+require('./test_helper');
 import Tooltip from '../modules/tooltip';
 import chai from 'chai';
+import sinon from 'sinon';
+import Style from '../modules/libs/style';
 
 let expect = chai.expect;
 
@@ -13,14 +16,14 @@ describe('Tooltip', function() {
     iconUrl: '/assets/whatever',
     width: '10',
     height: '10'
-  };
+  },
+    tutorial = new Object(),
+    step = new Object(),
+    tooltip = null;
+  beforeEach(() => {
+    tooltip = new Tooltip(configuration, step, tutorial);
+  })
   context('constructor', function() {
-    let tutorial = new Object();
-    let step = new Object();
-    let tooltip = null;
-    before(function() {
-      tooltip = new Tooltip(configuration, step, tutorial);
-    });
     it('read step', function() {
       expect(tooltip.step).to.equal(step);
     });
@@ -44,6 +47,37 @@ describe('Tooltip', function() {
     })
     it('read height', function() {
       expect(tooltip.height).to.equal(parseInt(configuration.height));
+    });
+  });
+
+  context('tearDown', () => {
+    it('tearDown with null DOM element', () => {
+      tooltip.$tooltip = null;
+      expect(tooltip.tearDown.bind(tooltip)).not.to.throw(Error);
+    });
+    it('tearDown removes element', () => {
+      let $tooltip = { remove: () => ({}) }
+      tooltip.$tooltip = $tooltip;
+      sinon.spy($tooltip, 'remove');
+      tooltip.tearDown();
+      expect($tooltip.remove.calledOnce).to.be.true;
+    });
+  });
+
+  context('render', () => {
+    it('sets css styles', () => {
+      let css = sinon.stub().returns();
+      let $markup = { css: () => ({}) };
+      sinon.stub(tooltip, 'tooltipMarkup', () => { return $markup });
+      sinon.stub(tooltip, 'getAnchorElement', () => ({}));
+      sinon.stub(Style, "calculateTop", () => {return 0});
+      sinon.stub(Style, "calculateLeft", () => {return 0});
+      sinon.spy($markup, 'css');
+      tooltip.render();
+      expect($markup.css.calledWith({ position: 'absolute',
+        top: 0,
+        left: 0 }
+      ));
     })
   });
 });

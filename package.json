@@ -2,11 +2,13 @@
   "name": "chariot",
   "main": "dist/chariot.js",
   "version": "1.0.0",
+  "repository": "https://github.com/zendesk/chariot",
   "devDependencies": {
     "babel": "^5.6.14",
     "babelify": "^6.1.2",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
+    "es5-shim": "^4.1.7",
     "es6-promise": "^2.3.0",
     "glob": "^5.0.13",
     "gulp": "^3.9.0",
@@ -16,16 +18,19 @@
     "gulp-sass": "^2.0.3",
     "gulp-testem": "0.0.1",
     "gulp-util": "^3.0.6",
+    "jscs": "^1.13.1",
     "mocha": "^2.2.5",
-    "mocha-traceur": "^2.1.0",
     "phantomjs": "^1.9.17",
+    "sinon": "^1.15.4",
+    "testem": "^0.8.5",
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "jquery": "^2.1.4",
-    "query-parse": "^0.1.1"
+    "jquery": "^2.1.4"
   },
   "scripts": {
-    "test": "semistandard"
+    "jscs-fix": "node_modules/.bin/jscs modules/** test/** -x",
+    "jscs": "node_modules/.bin/jscs modules/** test/**",
+    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci"
   }
 }
