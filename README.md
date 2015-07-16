@@ -42,6 +42,8 @@ The browsers to test can be configured in `testem.yml`, currently it is configur
 Run the following to build `chariot.js` into thd `/dist` directory.
 
 	gulp
+	
+*Do not check in the `dist` directory. Release on github will contain the tarballs with compiled js/css.*
 
 # Release
 Run the following style-checker before pushing your branch.
