@@ -26,7 +26,8 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "jquery": "^2.1.4"
+    "jquery": "^2.1.4",
+    "query-parse": "^0.1.1"
   },
   "scripts": {
     "jscs-fix": "node_modules/.bin/jscs modules/** test/** -x",

@@ -6,7 +6,7 @@
 <style>
 	.outer {
 		position: relative;
-		top: 200px;
+		top: 300px;
 		left: 100px;
 		z-index: 3;
 		width: 500px;
@@ -25,7 +25,7 @@
     background: yellow;
   }
   .bottom-left {
-    background: purple;
+    background: pink;
   }
 </style>
 <script>
@@ -45,7 +45,6 @@ function click() {
   <div class="inner top-left"></div>
   <div class="inner top-right"></div>
   <div class="inner bottom-left"></div>
-  <!-- <div class="inner bottom-right"></div> -->
 </div>
 
 <script>
@@ -64,9 +63,9 @@ new Chariot.chariot({
             name: 'Name',
             text: 'Some text',
             xOffset: 10,
-            yOffset: 0,
+            yOffset: 50,
             anchorElement: "topLeft",
-            iconUrl: '/assets/whatever',
+            //iconUrl: '/assets/whatever',
             cta: 'Next'
           },
           before: function() {
@@ -82,11 +81,10 @@ new Chariot.chariot({
           tooltip: {
             position: 'top',
             name: 'Tooltip #2',
-            text: 'Another one',
-            xOffset: 10,
+            text: 'Two selectors being highlighted.',
+            xOffset: -50,
             yOffset: 0,
             anchorElement: "topRight",
-            iconUrl: '/assets/whatever',
             cta: 'Next'
           }
         }
