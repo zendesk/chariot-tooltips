@@ -46,7 +46,7 @@ Run the following to build `chariot.js` into thd `/dist` directory.
 # Release
 Run the following style-checker before pushing your branch.
 
-  npm run jscs
+	npm run jscs
 
 To automatically fix the style errors:
-  npm run jscs-fix
+	npm run jscs-fix
