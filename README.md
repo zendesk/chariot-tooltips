@@ -49,4 +49,5 @@ Run the following style-checker before pushing your branch.
 	npm run jscs
 
 To automatically fix the style errors:
+	
 	npm run jscs-fix
