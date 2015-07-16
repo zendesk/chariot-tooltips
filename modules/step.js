@@ -18,7 +18,6 @@ class Step {
     this.before = config.before;
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
-    this.name = config.name;
     this.clonedElements = {};
   }
 

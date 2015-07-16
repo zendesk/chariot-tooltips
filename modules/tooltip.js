@@ -2,7 +2,8 @@ import $ from 'jquery';
 import { TOOLTIP_Z_INDEX } from './constants';
 import Style from './libs/style';
 
-const DEFAULT_PADDING = 10;
+const DEFAULT_PADDING = 15;
+
 class Tooltip {
   constructor(config, step, tutorial) {
     this.step = step;
@@ -44,36 +45,54 @@ class Tooltip {
 
     // TODO: Sanitize these user-inputted elements
     this.iconUrl = config.iconUrl;
-    this.name = config.name;
+    this.title = config.title;
     this.cta = config.cta;
   }
 
-  tooltipMarkup() {
-    let template = `<div class="chariot-tooltip ${this.arrowClass}">
-      ${this.iconMarkup()}
-      <div class='chariot-tooltip-title'>${this.name}</div>
-      <div class='chariot-tooltip-body'>${this.text}</div>
-      <div class='chariot-tooltip-steps'>
-        ${this.tutorial.currentStep(this)} of ${this.tutorial.steps.length}
-      </div>
-      <button class='chariot-tooltip-next'>${this.cta}</button>`;
+  createTooltip() {
+    let template = `
+      <div class="chariot-tooltip">
+        <div class="chariot-tooltip-arrow ${this.arrowClass}"></div>
+        <div class="chariot-tooltip-content">
+          ${this.iconMarkup()}
+        </div>
+        <div class="chariot-tooltip-header">
+          ${this.title}
+        </div>
+        <div class="chariot-tooltip-content">
+          <p>${this.text}</p>
+        </div>
+        <div class="chariot-btn-row">
+          <span class='chariot-tooltip-steps'>
+            ${this.tutorial.currentStep(this.step)} of ${this.tutorial.steps.length}
+          </span>
+          <button class="btn btn-inverse btn-right">${this.cta}</button>
+        </div>
+      </div>`;
     return $(template);
   }
 
   iconMarkup() {
-   if (!this.iconUrl) return '';
-   return `<div class='chariot-tooltip-icon'>
+    if (!this.iconUrl) return '';
+    return `<div class='chariot-tooltip-icon'>
        <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
      </div>`;
- }
+  }
+
+  createTooltipArrow() {
+    return $(`<div class="${this.arrowClass}"></div>`);
+  }
 
   render() {
-    let $tooltip = this.$tooltip = this.tooltipMarkup();
+    let $tooltip = this.$tooltip = this.createTooltip();
     $('body').append($tooltip);
-    this.styleTooltip($tooltip);
+
+    let $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
+
+    this.styleTooltip($tooltip, $tooltipArrow);
 
     // Add event handlers
-    $('.chariot-tooltip-next').click(() => {
+    $('.chariot-btn-row button').click(() => {
       this.next();
     });
   }
@@ -81,11 +100,12 @@ class Tooltip {
   tearDown() {
     if (!this.$tooltip) return;
     this.$tooltip.remove();
+    this.$tooltipArrow.remove();
   }
 
-  styleTooltip($tooltip) {
+  styleTooltip($tooltip, $tooltipArrow) {
     this.positionTooltip($tooltip);
-    this.styleArrow($tooltip);
+    this.positionArrow($tooltip, $tooltipArrow);
   }
 
   positionTooltip($tooltip) {
@@ -102,28 +122,30 @@ class Tooltip {
     $tooltip.css(tooltipStyles);
   }
 
-  styleArrow($tooltip) {
-    let arrowDimension = 10; // px
-    let arrowOffset = 0.5; // % units
-    let positionAttribute;
-    if (this.position === 'left' || this.position === 'right') {
-      arrowOffset -= this.yOffset / $tooltip.height();
-      positionAttribute = 'top';
-    } else if (this.position === 'top' || this.position === 'bottom') {
-      arrowOffset -= this.xOffset / $tooltip.width();
-      positionAttribute = 'left';
-    }
-    let arrowPercentage = (arrowDimension / $tooltip.height());
-    let maxPercentage = 100 - arrowPercentage;
-    let minPercentage = arrowPercentage;
-    arrowOffset = Math.max(Math.min(arrowOffset, maxPercentage), arrowPercentage) * 100;
+  positionArrow($tooltip, $tooltipArrow) {
+    let arrowDimension = 15; // px
+    let tooltipStyles = { 'z-index': this.z_index + 1 };
 
-    // NOTE: Can't edit pseudo-selectors (:before, :after) with jQuery, so use vanilla JS
-    document.styleSheets[0].insertRule(`
-      .${this.arrowClass}:after {
-        ${positionAttribute}: ${arrowOffset + '%'};
-      }
-    `, document.styleSheets[0].cssRules.length);
+    switch (this.arrowClass) {
+      case 'chariot-tooltip-arrow-left':
+        tooltipStyles.top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
+        tooltipStyles.left = -arrowDimension/2 - 2; // 2 is a fudge factor
+        break;
+      case 'chariot-tooltip-arrow-right':
+        tooltipStyles.top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
+        tooltipStyles.right = -arrowDimension/2 - 1;
+        break;
+      case 'chariot-tooltip-arrow-bottom':
+        tooltipStyles.left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
+        tooltipStyles.bottom = -arrowDimension/2 - 1;
+        break;
+      case 'chariot-tooltip-arrow-top':
+        tooltipStyles.left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
+        tooltipStyles.top = -arrowDimension/2 - 2;
+        break;
+    }
+
+    $tooltipArrow.css(tooltipStyles);
   }
 
   getAnchorElement() {

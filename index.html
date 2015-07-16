@@ -7,7 +7,7 @@
 	.outer {
 		position: relative;
 		top: 300px;
-		left: 100px;
+		left: 300px;
 		z-index: 3;
 		width: 500px;
 		height: 500px;
@@ -54,18 +54,17 @@ new Chariot.chariot({
     ticketing: {
       steps: [
         {
-          name: 'Internal or Public?',
+          title: 'Internal or Public?',
           selectors: {
             topLeft: ".top-left",
           },
           tooltip: {
             position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-            name: 'Name',
-            text: 'Some text',
-            xOffset: 10,
+            title: 'Know your customer',
+            text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
             yOffset: 50,
             anchorElement: "topLeft",
-            //iconUrl: '/assets/whatever',
+            iconUrl: '/assets/images/agent@2x.png',
             cta: 'Next'
           },
           before: function() {
@@ -74,16 +73,42 @@ new Chariot.chariot({
           },
         },
         {
+          title: "Tooltip #2",
           selectors: {
             topRight: ".top-right",
             bottomLeft: ".bottom-left"
           },
           tooltip: {
             position: 'top',
-            name: 'Tooltip #2',
+            title: 'Tooltip #2',
             text: 'Two selectors being highlighted.',
             xOffset: -50,
-            yOffset: 0,
+            anchorElement: "topRight",
+            cta: 'Next'
+          }
+        },
+        {
+          title: "Tooltip #3",
+          selectors: {
+            bottomLeft: ".bottom-left"
+          },
+          tooltip: {
+            position: 'bottom',
+            title: 'Tooltip #3',
+            text: 'Placeholder text.',
+            anchorElement: "bottomLeft",
+            cta: 'Next'
+          }
+        },
+        {
+          title: "Tooltip #4",
+          selectors: {
+            topRight: ".top-right"
+          },
+          tooltip: {
+            position: 'left',
+            title: 'Tooltip #4',
+            text: 'Placeholder text.',
             anchorElement: "topRight",
             cta: 'Next'
           }
