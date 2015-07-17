@@ -38,5 +38,27 @@ class Style {
     }
     return offset;
   }
+
+  static cloneStyles($element, $clone) {
+    $clone[0].style.cssText = document.defaultView.
+      getComputedStyle($element[0], "").cssText;
+    this._clonePseudoStyle($element, $clone, 'before');
+    this._clonePseudoStyle($element, $clone, 'after');
+  }
+
+  static _generateRandomClassName() {
+    return `class_${Math.floor(Math.random() * 1000000)}`;
+  }
+
+  static _clonePseudoStyle($element, $clone, pseudoClass) {
+    let pseudoStyle = window.getComputedStyle($element[0], `::${pseudoClass}` );
+    if (pseudoStyle.content && pseudoStyle.content !== '') {
+      let className = this._generateRandomClassName();
+      $clone.addClass(className);
+      document.styleSheets[0].insertRule(`.${className}::${pseudoClass} {
+        ${pseudoStyle.cssText}; content: ${pseudoStyle.content}; }`,
+        0);
+    }
+  }
 }
 export default Style;

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Tooltip from './tooltip';
 import { CLONE_Z_INDEX } from './constants';
+import Style from './libs/style';
 
 let MAX_ATTEMPTS = 100;
 let DOM_QUERY_DELAY = 100;
@@ -82,12 +83,10 @@ class Step {
         reject(`Selector not found: ${selector}`);
       } else {
         window.setTimeout(() => {
-          console.log(numAttempts);
           this.waitForElement(selectorName, numAttempts, resolve, reject);
         }, DOM_QUERY_DELAY);
       }
     } else {
-      console.log(resolve);
       resolve();
     }
   }
@@ -100,29 +99,8 @@ class Step {
     }
   }
 
-  generateRandomClassName() {
-    return `class_${Math.floor(Math.random()*1000000)}`;
-  }
-
-  applyComputedStyles($clone, $element){
-    let style = document.defaultView.getComputedStyle($element[0], "").cssText;
-    let beforeStyle = window.getComputedStyle($element[0], '::before');
-    $clone[0].style.cssText = style;
-    if (beforeStyle.content && beforeStyle.content !== '') {
-      console.log(`Adding before content '${beforeStyle.content}'`);
-      console.log($element[0]);
-      let className = this.generateRandomClassName();
-      $clone.addClass(className);
-      document.styleSheets[0].insertRule(`.${className}::before { ${beforeStyle.cssText}; content: ${beforeStyle.content};  }`, 0);
-    }
-    let afterStyle = window.getComputedStyle($element[0], '::after');
-    if (afterStyle.content && afterStyle.content !== '') {
-      console.log(`Adding after content '${afterStyle.content}'`);
-      console.log($element[0]);
-      let className = this.generateRandomClassName();
-      $clone.addClass(className);
-      document.styleSheets[0].insertRule(`.${className}::after { ${afterStyle.cssText}; content: ${afterStyle.content}; }`, 0);
-    }
+  applyComputedStyles($clone, $element) {
+    Style.cloneStyles($element, $clone);
     let clonedChildren = $clone.children().toArray();
     $element.children().toArray().forEach((child, index) => {
       this.applyComputedStyles($(clonedChildren[index]), $(child));
