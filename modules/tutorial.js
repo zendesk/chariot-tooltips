@@ -12,6 +12,7 @@ class Tutorial {
       }
     }
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
+    this.overlayStyle = config.overlayStyle;
   }
 
   start() {
@@ -21,16 +22,20 @@ class Tutorial {
 
   renderOverlay() {
     let $overlay = $("<div class='overlay'></div>");
-    $overlay.css({
-      top: 0,
-      left: 0,
-      background: '#FFFFFF',
-      'z-index': OVERLAY_Z_INDEX,
-      opacity: 0.7,
-      position: 'absolute',
-      height: '100%',
-      width: '100%'
-    });
+    if (!this.overlayStyle) {
+      $overlay.css({
+        top: 0,
+        left: 0,
+        background: 'white',
+        'z-index': OVERLAY_Z_INDEX,
+        opacity: 0.7,
+        position: 'absolute',
+        height: '100%',
+        width: '100%'
+      });
+    } else {
+      $overlay.css(this.overlayStyle);
+    }
     $('body').append($overlay);
     this.$overlay = $overlay;
   }

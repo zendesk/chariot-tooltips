@@ -26,7 +26,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 gulp.task('js', function() {
   return browserify({
     entries: './modules/index.js',
-    debug: true
+    //debug: true
   })
     .transform(babelify)
     .bundle()
