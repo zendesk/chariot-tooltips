@@ -1,3 +1,4 @@
+![alt tag](http://thumbs3.jigidi.com/thumbs/GM5R5TBP/l)
 # Chariot
 A javascript library for create on screen step by step tutorials.
 
