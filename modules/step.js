@@ -82,10 +82,12 @@ class Step {
         reject(`Selector not found: ${selector}`);
       } else {
         window.setTimeout(() => {
+          console.log(numAttempts);
           this.waitForElement(selectorName, numAttempts, resolve, reject);
         }, DOM_QUERY_DELAY);
       }
     } else {
+      console.log(resolve);
       resolve();
     }
   }
@@ -98,23 +100,51 @@ class Step {
     }
   }
 
+  generateRandomClassName() {
+    return `class_${Math.floor(Math.random()*1000000)}`;
+  }
+
+  applyComputedStyles($clone, $element){
+    let style = document.defaultView.getComputedStyle($element[0], "").cssText;
+    let beforeStyle = window.getComputedStyle($element[0], '::before');
+    $clone[0].style.cssText = style;
+    if (beforeStyle.content && beforeStyle.content !== '') {
+      console.log(`Adding before content '${beforeStyle.content}'`);
+      console.log($element[0]);
+      let className = this.generateRandomClassName();
+      $clone.addClass(className);
+      document.styleSheets[0].insertRule(`.${className}::before { ${beforeStyle.cssText}; content: ${beforeStyle.content};  }`, 0);
+    }
+    let afterStyle = window.getComputedStyle($element[0], '::after');
+    if (afterStyle.content && afterStyle.content !== '') {
+      console.log(`Adding after content '${afterStyle.content}'`);
+      console.log($element[0]);
+      let className = this.generateRandomClassName();
+      $clone.addClass(className);
+      document.styleSheets[0].insertRule(`.${className}::after { ${afterStyle.cssText}; content: ${afterStyle.content}; }`, 0);
+    }
+    let clonedChildren = $clone.children().toArray();
+    $element.children().toArray().forEach((child, index) => {
+      this.applyComputedStyles($(clonedChildren[index]), $(child));
+    });
+  }
+
   cloneElement(sel) {
     let $element = $(sel);
     if ($element.length == 0) {
       console.log("Can't find selector to clone: " + sel);
       return null;
     }
-    let clone = $element.clone(),
-      style = document.defaultView.getComputedStyle($element[0], "").cssText;
-    clone[0].style.cssText = style;
-    clone.css({
+    let $clone = $element.clone();
+    this.applyComputedStyles($clone, $element);
+    $clone.css({
       'z-index': CLONE_Z_INDEX,
       position: 'absolute'
     });
-    clone.offset($element.offset());
+    $clone.offset($element.offset());
 
-    $('body').append(clone);
-    return clone;
+    $('body').append($clone);
+    return $clone;
   }
 
   // TODO: Evaluate whether this method is actually necessary or not

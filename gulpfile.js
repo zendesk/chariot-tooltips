@@ -19,7 +19,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 gulp.task('js', function() {
   browserify({
     entries: './modules/index.js',
-    debug: true
+    //debug: true
   })
     .transform(babelify)
     .bundle()
@@ -80,3 +80,14 @@ gulp.task("compile-test", function() {
       .pipe(gulp.dest('./dist/test'))
   });
 });
+
+//################ TEST ####################
+
+gulp.task('release', ['build-release'], function(){
+  return gulp.src
+})
+
+
+gulp.task('build-release', ['js', 'sass'], function(){
+  
+})
