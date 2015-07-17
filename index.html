@@ -7,7 +7,7 @@
 	.outer {
 		position: relative;
 		top: 300px;
-		left: 100px;
+		left: 300px;
 		z-index: 3;
 		width: 500px;
 		height: 500px;
@@ -50,50 +50,86 @@ function click() {
 <script>
 
 new Chariot.chariot({
-  tutorials: {
-    ticketing: {
-      steps: [
-        {
-          name: 'Internal or Public?',
-          selectors: {
-            topLeft: ".top-left",
-          },
-          tooltip: {
-            position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-            name: 'Name',
-            text: 'Some text',
-            xOffset: 10,
-            yOffset: 50,
-            anchorElement: "topLeft",
-            //iconUrl: '/assets/whatever',
-            cta: 'Next'
-          },
-          before: function() {
-            // any arbitrary code to run before showing this step (after the timeout between steps)
-            // eg. populate an image outside of the #elem
-          },
+  ticketing: {
+    steps: [
+      // Step #1 illustrates the basic content of a tooltip
+      {
+        selectors: {
+          topLeft: ".top-left",
         },
-        {
-          selectors: {
-            topRight: ".top-right",
-            bottomLeft: ".bottom-left"
-          },
-          tooltip: {
-            position: 'top',
-            name: 'Tooltip #2',
-            text: 'Two selectors being highlighted.',
-            xOffset: -50,
-            yOffset: 0,
-            anchorElement: "topRight",
-            cta: 'Next'
+        tooltip: {
+          position: 'right', // 'top' | 'left' | 'bottom' | 'right'
+          title: 'Know your customer',
+          text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
+          yOffset: 50,
+          anchorElement: "topLeft",
+          iconUrl: '/assets/images/agent@2x.png',
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
+        },
+        before: function() {
+          // any arbitrary code to run before showing this step (after the timeout between steps)
+          // eg. populate an image outside of the #elem
+        },
+      },
+      // Step #2 illustrates the ability to highlight select two selectors
+      {
+        selectors: {
+          topRight: ".top-right",
+          bottomLeft: ".bottom-left"
+        },
+        tooltip: {
+          position: 'top',
+          title: 'Tooltip #2',
+          text: 'Two selectors being highlighted.',
+          xOffset: -50,
+          anchorElement: "topRight",
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
           }
         }
-      ],
-      complete: function(){
-
       },
-      overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
-    }
+      // #3 will illustrate that missing selector results in a skipped step
+      {
+        selectors: {
+          bottomLeft: ".bottom-left",
+          notExistent: ".where-am-i"
+        },
+        tooltip: {
+          position: 'bottom',
+          title: 'Tooltip #3',
+          text: 'Placeholder text.',
+          anchorElement: "bottomLeft",
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
+        }
+      },
+      // #4 nothing special
+      {
+        selectors: {
+          topRight: ".top-right"
+        },
+        tooltip: {
+          position: 'left',
+          title: 'Tooltip #4',
+          text: 'Did you notice tooltip #3 was skipped?  Its configuration had an invalid selector.',
+          anchorElement: "topRight",
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
+        }
+      }
+    ],
+    complete: function(){
+
+    },
+    overlay: {transparent: '#000000'} // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
   }
 });
 </script>

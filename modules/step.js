@@ -2,8 +2,8 @@ import $ from 'jquery';
 import Tooltip from './tooltip';
 import { CLONE_Z_INDEX } from './constants';
 
-let MAX_ATTEMPTS = 1000;
-let DOM_QUERY_DELAY = 500;
+let MAX_ATTEMPTS = 100;
+let DOM_QUERY_DELAY = 100;
 
 let Promise = require('es6-promise').Promise;
 
@@ -16,19 +16,28 @@ class Step {
     this.tutorial = tutorial;
     this.text = config.text;
     this.before = config.before;
+    this.after = config.after;
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
-    this.name = config.name;
     this.clonedElements = {};
-  }
-
-  renderTooltip() {
-    this.tooltip.render();
   }
 
   render() {
     if (this.before) this.before();
-    this.waitForElements();
+    this.waitForElements().then(() => {
+      this.cloneElements(this.selectors);
+      this.setupRepositionHandlers();
+      this.renderTooltip();
+    }, error => {
+      console.log(error);
+      console.log("Skipping this step...");
+      this.next();
+    });
+  }
+
+  renderTooltip() {
+    this.tooltip.render();
+    if (this.after) this.after();
   }
 
   next() {
@@ -61,11 +70,7 @@ class Step {
       promises.push(promise);
     }
 
-    Promise.all(promises).then(() => {
-      this.cloneElements(this.selectors);
-      this.setupRepositionHandlers();
-      this.renderTooltip();
-    });
+    return Promise.all(promises);
   }
 
   waitForElement(selectorName, numAttempts, resolve, reject) {
@@ -74,7 +79,7 @@ class Step {
     if (element.length == 0) {
       ++numAttempts;
       if (numAttempts == MAX_ATTEMPTS) {
-        reject();
+        reject(`Selector not found: ${selector}`);
       } else {
         window.setTimeout(() => {
           this.waitForElement(selectorName, numAttempts, resolve, reject);
@@ -112,6 +117,7 @@ class Step {
     return clone;
   }
 
+  // TODO: Evaluate whether this method is actually necessary or not
   setupRepositionHandlers() {
     $(window).resize(() => {
       this.repositionElements();

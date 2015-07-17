@@ -2,6 +2,8 @@
 history, location
 */
 
+/* Please refer to modules/config.example.js to see how config is structured */
+
 import Tutorial from './tutorial';
 import QueryParse from 'query-parse';
 
@@ -13,12 +15,12 @@ class Chariot {
   }
 
   readConfig(config) {
-    if (!config.tutorials || typeof config.tutorials !== 'object') {
+    if (!config || typeof config !== 'object') {
       throw new Error("Config must contains a tutorials hash");
     }
-    for (let tutorialName in config.tutorials) {
+    for (let tutorialName in config) {
       this.tutorials[tutorialName] = new Tutorial(tutorialName,
-        config.tutorials[tutorialName]);
+        config[tutorialName]);
     }
   }
 

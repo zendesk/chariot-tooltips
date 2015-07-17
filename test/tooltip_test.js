@@ -60,6 +60,9 @@ describe('Tooltip', function() {
       let $tooltip = { remove: () => ({}) }
       tooltip.$tooltip = $tooltip;
       sinon.spy($tooltip, 'remove');
+      let $tooltipArrow = { remove: () => ({}) }
+      tooltip.$tooltipArrow = $tooltipArrow;
+      sinon.spy($tooltipArrow, 'remove');
       tooltip.tearDown();
       expect($tooltip.remove.calledOnce).to.be.true;
     });
@@ -69,13 +72,17 @@ describe('Tooltip', function() {
     it('sets css styles', () => {
       let css = sinon.stub().returns();
       let $markup = $();
-      sinon.stub(tooltip, 'tooltipMarkup', () => { return $markup });
+      sinon.stub(tooltip, 'createTooltip', () => { return $markup });
       sinon.stub(tooltip, 'getAnchorElement', () => ({}));
       sinon.stub(Style, "calculateTop", () => {return 0});
       sinon.stub(Style, "calculateLeft", () => {return 0});
       sinon.spy($markup, 'css');
+
+      sinon.spy(tooltip, 'styleTooltip');
+
       tooltip.render();
       expect($markup.css.calledWith({ top: 0, left: 0, 'z-index': tooltip.z_index })).to.be.true;
+      expect(tooltip.styleTooltip.called).to.be.true;
     })
   });
 });

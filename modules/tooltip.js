@@ -2,7 +2,8 @@ import $ from 'jquery';
 import { TOOLTIP_Z_INDEX } from './constants';
 import Style from './libs/style';
 
-const DEFAULT_PADDING = 10;
+const DEFAULT_PADDING = 15;
+
 class Tooltip {
   constructor(config, step, tutorial) {
     this.step = step;
@@ -44,36 +45,58 @@ class Tooltip {
 
     // TODO: Sanitize these user-inputted elements
     this.iconUrl = config.iconUrl;
-    this.name = config.name;
+    this.title = config.title;
     this.cta = config.cta;
+    this.subtext = config.subtext;
   }
 
-  tooltipMarkup() {
-    let template = `<div class="chariot-tooltip ${this.arrowClass}">
-      ${this.iconMarkup()}
-      <div class='chariot-tooltip-title'>${this.name}</div>
-      <div class='chariot-tooltip-body'>${this.text}</div>
-      <div class='chariot-tooltip-steps'>
-        ${this.tutorial.currentStep(this)} of ${this.tutorial.steps.length}
-      </div>
-      <button class='chariot-tooltip-next'>${this.cta}</button>`;
+  createTooltip() {
+    let template = `
+      <div class="chariot-tooltip">
+        <div class="chariot-tooltip-arrow ${this.arrowClass}"></div>
+        <div class="chariot-tooltip-content">
+          ${this.iconMarkup()}
+        </div>
+        <div class="chariot-tooltip-header">
+          ${this.title}
+        </div>
+        <div class="chariot-tooltip-content">
+          <p>${this.text}</p>
+        </div>
+        <div class="chariot-btn-row">
+          <span class='chariot-tooltip-subtext'>${this.subtextMarkup()}</span>
+          <button class="btn btn-inverse btn-right">${this.cta}</button>
+        </div>
+      </div>`;
     return $(template);
   }
 
   iconMarkup() {
-   if (!this.iconUrl) return '';
-   return `<div class='chariot-tooltip-icon'>
+    if (!this.iconUrl) return '';
+    return `<div class='chariot-tooltip-icon'>
        <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
      </div>`;
- }
+  }
+
+  subtextMarkup() {
+    if (!this.subtext) return '';
+    return this.subtext(this.tutorial.currentStep(this.step), this.tutorial.steps.length);
+  }
+
+  createTooltipArrow() {
+    return $(`<div class="${this.arrowClass}"></div>`);
+  }
 
   render() {
-    let $tooltip = this.$tooltip = this.tooltipMarkup();
+    let $tooltip = this.$tooltip = this.createTooltip();
     $('body').append($tooltip);
-    this.styleTooltip($tooltip);
+
+    let $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
+
+    this.styleTooltip($tooltip, $tooltipArrow);
 
     // Add event handlers
-    $('.chariot-tooltip-next').click(() => {
+    $('.chariot-btn-row button').click(() => {
       this.next();
     });
   }
@@ -81,15 +104,18 @@ class Tooltip {
   tearDown() {
     if (!this.$tooltip) return;
     this.$tooltip.remove();
+    this.$tooltipArrow.remove();
   }
 
-  styleTooltip($tooltip) {
+  styleTooltip($tooltip, $tooltipArrow) {
     this.positionTooltip($tooltip);
-    this.styleArrow($tooltip);
+    this.positionArrow($tooltip, $tooltipArrow);
   }
 
   positionTooltip($tooltip) {
     let $anchorElement = this.getAnchorElement();
+    if (!$anchorElement) return;
+
     let top = Style.calculateTop($tooltip,
       $anchorElement, this.yOffset, this.position);
     let left = Style.calculateLeft($tooltip,
@@ -102,32 +128,61 @@ class Tooltip {
     $tooltip.css(tooltipStyles);
   }
 
-  styleArrow($tooltip) {
-    let arrowDimension = 10; // px
-    let arrowOffset = 0.5; // % units
-    let positionAttribute;
-    if (this.position === 'left' || this.position === 'right') {
-      arrowOffset -= this.yOffset / $tooltip.height();
-      positionAttribute = 'top';
-    } else if (this.position === 'top' || this.position === 'bottom') {
-      arrowOffset -= this.xOffset / $tooltip.width();
-      positionAttribute = 'left';
-    }
-    let arrowPercentage = (arrowDimension / $tooltip.height());
-    let maxPercentage = 100 - arrowPercentage;
-    let minPercentage = arrowPercentage;
-    arrowOffset = Math.max(Math.min(arrowOffset, maxPercentage), arrowPercentage) * 100;
+  /*
+    Positions the arrow to point at the center of the anchor element.
+    If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
+  */
+  positionArrow($tooltip, $tooltipArrow) {
+    let arrowDimension = 15; // px
+    let tooltipStyles = { 'z-index': this.z_index + 1 };
+    let top, left, min, max;
 
-    // NOTE: Can't edit pseudo-selectors (:before, :after) with jQuery, so use vanilla JS
-    document.styleSheets[0].insertRule(`
-      .${this.arrowClass}:after {
-        ${positionAttribute}: ${arrowOffset + '%'};
-      }
-    `, document.styleSheets[0].cssRules.length);
+    switch (this.arrowClass) {
+      case 'chariot-tooltip-arrow-left':
+        top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerHeight() - 2 * arrowDimension;
+        tooltipStyles.top = Math.max(Math.min(top, max), min);
+
+        tooltipStyles.left = -arrowDimension / 2 - 2; // 2 is a fudge factor
+        break;
+      case 'chariot-tooltip-arrow-right':
+        top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerHeight() - 2 * arrowDimension;
+        tooltipStyles.top = Math.max(Math.min(top, max), min);
+
+        tooltipStyles.right = -arrowDimension / 2 - 1;
+        break;
+      case 'chariot-tooltip-arrow-bottom':
+        left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerWidth() - 2 * arrowDimension;
+        tooltipStyles.left = Math.max(Math.min(left, max), min);
+
+        tooltipStyles.bottom = -arrowDimension / 2 - 1;
+        break;
+      case 'chariot-tooltip-arrow-top':
+        left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerWidth() - 2 * arrowDimension;
+        tooltipStyles.left = Math.max(Math.min(left, max), min);
+
+        tooltipStyles.top = -arrowDimension / 2 - 2;
+        break;
+    }
+
+    $tooltipArrow.css(tooltipStyles);
   }
 
   getAnchorElement() {
-    return this.step.getClonedElement(this.anchorElement);
+    let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
+    if (clonedSelectedElement) return clonedSelectedElement;
+    let $element = $(this.anchorElement);
+    if (!element) {
+      console.log("Anchor element not found: " + this.anchorElement);
+    }
+    return $element;
   }
 
   next() {
