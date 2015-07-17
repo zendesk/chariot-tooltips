@@ -24,9 +24,9 @@ class Tutorial {
     $overlay.css({
       top: 0,
       left: 0,
-      background: 'black',
+      background: '#FFFFFF',
       'z-index': OVERLAY_Z_INDEX,
-      opacity: 0.5,
+      opacity: 0.7,
       position: 'absolute',
       height: '100%',
       width: '100%'
