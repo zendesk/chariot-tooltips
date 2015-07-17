@@ -125,7 +125,7 @@ gulp.task('js-minify', ['js'], function(){
 })
 gulp.task('css-minify', ['sass'], function(){
   return gulp.src('./dist/stylesheets/**/*')
-    .pipe(minifyCss())
+    .pipe(minifyCss({compatibility: 'ie8'}))
     .pipe(rename(projectName + '.min.css'))
     .pipe(gulp.dest('./dist/stylesheets'));
 })
