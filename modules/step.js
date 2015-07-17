@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Tooltip from './tooltip';
 import { CLONE_Z_INDEX } from './constants';
+import Style from './libs/style';
 
 let MAX_ATTEMPTS = 100;
 let DOM_QUERY_DELAY = 100;
@@ -98,23 +99,30 @@ class Step {
     }
   }
 
+  applyComputedStyles($clone, $element) {
+    Style.cloneStyles($element, $clone);
+    let clonedChildren = $clone.children().toArray();
+    $element.children().toArray().forEach((child, index) => {
+      this.applyComputedStyles($(clonedChildren[index]), $(child));
+    });
+  }
+
   cloneElement(sel) {
     let $element = $(sel);
     if ($element.length == 0) {
       console.log("Can't find selector to clone: " + sel);
       return null;
     }
-    let clone = $element.clone(),
-      style = document.defaultView.getComputedStyle($element[0], "").cssText;
-    clone[0].style.cssText = style;
-    clone.css({
+    let $clone = $element.clone();
+    this.applyComputedStyles($clone, $element);
+    $clone.css({
       'z-index': CLONE_Z_INDEX,
       position: 'absolute'
     });
-    clone.offset($element.offset());
+    $clone.offset($element.offset());
 
-    $('body').append(clone);
-    return clone;
+    $('body').append($clone);
+    return $clone;
   }
 
   // TODO: Evaluate whether this method is actually necessary or not

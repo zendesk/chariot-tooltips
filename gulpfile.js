@@ -9,22 +9,29 @@ var babel = require('babel/register');
 var mocha = require('gulp-mocha');
 var testem = require('gulp-testem');
 var sass = require('gulp-sass');
+var minifyCss = require('gulp-minify-css');
+var uglify = require('gulp-uglify');
+var clean = require('gulp-clean');
+var runSequence = require('run-sequence');
+var rename = require('gulp-rename');
+
+var projectName = 'chariot';
 
 gulp.task("default", ['js', 'sass']);
 
-//################ BUILD ####################
+//################ DEV ####################
 
 gulp.task('watch', ['js:watch', 'sass:watch']);
 
 gulp.task('js', function() {
-  browserify({
+  return browserify({
     entries: './modules/index.js',
     debug: true
   })
     .transform(babelify)
     .bundle()
-    .pipe(source('chariot.js'))
-    .pipe(gulp.dest('./dist'))
+    .pipe(source(projectName + '.js'))
+    .pipe(gulp.dest('./dist/javascripts'))
     .pipe(connect.reload())
 });
 
@@ -33,8 +40,9 @@ gulp.task('js:watch', function() {
 });
 
 gulp.task('sass', function() {
-  gulp.src('./stylesheets/**/*.scss')
+  return gulp.src('./stylesheets/chariot.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(rename(projectName + '.css'))
     .pipe(gulp.dest('./dist/stylesheets'))
     .pipe(connect.reload())
 });
@@ -53,7 +61,7 @@ gulp.task('connect', ['js', 'sass', 'watch'], function() {
 });
 
 gulp.task('test', function() {
-  return gulp.src(['test/**/*.js'])
+  return gulp.src(['test/**/*.js'], {read: false})
     .pipe(mocha({
       compilers: {
         js: babel
@@ -79,4 +87,50 @@ gulp.task("compile-test", function() {
       .pipe(source('test.js'))
       .pipe(gulp.dest('./dist/test'))
   });
+});
+
+//################ BUILD ####################
+
+gulp.task('release', ['build-release'], function(){
+
+});
+
+gulp.task('build-release', ['clean'],function(){
+  return runSequence(
+    ['js-minify', 'css-minify'],
+    function(){
+      gulp.src(['./modules/**/*'
+        , './stylesheets/**/*'
+        , './test/**/*'
+        , './assets/**/*'
+        , './dist/**/*'
+        , './package.json'
+        , './index.html'], {base: './'})
+        .pipe(gulp.dest('release/source/'));
+      gulp.src(['dist/javascripts/'+projectName+'.js'
+       ,'dist/javascripts/'+projectName+'.min.js'
+       ,'dist/stylesheets/'+projectName+'.css'
+       ,'dist/stylesheets/'+projectName+'.min.css'
+       ])
+        .pipe(gulp.dest('release/'));
+    }
+  );
+});
+
+gulp.task('js-minify', ['js'], function(){
+  return gulp.src('./dist/javascripts/' + projectName + '.js')
+    .pipe(uglify())
+    .pipe(rename(projectName + '.min.js'))
+    .pipe(gulp.dest('./dist/javascripts'));
+})
+gulp.task('css-minify', ['sass'], function(){
+  return gulp.src('./dist/stylesheets/**/*')
+    .pipe(minifyCss())
+    .pipe(rename(projectName + '.min.css'))
+    .pipe(gulp.dest('./dist/stylesheets'));
+})
+
+gulp.task('clean', function () {
+  return gulp.src(['dist/', 'release/'], {read: false})
+    .pipe(clean());
 });
