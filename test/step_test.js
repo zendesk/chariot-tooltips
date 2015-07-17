@@ -36,9 +36,6 @@ describe('Step', () => {
       step = new Step(stepConfiguration, tutorial);
     });
 
-    it('reads name', () => {
-      expect(step.name).to.equal(stepConfiguration.name);
-    });
     it('reads selectors', () => {
       expect(step.selectors).to.equal(stepConfiguration.selectors);
     });

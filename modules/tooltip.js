@@ -110,6 +110,8 @@ class Tooltip {
 
   positionTooltip($tooltip) {
     let $anchorElement = this.getAnchorElement();
+    if (!$anchorElement) return;
+
     let top = Style.calculateTop($tooltip,
       $anchorElement, this.yOffset, this.position);
     let left = Style.calculateLeft($tooltip,
@@ -122,26 +124,47 @@ class Tooltip {
     $tooltip.css(tooltipStyles);
   }
 
+  /*
+    Positions the arrow to point at the center of the anchor element.
+    If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
+  */
   positionArrow($tooltip, $tooltipArrow) {
     let arrowDimension = 15; // px
     let tooltipStyles = { 'z-index': this.z_index + 1 };
+    let top, left, min, max;
 
     switch (this.arrowClass) {
       case 'chariot-tooltip-arrow-left':
-        tooltipStyles.top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
-        tooltipStyles.left = -arrowDimension/2 - 2; // 2 is a fudge factor
+        top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerHeight() - 2 * arrowDimension;
+        tooltipStyles.top = Math.max(Math.min(top, max), min);
+
+        tooltipStyles.left = -arrowDimension / 2 - 2; // 2 is a fudge factor
         break;
       case 'chariot-tooltip-arrow-right':
-        tooltipStyles.top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
-        tooltipStyles.right = -arrowDimension/2 - 1;
+        top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerHeight() - 2 * arrowDimension;
+        tooltipStyles.top = Math.max(Math.min(top, max), min);
+
+        tooltipStyles.right = -arrowDimension / 2 - 1;
         break;
       case 'chariot-tooltip-arrow-bottom':
-        tooltipStyles.left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
-        tooltipStyles.bottom = -arrowDimension/2 - 1;
+        left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerWidth() - 2 * arrowDimension;
+        tooltipStyles.left = Math.max(Math.min(left, max), min);
+
+        tooltipStyles.bottom = -arrowDimension / 2 - 1;
         break;
       case 'chariot-tooltip-arrow-top':
-        tooltipStyles.left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
-        tooltipStyles.top = -arrowDimension/2 - 2;
+        left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
+        min = arrowDimension / 2;
+        max = $tooltip.outerWidth() - 2 * arrowDimension;
+        tooltipStyles.left = Math.max(Math.min(left, max), min);
+
+        tooltipStyles.top = -arrowDimension / 2 - 2;
         break;
     }
 
@@ -149,7 +172,13 @@ class Tooltip {
   }
 
   getAnchorElement() {
-    return this.step.getClonedElement(this.anchorElement);
+    let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
+    if (clonedSelectedElement) return clonedSelectedElement;
+    let $element = $(this.anchorElement);
+    if (!element) {
+      console.log("Anchor element not found: " + this.anchorElement);
+    }
+    return $element;
   }
 
   next() {
