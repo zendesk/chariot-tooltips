@@ -23,10 +23,12 @@
     yOffset (string): Value in pixels to offset the y-coordinate of the tooltip.
     *iconUrl (string): Path to an image displayed above the title.
     title (string): The title text of a toolip.
-    text (string): The body text of a tooltip.
+    body (string or function): The body text of a tooltip, or a function that returns
+      custom HTML.
     cta (string): The text contained within the button.
     anchorElement (string): Contains either (1) a key from the step's "selectors"
       dict above, or (2) a CSS selector. (TODO)
+    subtext (function) (optional): A function that returns subtext content.
 
 */
 
@@ -46,7 +48,10 @@ var OnboardingConfig = {
           yOffset: '10',
           anchorElement: "assignee",
           iconUrl: '/assets/whatever',
-          cta: 'Next'
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
         },
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)

@@ -47,6 +47,7 @@ class Tooltip {
     this.iconUrl = config.iconUrl;
     this.title = config.title;
     this.cta = config.cta;
+    this.subtext = config.subtext;
   }
 
   createTooltip() {
@@ -63,9 +64,7 @@ class Tooltip {
           <p>${this.text}</p>
         </div>
         <div class="chariot-btn-row">
-          <span class='chariot-tooltip-steps'>
-            ${this.tutorial.currentStep(this.step)} of ${this.tutorial.steps.length}
-          </span>
+          <span class='chariot-tooltip-subtext'>${this.subtextMarkup()}</span>
           <button class="btn btn-inverse btn-right">${this.cta}</button>
         </div>
       </div>`;
@@ -77,6 +76,11 @@ class Tooltip {
     return `<div class='chariot-tooltip-icon'>
        <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
      </div>`;
+  }
+
+  subtextMarkup() {
+    if (!this.subtext) return '';
+    return this.subtext(this.tutorial.currentStep(this.step), this.tutorial.steps.length);
   }
 
   createTooltipArrow() {

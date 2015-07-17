@@ -64,7 +64,10 @@ new Chariot.chariot({
           yOffset: 50,
           anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
-          cta: 'Next'
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
         },
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)
@@ -83,7 +86,10 @@ new Chariot.chariot({
           text: 'Two selectors being highlighted.',
           xOffset: -50,
           anchorElement: "topRight",
-          cta: 'Next'
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
         }
       },
       // #3 will illustrate that missing selector results in a skipped step
@@ -97,7 +103,10 @@ new Chariot.chariot({
           title: 'Tooltip #3',
           text: 'Placeholder text.',
           anchorElement: "bottomLeft",
-          cta: 'Next'
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
         }
       },
       // #4 nothing special
@@ -110,7 +119,10 @@ new Chariot.chariot({
           title: 'Tooltip #4',
           text: 'Did you notice tooltip #3 was skipped?  Its configuration had an invalid selector.',
           anchorElement: "topRight",
-          cta: 'Next'
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
         }
       }
     ],
