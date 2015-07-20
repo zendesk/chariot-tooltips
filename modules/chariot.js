@@ -12,6 +12,7 @@ class Chariot {
     this.tutorials = {};
     this.readConfig(config);
     this.listenForPushState();
+    this.currentTutorial = null;
   }
 
   readConfig(config) {
@@ -19,13 +20,20 @@ class Chariot {
       throw new Error("Config must contains a tutorials hash");
     }
     for (let tutorialName in config) {
-      this.tutorials[tutorialName] = new Tutorial(tutorialName,
-        config[tutorialName]);
+      this.tutorials[tutorialName] = new Tutorial(this, config[tutorialName]);
     }
   }
 
   startTutorial(name) {
-    this.tutorials[name].start();
+    if(this.currentTutorial) {
+      return;
+    }
+    this.currentTutorial = this.tutorials[name];
+    this.currentTutorial.start();
+  }
+
+  endTutorial() {
+    this.currentTutorial = null;
   }
 
   listenForPushState() {
@@ -44,6 +52,26 @@ class Chariot {
     let pushState = history.pushState;
     history.pushState = function(state) {
       let res = pushState.apply(history, arguments);
+      processGetParams();
+      return res;
+    };
+
+    let replaceState = history.replaceState;
+    history.replaceState = function(state) {
+      let res = replaceState.apply(history, arguments);
+      processGetParams();
+      return res;
+    };
+
+    let popState = window.onpopstate;
+    window.onpopstate = () => {
+      let res = null;
+      if(typeof popState === 'function') {
+        res = popState.apply(arguments);
+      }
+      if(this.currentTutorial) {
+        this.currentTutorial.end();
+      }
       processGetParams();
       return res;
     };

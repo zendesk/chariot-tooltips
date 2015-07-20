@@ -3,8 +3,8 @@ import Step from './step';
 import { OVERLAY_Z_INDEX } from './constants';
 
 class Tutorial {
-  constructor(name, config) {
-    this.name = name;
+  constructor(chariot, config) {
+    this.chariot = chariot;
     this.steps = [];
     if (typeof config.steps === 'object') {
       for (let step of config.steps) {
@@ -12,6 +12,7 @@ class Tutorial {
       }
     }
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
+    this.overlayStyle = config.overlayStyle;
   }
 
   start() {
@@ -21,16 +22,20 @@ class Tutorial {
 
   renderOverlay() {
     let $overlay = $("<div class='overlay'></div>");
-    $overlay.css({
-      top: 0,
-      left: 0,
-      background: '#FFFFFF',
-      'z-index': OVERLAY_Z_INDEX,
-      opacity: 0.7,
-      position: 'absolute',
-      height: '100%',
-      width: '100%'
-    });
+    if (!this.overlayStyle) {
+      $overlay.css({
+        top: 0,
+        left: 0,
+        background: 'white',
+        'z-index': OVERLAY_Z_INDEX,
+        opacity: 0.7,
+        position: 'absolute',
+        height: '100%',
+        width: '100%'
+      });
+    } else {
+      $overlay.css(this.overlayStyle);
+    }
     $('body').append($overlay);
     this.$overlay = $overlay;
   }
@@ -57,11 +62,18 @@ class Tutorial {
   }
 
   end() {
-    this.$overlay.remove();
+    // Note: Order matters. complete callback should be called after UI is torn down
+    this.tearDown();
+    this.chariot.endTutorial();
     this.complete();
   }
 
   tearDown() {
+    this.$overlay.remove();
+    // Ensure all steps are torn down
+    this.steps.forEach(step => {
+      step.tearDown();
+    });
   }
 }
 

@@ -56,7 +56,7 @@ var OnboardingConfig = {
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)
           // eg. populate an image outside of the #elem
-        },
+        }
       },
       {
         selectors: {
@@ -73,13 +73,11 @@ var OnboardingConfig = {
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)
           // eg. populate an image outside of the #elem
-        },
+        }
       }
     ],
     complete: function() {
-      var url = location.protocol+location.hostname+location.pathname;
-      history.replaceState({path: url}, null, url);
     },
-    overlay: { transparent: '#000000' } // {transparent: '#000000'} || {fullscreen: '#FFFFFF'}
+    overlayStyle: { opacity: 0.7, background: 'white' }
   }
 };
