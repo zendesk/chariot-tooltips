@@ -27,7 +27,6 @@ class Step {
     if (this.before) this.before();
     this.waitForElements().then(() => {
       this.cloneElements(this.selectors);
-      this.setupRepositionHandlers();
       this.renderTooltip();
     }, error => {
       console.log(error);
@@ -57,6 +56,7 @@ class Step {
     for (let elementName in this.clonedElements) {
       this.clonedElements[elementName].remove();
     }
+    this.clonedElements = null;
     this.tooltip.tearDown();
   }
 
@@ -123,22 +123,6 @@ class Step {
 
     $('body').append($clone);
     return $clone;
-  }
-
-  // TODO: Evaluate whether this method is actually necessary or not
-  setupRepositionHandlers() {
-    $(window).resize(() => {
-      this.repositionElements();
-    });
-    // TODO: Also reposition if any of the individual elements change position
-  }
-
-  repositionElements() {
-    for (let selectorName in this.selectors) {
-      let element = $(selectorName);
-      let clone = this.clonedElements[selectorName];
-      clone.offset(element.offset());
-    }
   }
 }
 

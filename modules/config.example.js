@@ -77,8 +77,6 @@ var OnboardingConfig = {
       }
     ],
     complete: function() {
-      var url = location.protocol+location.hostname+location.pathname;
-      history.replaceState({path: url}, null, url);
     },
     overlayStyle: { opacity: 0.7, background: 'white' }
   }

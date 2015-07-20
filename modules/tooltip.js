@@ -104,7 +104,9 @@ class Tooltip {
   tearDown() {
     if (!this.$tooltip) return;
     this.$tooltip.remove();
+    this.$tooltip = null;
     this.$tooltipArrow.remove();
+    this.$tooltipArrow = null;
   }
 
   styleTooltip($tooltip, $tooltipArrow) {
@@ -176,6 +178,7 @@ class Tooltip {
   }
 
   getAnchorElement() {
+    // Look for defined selectors first
     let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
     if (clonedSelectedElement) return clonedSelectedElement;
     let $element = $(this.anchorElement);
