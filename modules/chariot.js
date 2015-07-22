@@ -7,6 +7,7 @@ history, location
 import Tutorial from './tutorial';
 import QueryParse from 'query-parse';
 require('./libs/ie-shim');
+let initialState = true;
 
 class Chariot {
   constructor(config) {
@@ -52,6 +53,7 @@ class Chariot {
 
     let pushState = history.pushState;
     history.pushState = function(state) {
+      initialState = false;
       let res = null;
       if (typeof pushState === 'function') {
         res = pushState.apply(history, arguments);
@@ -62,6 +64,7 @@ class Chariot {
 
     let replaceState = history.replaceState;
     history.replaceState = function(state) {
+      initialState = false;
       let res = null;
       if (typeof replaceState === 'function') {
         res = replaceState.apply(history, arguments);
@@ -80,6 +83,7 @@ class Chariot {
 
     let popState = window.onpopstate;
     window.onpopstate = (() => {
+      if(initialState) return;
       let res = null;
       if (typeof popState === 'function') {
         res = popState.apply(arguments);
@@ -91,9 +95,8 @@ class Chariot {
       processGetParams();
       return res;
     }).bind(this);
+    if (!navigator.userAgent.match(/msie/i)) {
 
-    if (!navigator.userAgent.match(/msie|safari/i) ||
-      navigator.userAgent.match(/opr/i)) {
       processGetParams();
     }
   }
