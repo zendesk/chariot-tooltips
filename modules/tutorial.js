@@ -1,15 +1,17 @@
 import $ from 'jquery';
 import Step from './step';
 import { OVERLAY_Z_INDEX } from './constants';
+let Promise = require('es6-promise').Promise;
 
 class Tutorial {
   constructor(chariot, config) {
+    this.prepared = false;
     this.chariot = chariot;
     this.steps = [];
     if (typeof config.steps === 'object') {
-      for (let step of config.steps) {
+      config.steps.forEach(step => {
         this.steps.push(new Step(step, this));
-      }
+      });
     }
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
     this.overlayStyle = config.overlayStyle;
@@ -18,6 +20,14 @@ class Tutorial {
   start() {
     this.renderOverlay();
     this.steps[0].render();
+  }
+
+  prepare() {
+    if (this.prepared) return;
+    this.steps.forEach(step => {
+      step.prepare();
+      this.prepared = true;
+    });
   }
 
   renderOverlay() {
@@ -69,6 +79,7 @@ class Tutorial {
   }
 
   tearDown() {
+    this.prepared = false;
     this.$overlay.remove();
     // Ensure all steps are torn down
     this.steps.forEach(step => {

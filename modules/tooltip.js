@@ -192,7 +192,7 @@ class Tooltip {
     let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
     if (clonedSelectedElement) return clonedSelectedElement;
     let $element = $(this.anchorElement);
-    if (!$element) {
+    if ($element.length === 0) {
       console.log("Anchor element not found: " + this.anchorElement);
     }
     return $element;

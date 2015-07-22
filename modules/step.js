@@ -24,11 +24,18 @@ class Step {
   }
 
   render() {
-    if (this.before) this.before();
-    this.waitForElements().then(() => {
+    Promise.resolve().then(() => {
+      let before;
+      if (this.before) {
+        before =  this.before();
+      }
+      return before;
+    }).then(() => {
+      return this.waitForElements();
+    }).then(() => {
       this.cloneElements(this.selectors);
       this.renderTooltip();
-    }, error => {
+    }).catch(error => {
       console.log(error);
       console.log("Skipping this step...");
       this.next();
@@ -56,7 +63,7 @@ class Step {
     for (let elementName in this.clonedElements) {
       this.clonedElements[elementName].remove();
     }
-    this.clonedElements = null;
+    this.clonedElements = {};
     this.tooltip.tearDown();
   }
 
@@ -91,7 +98,24 @@ class Step {
     }
   }
 
+  prepare() {
+    for (let selectorName in this.selectors) {
+      let selector = this.selectors[selectorName]
+      this.computeStyles($(selector));
+    }
+  }
+
+  computeStyles($selector) {
+    Style.getComputedStylesFor($selector);
+    $selector.children().toArray().forEach(child => {
+      this.computeStyles($(child));
+    });
+  }
+
   cloneElements(selectors) {
+    setTimeout(() => {
+      this.tutorial.prepare();
+    }, 0);
     for (let selectorName in selectors) {
       let sel = selectors[selectorName];
       let clone = this.cloneElement(sel);
@@ -100,6 +124,10 @@ class Step {
   }
 
   applyComputedStyles($clone, $element) {
+    if (!$element.is(":visible")) {
+      return;
+    }
+    $clone.addClass('chariot-overlay');
     Style.cloneStyles($element, $clone);
     let clonedChildren = $clone.children().toArray();
     $element.children().toArray().forEach((child, index) => {
@@ -114,14 +142,13 @@ class Step {
       return null;
     }
     let $clone = $element.clone();
+    $('body').append($clone);
     this.applyComputedStyles($clone, $element);
     $clone.css({
       'z-index': CLONE_Z_INDEX,
       position: 'absolute'
     });
     $clone.offset($element.offset());
-
-    $('body').append($clone);
     return $clone;
   }
 }
