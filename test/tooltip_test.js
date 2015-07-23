@@ -7,47 +7,71 @@ import $ from 'jquery';
 
 let expect = chai.expect;
 
-describe('Tooltip', function() {
+describe('Tooltip', () => {
   let configuration = {
-    position: 'right', // 'top' | 'left' | 'bottom' | 'right'
-    text: 'Some text',
-    xOffset: '10',
-    yOffset: '10',
-    anchorElement: "assignee",
-    iconUrl: '/assets/whatever',
-    width: '10',
-    height: '10'
-  },
-    tutorial = new Object(),
+      position: 'right', // 'top' | 'left' | 'bottom' | 'right'
+      text: 'Some text',
+      xOffset: '10',
+      yOffset: '10',
+      anchorElement: "assignee",
+      width: '10',
+      height: '10',
+      iconUrl: '/assets/whatever',
+      title: 'Title',
+      cta: 'Next',
+      subtext: function() {},
+      attr: {}
+    },
     step = new Object(),
+    tutorial = new Object({
+      currentStep: function() { return 1; },
+      steps: [step]
+    }),
     tooltip = null;
+
   beforeEach(() => {
     tooltip = new Tooltip(configuration, step, tutorial);
-  })
+  });
+
   context('constructor', function() {
-    it('read step', function() {
+    it('reads step', function() {
       expect(tooltip.step).to.equal(step);
     });
-    it('read tutorial', function() {
+    it('reads tutorial', function() {
       expect(tooltip.tutorial).to.equal(tutorial);
     });
-    it('read position', function() {
+    it('reads position', function() {
       expect(tooltip.position).to.equal(configuration.position);
     });
-    it('read text', function() {
+    it('reads text', function() {
       expect(tooltip.text).to.equal(configuration.text);
     });
-    it('read xOffset', function() {
+    it('reads xOffset', function() {
       expect(tooltip.xOffset).to.equal(parseInt(configuration.xOffset));
     })
-    it('read xOffset', function() {
+    it('reads xOffset', function() {
       expect(tooltip.yOffset).to.equal(parseInt(configuration.yOffset));
     })
-    it('read width', function() {
+    it('reads width', function() {
       expect(tooltip.width).to.equal(parseInt(configuration.width));
     })
-    it('read height', function() {
+    it('reads height', function() {
       expect(tooltip.height).to.equal(parseInt(configuration.height));
+    });
+    it('reads iconUrl', function() {
+      expect(tooltip.iconUrl).to.equal(configuration.iconUrl);
+    });
+    it('reads title', function() {
+      expect(tooltip.title).to.equal(configuration.title);
+    });
+    it('reads cta', function() {
+      expect(tooltip.cta).to.equal(configuration.cta);
+    });
+    it('reads subtext', function() {
+      expect(tooltip.subtext).to.equal(configuration.subtext);
+    });
+    it('reads attr', function() {
+      expect(tooltip.attr).to.equal(configuration.attr);
     });
   });
 
@@ -68,11 +92,31 @@ describe('Tooltip', function() {
     });
   });
 
+  context('createTooltipTemplate', () => {
+    let template = null;
+    beforeEach(() => {
+      sinon.spy(tooltip, 'iconMarkup');
+      sinon.spy(tooltip, 'subtextMarkup');
+      template = tooltip.createTooltipTemplate();
+    });
+
+    it('uses elements from config to create markup', () => {
+      let templateHtml = template.html();
+      debugger;
+      expect(template.attr('class').includes('step-1')).to.be.true;
+      expect(templateHtml.includes(tooltip.title)).to.be.true;
+      expect(templateHtml.includes(tooltip.text)).to.be.true;
+      expect(templateHtml.includes(tooltip.cta)).to.be.true;
+      expect(templateHtml.includes(tooltip.iconUrl)).to.be.true;
+      expect(tooltip.subtextMarkup.called).to.be.true;
+    });
+  });
+
   context('render', () => {
     it('sets css styles', () => {
       let css = sinon.stub().returns();
       let $markup = $();
-      sinon.stub(tooltip, 'createTooltip', () => { return $markup });
+      sinon.stub(tooltip, 'createTooltipTemplate', () => { return $markup });
       sinon.stub(tooltip, 'getAnchorElement', () => ({}));
       sinon.stub(Style, "calculateTop", () => {return 0});
       sinon.stub(Style, "calculateLeft", () => {return 0});

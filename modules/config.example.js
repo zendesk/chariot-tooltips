@@ -51,7 +51,8 @@ var OnboardingConfig = {
           cta: 'Next',
           subtext: function(currentStep, totalSteps) {
             return `${currentStep} of ${totalSteps}`;
-          }
+          },
+          attr: { 'id': 'know_your_customer' }
         },
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)
