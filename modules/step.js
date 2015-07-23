@@ -31,10 +31,10 @@ class Step {
       }
       return before;
     }).then(() => {
-      return this.waitForElements();
+      return this._waitForElements();
     }).then(() => {
-      this.cloneElements(this.selectors);
-      this.renderTooltip();
+      this._cloneElements(this.selectors);
+      this._renderTooltip();
     }).catch(error => {
       console.log(error);
       console.log("Skipping this step...");
@@ -42,17 +42,8 @@ class Step {
     });
   }
 
-  renderTooltip() {
-    this.tooltip.render();
-    if (this.after) this.after();
-  }
-
   next() {
     this.tutorial.next(this);
-  }
-
-  getSelectorByName(name) {
-    return this.selectors[name] || null;
   }
 
   getClonedElement(name) {
@@ -67,13 +58,26 @@ class Step {
     this.tooltip.tearDown();
   }
 
+  prepare() {
+    for (let selectorName in this.selectors) {
+      let selector = this.selectors[selectorName]
+      this._computeStyles($(selector));
+    }
+  }
+
+
   // PRIVATE
 
-  waitForElements() {
+  _renderTooltip() {
+    this.tooltip.render();
+    if (this.after) this.after();
+  }
+
+  _waitForElements() {
     let promises = [];
     for (let selectorName in this.selectors) {
       let promise = new Promise((resolve, reject) => {
-        this.waitForElement(selectorName, 0, resolve, reject);
+        this._waitForElement(selectorName, 0, resolve, reject);
       });
       promises.push(promise);
     }
@@ -81,7 +85,7 @@ class Step {
     return Promise.all(promises);
   }
 
-  waitForElement(selectorName, numAttempts, resolve, reject) {
+  _waitForElement(selectorName, numAttempts, resolve, reject) {
     let selector = this.selectors[selectorName];
     let element = $(selector);
     if (element.length == 0) {
@@ -90,7 +94,7 @@ class Step {
         reject(`Selector not found: ${selector}`);
       } else {
         window.setTimeout(() => {
-          this.waitForElement(selectorName, numAttempts, resolve, reject);
+          this._waitForElement(selectorName, numAttempts, resolve, reject);
         }, DOM_QUERY_DELAY);
       }
     } else {
@@ -98,32 +102,25 @@ class Step {
     }
   }
 
-  prepare() {
-    for (let selectorName in this.selectors) {
-      let selector = this.selectors[selectorName]
-      this.computeStyles($(selector));
-    }
-  }
-
-  computeStyles($selector) {
+  _computeStyles($selector) {
     Style.getComputedStylesFor($selector);
     $selector.children().toArray().forEach(child => {
-      this.computeStyles($(child));
+      this._computeStyles($(child));
     });
   }
 
-  cloneElements(selectors) {
+  _cloneElements(selectors) {
     setTimeout(() => {
       this.tutorial.prepare();
     }, 0);
     for (let selectorName in selectors) {
       let sel = selectors[selectorName];
-      let clone = this.cloneElement(sel);
+      let clone = this._cloneElement(sel);
       this.clonedElements[selectorName] = clone;
     }
   }
 
-  applyComputedStyles($clone, $element) {
+  _applyComputedStyles($clone, $element) {
     if (!$element.is(":visible")) {
       return;
     }
@@ -131,11 +128,11 @@ class Step {
     Style.cloneStyles($element, $clone);
     let clonedChildren = $clone.children().toArray();
     $element.children().toArray().forEach((child, index) => {
-      this.applyComputedStyles($(clonedChildren[index]), $(child));
+      this._applyComputedStyles($(clonedChildren[index]), $(child));
     });
   }
 
-  cloneElement(sel) {
+  _cloneElement(sel) {
     let $element = $(sel);
     if ($element.length == 0) {
       console.log("Can't find selector to clone: " + sel);
@@ -143,16 +140,18 @@ class Step {
     }
     let $clone = $element.clone();
     $('body').append($clone);
-    this.applyComputedStyles($clone, $element);
-    // alert('hi');
+    this._applyComputedStyles($clone, $element);
+    this._positionClone($clone, $element);
+
+    return $clone;
+  }
+
+  _positionClone($clone, $element) {
     $clone.css({
       'z-index': CLONE_Z_INDEX,
       position: 'absolute'
     });
-    // alert('hi');
     $clone.offset($element.offset());
-    // alert('hi');
-    return $clone;
   }
 }
 

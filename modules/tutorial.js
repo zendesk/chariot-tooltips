@@ -18,7 +18,7 @@ class Tutorial {
   }
 
   start() {
-    this.renderOverlay();
+    this._renderOverlay();
     this.steps[0].render();
   }
 
@@ -30,7 +30,37 @@ class Tutorial {
     });
   }
 
-  renderOverlay() {
+  next(currentStep) {
+    let index = this.steps.indexOf(currentStep);
+    if (index < 0) {
+      throw new Error('currentStep not found');
+      return;
+    }
+
+    currentStep.tearDown();
+    if (index === this.steps.length - 1) {
+      this._end();
+      this.tearDown();
+    } else {
+      this.steps[index + 1].render();
+    }
+  }
+
+  currentStep(step) {
+    if (step === null) return null;
+    return this.steps.indexOf(step) + 1;
+  }
+
+  tearDown() {
+    this.prepared = false;
+    this.$overlay.remove();
+    // Ensure all steps are torn down
+    this.steps.forEach(step => {
+      step.tearDown();
+    });
+  }
+
+  _renderOverlay() {
     let $overlay = $("<div class='overlay'></div>");
     if (!this.overlayStyle) {
       $overlay.css({
@@ -50,42 +80,14 @@ class Tutorial {
     this.$overlay = $overlay;
   }
 
-  next(currentStep) {
-    let index = this.steps.indexOf(currentStep);
-    if (index < 0) {
-      throw new Error('currentStep not found');
-      return;
-    }
-
-    currentStep.tearDown();
-    if (index === this.steps.length - 1) {
-      this.end();
-      this.tearDown();
-    } else {
-      this.steps[index + 1].render();
-    }
-  }
-
-  currentStep(step) {
-    if (step === null) return null;
-    return this.steps.indexOf(step) + 1;
-  }
-
-  end() {
+  _end() {
     // Note: Order matters. complete callback should be called after UI is torn down
     this.tearDown();
     this.chariot.endTutorial();
     this.complete();
   }
 
-  tearDown() {
-    this.prepared = false;
-    this.$overlay.remove();
-    // Ensure all steps are torn down
-    this.steps.forEach(step => {
-      step.tearDown();
-    });
-  }
+
 }
 
 export default Tutorial;

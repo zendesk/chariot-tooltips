@@ -1,4 +1,6 @@
 let classNameToComputedStyles = {};
+const CHARIOT_COMPUTED_STYLE_CLASS_PREFIX = 'chariot_computed_styles';
+
 class Style {
   static calculateLeft($tooltip, $anchor, xOffset, position) {
     let offset = 0;
@@ -41,35 +43,12 @@ class Style {
 
   static getComputedStylesFor($selector) {
     let match = $selector.length && $selector.attr('class') ?
-        $selector.attr('class').match(/chariot_computed_styles[^\s]*/) : null;
-    let className = match ? match[0] :
-      this._generateUniqueClassName('chariot_computed_styles');
-    let computedStyles;
-    let style;
+        $selector.attr('class').
+        match(new RegExp('chariot_computed_styles[^\s]*')) :
+        null;
 
-    if (style = classNameToComputedStyles[className]) {
-      // console.log('hit');
-      return style;
-    }
-    // console.log('miss');
-    $selector.addClass(className);
-
-    if (navigator.userAgent.match(/msie|windows|firefox/i)) {
-      computedStyles = $selector[0].getComputedCSSText();
-    } else {
-      computedStyles = document.defaultView.getComputedStyle($selector[0]).
-        cssText;
-    }
-    classNameToComputedStyles[className] = computedStyles;
-    return computedStyles;
-  }
-
-  static _ieBoxModelStyleFix(style, $ele, cssText) {
-    let match = cssText.match(new RegExp(`; ${style}: ([^;]*)`));
-    let value = (match && match.length > 1) ? parseInt(match[1]) : 0;
-    if (value != 0 && !isNaN(value)) {
-      $ele[style](value);
-    }
+    return match ? classNameToComputedStyles[match[0]] :
+      this._cacheStyleFor($selector);
   }
 
   static cloneStyles($element, $clone) {
@@ -82,8 +61,14 @@ class Style {
     }
     //this._clonePseudoStyle($element, $clone, 'before');
     //this._clonePseudoStyle($element, $clone, 'after');
+  }
 
-    // let end = new Date().getTime();
+  static _ieBoxModelStyleFix(style, $ele, cssText) {
+    let match = cssText.match(new RegExp(`; ${style}: ([^;]*)`));
+    let value = (match && match.length > 1) ? parseInt(match[1]) : 0;
+    if (value != 0 && !isNaN(value)) {
+      $ele[style](value);
+    }
   }
 
   static _generateUniqueClassName(prefix = 'class') {
@@ -100,5 +85,19 @@ class Style {
         0);
     }
   }
+
+  static _cacheStyleFor($selector) {
+    let className = this._generateUniqueClassName(
+      CHARIOT_COMPUTED_STYLE_CLASS_PREFIX);
+    $selector.addClass(className);
+
+    let computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ?
+      $selector[0].getComputedCSSText() :
+      document.defaultView.getComputedStyle($selector[0]).cssText;
+
+    classNameToComputedStyles[className] = computedStyles;
+    return computedStyles;
+  }
+
 }
 export default Style;

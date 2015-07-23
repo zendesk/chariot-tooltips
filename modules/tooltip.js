@@ -51,13 +51,13 @@ class Tooltip {
     this.attr = config.attr || {};
   }
 
-  createTooltipTemplate() {
+  _createTooltipTemplate() {
     let stepNum = this.currentStep();
     let template = `
       <div class="chariot-tooltip chariot-step-${stepNum}">
         <div class="chariot-tooltip-arrow ${this.arrowClass}"></div>
         <div class="chariot-tooltip-content">
-          ${this.iconMarkup()}
+          ${this._iconMarkup()}
         </div>
         <div class="chariot-tooltip-header">
           ${this.title}
@@ -66,7 +66,7 @@ class Tooltip {
           <p>${this.text}</p>
         </div>
         <div class="chariot-btn-row">
-          <span class='chariot-tooltip-subtext'>${this.subtextMarkup()}</span>
+          <span class='chariot-tooltip-subtext'>${this._subtextMarkup()}</span>
           <button class="btn btn-inverse btn-right">${this.cta}</button>
         </div>
       </div>`;
@@ -82,28 +82,25 @@ class Tooltip {
     return this.tutorial.currentStep(this.step);
   }
 
-  iconMarkup() {
+  _iconMarkup() {
     if (!this.iconUrl) return '';
     return `<div class='chariot-tooltip-icon'>
        <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
      </div>`;
   }
 
-  subtextMarkup() {
+  _subtextMarkup() {
     if (!this.subtext) return '';
     return this.subtext(this.currentStep(), this.tutorial.steps.length);
   }
 
-  createTooltipArrow() {
-    return $(`<div class="${this.arrowClass}"></div>`);
-  }
-
   render() {
-    let $tooltip = this.$tooltip = this.createTooltipTemplate();
+    let $tooltip = this.$tooltip = this._createTooltipTemplate();
     $('body').append($tooltip);
 
     let $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
-    this.styleTooltip($tooltip, $tooltipArrow);
+
+    this._styleTooltip($tooltip, $tooltipArrow);
 
     // Add event handlers
     $('.chariot-btn-row button').click(() => {
@@ -119,13 +116,13 @@ class Tooltip {
     this.$tooltipArrow = null;
   }
 
-  styleTooltip($tooltip, $tooltipArrow) {
-    this.positionTooltip($tooltip);
-    this.positionArrow($tooltip, $tooltipArrow);
+  _styleTooltip($tooltip, $tooltipArrow) {
+    this._positionTooltip($tooltip);
+    this._positionArrow($tooltip, $tooltipArrow);
   }
 
-  positionTooltip($tooltip) {
-    let $anchorElement = this.getAnchorElement();
+  _positionTooltip($tooltip) {
+    let $anchorElement = this._getAnchorElement();
     if (!$anchorElement) return;
 
     let top = Style.calculateTop($tooltip,
@@ -144,7 +141,7 @@ class Tooltip {
     Positions the arrow to point at the center of the anchor element.
     If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
   */
-  positionArrow($tooltip, $tooltipArrow) {
+  _positionArrow($tooltip, $tooltipArrow) {
     let arrowDimension = 15; // px
     let tooltipStyles = { 'z-index': this.z_index + 1 };
     let top, left, min, max;
@@ -187,7 +184,7 @@ class Tooltip {
     $tooltipArrow.css(tooltipStyles);
   }
 
-  getAnchorElement() {
+  _getAnchorElement() {
     // Look for defined selectors first
     let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
     if (clonedSelectedElement) return clonedSelectedElement;
