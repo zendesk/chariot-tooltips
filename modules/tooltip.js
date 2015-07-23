@@ -48,11 +48,13 @@ class Tooltip {
     this.title = config.title;
     this.cta = config.cta;
     this.subtext = config.subtext;
+    this.attr = config.attr || {};
   }
 
-  createTooltip() {
+  createTooltipTemplate() {
+    let stepNum = this.currentStep();
     let template = `
-      <div class="chariot-tooltip">
+      <div class="chariot-tooltip chariot-step-${stepNum}">
         <div class="chariot-tooltip-arrow ${this.arrowClass}"></div>
         <div class="chariot-tooltip-content">
           ${this.iconMarkup()}
@@ -68,7 +70,16 @@ class Tooltip {
           <button class="btn btn-inverse btn-right">${this.cta}</button>
         </div>
       </div>`;
-    return $(template);
+    let $template = $(template);
+
+    // Add default data attributes
+    this.attr['data-step-order'] = stepNum;
+    $template.attr(this.attr);
+    return $template;
+  }
+
+  currentStep() {
+    return this.tutorial.currentStep(this.step);
   }
 
   iconMarkup() {
@@ -80,7 +91,7 @@ class Tooltip {
 
   subtextMarkup() {
     if (!this.subtext) return '';
-    return this.subtext(this.tutorial.currentStep(this.step), this.tutorial.steps.length);
+    return this.subtext(this.currentStep(), this.tutorial.steps.length);
   }
 
   createTooltipArrow() {
@@ -88,11 +99,10 @@ class Tooltip {
   }
 
   render() {
-    let $tooltip = this.$tooltip = this.createTooltip();
+    let $tooltip = this.$tooltip = this.createTooltipTemplate();
     $('body').append($tooltip);
 
     let $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
-
     this.styleTooltip($tooltip, $tooltipArrow);
 
     // Add event handlers

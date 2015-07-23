@@ -25,7 +25,7 @@ class Chariot {
   }
 
   startTutorial(name) {
-    if(this.currentTutorial) {
+    if (this.currentTutorial) {
       return;
     }
     this.currentTutorial = this.tutorials[name];
@@ -66,10 +66,10 @@ class Chariot {
     let popState = window.onpopstate;
     window.onpopstate = () => {
       let res = null;
-      if(typeof popState === 'function') {
+      if (typeof popState === 'function') {
         res = popState.apply(arguments);
       }
-      if(this.currentTutorial) {
+      if (this.currentTutorial) {
         this.currentTutorial.end();
       }
       processGetParams();
