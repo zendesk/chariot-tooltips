@@ -43,10 +43,9 @@ class Chariot {
     // sample url to listen for: agent/tickets/1?tutorial=ticketing
     let processGetParams = () => {
       let parameter = QueryParse.toObject(window.location.search);
-
-      let tutorialName = parameter['?tutorial'] ||
-        location.hash.match(/\?.*tutorial=([^&]*)/)[1];
-      if (tutorialName !== undefined) {
+      let match = location.hash.match(/\?.*tutorial=([^&]*)/)
+      let tutorialName = parameter['?tutorial'] || (match ? match[1] : null);
+      if (tutorialName) {
         this.startTutorial(tutorialName);
       }
     };
@@ -83,7 +82,7 @@ class Chariot {
 
     let popState = window.onpopstate;
     window.onpopstate = (() => {
-      if(initialState) return;
+      if (initialState) return;
       let res = null;
       if (typeof popState === 'function') {
         res = popState.apply(arguments);
@@ -95,8 +94,7 @@ class Chariot {
       processGetParams();
       return res;
     }).bind(this);
-    if (!navigator.userAgent.match(/msie/i)) {
-
+    if (!navigator.userAgent.match(/msie 9/i)) {
       processGetParams();
     }
   }

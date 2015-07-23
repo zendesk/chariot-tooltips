@@ -54,7 +54,7 @@ class Style {
     // console.log('miss');
     $selector.addClass(className);
 
-    if (navigator.userAgent.match(/msie|firefox/i)) {
+    if (navigator.userAgent.match(/msie|windows|firefox/i)) {
       computedStyles = $selector[0].getComputedCSSText();
     } else {
       computedStyles = document.defaultView.getComputedStyle($selector[0]).
@@ -64,15 +64,26 @@ class Style {
     return computedStyles;
   }
 
+  static _ieBoxModelStyleFix(style, $ele, cssText) {
+    let match = cssText.match(new RegExp(`; ${style}: ([^;]*)`));
+    let value = (match && match.length > 1) ? parseInt(match[1]) : 0;
+    if (value != 0 && !isNaN(value)) {
+      $ele[style](value);
+    }
+  }
+
   static cloneStyles($element, $clone) {
     let start = new Date().getTime();
     let cssText = this.getComputedStylesFor($element);
     $clone[0].style.cssText = cssText;
-
+    if (navigator.userAgent.match(/msie|windows/i)) {
+      this._ieBoxModelStyleFix('width', $clone, cssText);
+      this._ieBoxModelStyleFix('height', $clone, cssText);
+    }
     //this._clonePseudoStyle($element, $clone, 'before');
     //this._clonePseudoStyle($element, $clone, 'after');
 
-    let end = new Date().getTime();
+    // let end = new Date().getTime();
   }
 
   static _generateUniqueClassName(prefix = 'class') {

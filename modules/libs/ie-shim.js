@@ -1,4 +1,4 @@
-if (navigator.userAgent.match(/msie|firefox/i)) {
+if (navigator.userAgent.match(/msie|windows|firefox/i)) {
   Node.prototype.getComputedCSSText = function() {
     var s = [];
     var cssTranslation = { "cssFloat": "float" }

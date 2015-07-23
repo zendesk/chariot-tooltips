@@ -144,11 +144,14 @@ class Step {
     let $clone = $element.clone();
     $('body').append($clone);
     this.applyComputedStyles($clone, $element);
+    // alert('hi');
     $clone.css({
       'z-index': CLONE_Z_INDEX,
       position: 'absolute'
     });
+    // alert('hi');
     $clone.offset($element.offset());
+    // alert('hi');
     return $clone;
   }
 }
