@@ -6,6 +6,8 @@ history, location
 
 import Tutorial from './tutorial';
 import QueryParse from 'query-parse';
+require('./libs/ie-shim');
+let initialState = true;
 
 class Chariot {
   constructor(config) {
@@ -39,44 +41,62 @@ class Chariot {
   listenForPushState() {
     // override pushState to listen for url
     // sample url to listen for: agent/tickets/1?tutorial=ticketing
-
     let processGetParams = () => {
       let parameter = QueryParse.toObject(window.location.search);
-
-      let tutorialName = parameter['?tutorial'];
-      if (tutorialName !== undefined) {
+      let match = location.hash.match(/\?.*tutorial=([^&]*)/)
+      let tutorialName = parameter['?tutorial'] || (match ? match[1] : null);
+      if (tutorialName) {
         this.startTutorial(tutorialName);
       }
     };
 
     let pushState = history.pushState;
     history.pushState = function(state) {
-      let res = pushState.apply(history, arguments);
+      initialState = false;
+      let res = null;
+      if (typeof pushState === 'function') {
+        res = pushState.apply(history, arguments);
+      }
       processGetParams();
       return res;
     };
 
     let replaceState = history.replaceState;
     history.replaceState = function(state) {
-      let res = replaceState.apply(history, arguments);
+      initialState = false;
+      let res = null;
+      if (typeof replaceState === 'function') {
+        res = replaceState.apply(history, arguments);
+      }
       processGetParams();
       return res;
     };
 
+    window.addEventListener('hashchange', function(argument) {
+      if (this.currentTutorial) {
+        this.currentTutorial.tearDown();
+        this.currentTutorial = null;
+      }
+      processGetParams();
+    });
+
     let popState = window.onpopstate;
-    window.onpopstate = () => {
+    window.onpopstate = (() => {
+      if (initialState) return;
       let res = null;
       if (typeof popState === 'function') {
         res = popState.apply(arguments);
       }
       if (this.currentTutorial) {
-        this.currentTutorial.end();
+        this.currentTutorial.tearDown();
+        this.currentTutorial = null;
       }
       processGetParams();
       return res;
-    };
-
-    processGetParams();
+    }).bind(this);
+    if (!navigator.userAgent.match(/msie 9/i)) {
+      processGetParams();
+    }
   }
 }
 
