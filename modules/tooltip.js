@@ -132,7 +132,8 @@ class Tooltip {
     let tooltipStyles = {
       top: top,
       left: left,
-      'z-index': this.z_index
+      'z-index': this.z_index,
+      position: 'absolute'
     };
     $tooltip.css(tooltipStyles);
   }

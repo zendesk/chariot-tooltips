@@ -19,7 +19,7 @@ describe('Tooltip', () => {
       iconUrl: '/assets/whatever',
       title: 'Title',
       cta: 'Next',
-      subtext: function() {},
+      subtext: function() {return 'foobar';},
       attr: {}
     },
     step = new Object(),
@@ -95,8 +95,6 @@ describe('Tooltip', () => {
   context('createTooltipTemplate', () => {
     let template = null;
     beforeEach(() => {
-      sinon.spy(tooltip, '_iconMarkup');
-      sinon.spy(tooltip, '_subtextMarkup');
       template = tooltip._createTooltipTemplate();
     });
 
@@ -107,25 +105,25 @@ describe('Tooltip', () => {
       expect(templateHtml.includes(tooltip.text)).to.be.true;
       expect(templateHtml.includes(tooltip.cta)).to.be.true;
       expect(templateHtml.includes(tooltip.iconUrl)).to.be.true;
-      expect(tooltip._subtextMarkup.called).to.be.true;
+      expect(templateHtml.includes(tooltip.subtext())).to.be.true;
     });
   });
 
   context('render', () => {
     it('sets css styles', () => {
       let css = sinon.stub().returns();
-      let $markup = $();
+      let $markup = $('<div></div>');
       sinon.stub(tooltip, '_createTooltipTemplate', () => { return $markup });
       sinon.stub(tooltip, '_getAnchorElement', () => ({}));
       sinon.stub(Style, "calculateTop", () => {return 0});
       sinon.stub(Style, "calculateLeft", () => {return 0});
-      sinon.spy($markup, 'css');
-
-      sinon.spy(tooltip, '_styleTooltip');
 
       tooltip.render();
-      expect($markup.css.calledWith({ top: 0, left: 0, 'z-index': tooltip.z_index })).to.be.true;
-      expect(tooltip._styleTooltip.called).to.be.true;
+
+      expect($markup.css('position')).to.equal('absolute');
+      expect($markup.css('top')).to.equal("0px");
+      expect($markup.css('left')).to.equal("0px");
+      expect(parseInt($markup.css('z-index'))).to.equal(parseInt(tooltip.z_index));
     })
   });
 });
