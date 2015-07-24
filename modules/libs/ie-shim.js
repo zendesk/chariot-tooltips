@@ -1,3 +1,6 @@
+// this shim is to fix IE & Firefox's problem where
+// getComputedStyle(<element>).cssText returns an empty string rather than a
+// string of computed CSS styles for the element
 if (navigator.userAgent.match(/msie|windows|firefox/i)) {
   Node.prototype.getComputedCSSText = function() {
     var s = [];

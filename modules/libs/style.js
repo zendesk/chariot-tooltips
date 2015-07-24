@@ -55,6 +55,8 @@ class Style {
     let start = new Date().getTime();
     let cssText = this.getComputedStylesFor($element);
     $clone[0].style.cssText = cssText;
+
+    // fixes IE border box boxing model
     if (navigator.userAgent.match(/msie|windows/i)) {
       this._ieBoxModelStyleFix('width', $clone, cssText);
       this._ieBoxModelStyleFix('height', $clone, cssText);
@@ -91,6 +93,7 @@ class Style {
       CHARIOT_COMPUTED_STYLE_CLASS_PREFIX);
     $selector.addClass(className);
 
+    // check for ie getComputedCSSText()
     let computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ?
       $selector[0].getComputedCSSText() :
       document.defaultView.getComputedStyle($selector[0]).cssText;
