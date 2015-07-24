@@ -53,6 +53,8 @@ class Tooltip {
 
   _createTooltipTemplate() {
     let stepNum = this.currentStep();
+    let subtextMarkup = this._subtextMarkup();
+    let buttonFloat = subtextMarkup == '' ? 'center' : 'right';
     let template = `
       <div class="chariot-tooltip chariot-step-${stepNum}">
         <div class="chariot-tooltip-arrow ${this.arrowClass}"></div>
@@ -66,8 +68,8 @@ class Tooltip {
           <p>${this.text}</p>
         </div>
         <div class="chariot-btn-row">
-          <span class='chariot-tooltip-subtext'>${this._subtextMarkup()}</span>
-          <button class="btn btn-inverse btn-right">${this.cta}</button>
+          ${subtextMarkup}
+          <button class="btn btn-inverse ${buttonFloat}">${this.cta}</button>
         </div>
       </div>`;
     let $template = $(template);
@@ -91,7 +93,9 @@ class Tooltip {
 
   _subtextMarkup() {
     if (!this.subtext) return '';
-    return this.subtext(this.currentStep(), this.tutorial.steps.length);
+    return `<span class='chariot-tooltip-subtext'>
+      ${this.subtext(this.currentStep(), this.tutorial.steps.length)}
+    </span>`;
   }
 
   render() {

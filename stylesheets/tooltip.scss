@@ -12,6 +12,16 @@ $border-color: #dddddd;
   position: absolute;
   text-align: center;
   color: #999999;
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+  }
+  .center {
+    margin-left: auto;
+    margin-right: auto;
+  }
 
   .chariot-tooltip-icon {
     width: 55px;
@@ -53,10 +63,6 @@ $border-color: #dddddd;
       float: left;
       color: #cccccc;
       padding-top: 6px;
-    }
-
-    .btn-right {
-      float: right;
     }
   }
 
