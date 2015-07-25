@@ -1,0 +1,32 @@
+{
+  "name": "chariot",
+  "version": "1.0.0",
+  "homepage": "https://github.com/zendesk/chariot",
+  "authors": [
+    "rfung <rfung@zendesk.com>",
+    "hsiojo <hsiojo@zendesk.com"
+  ],
+  "description": "Framework for creating beautifully simple onboarding tutorials",
+  "main": [
+    "chariot.js",
+    "chariot.css"
+  ],
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals"
+  ],
+  "keywords": [
+    "chariot",
+    "onboarding",
+    "tutorial"
+  ],
+  "ignore": [
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "**/.*"
+  ],
+  "license": "none"
+}
