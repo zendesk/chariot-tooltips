@@ -20,7 +20,8 @@ describe('Tooltip', () => {
       title: 'Title',
       cta: 'Next',
       subtext: function() {return 'foobar';},
-      attr: {}
+      attr: {},
+      arrowLength: 10
     },
     step = new Object(),
     tutorial = new Object({
@@ -72,6 +73,9 @@ describe('Tooltip', () => {
     });
     it('reads attr', function() {
       expect(tooltip.attr).to.equal(configuration.attr);
+    });
+    it('reads arrowLength', function() {
+      expect(tooltip.arrowLength).to.equal(configuration.arrowLength);
     });
   });
 

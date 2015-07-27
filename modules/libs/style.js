@@ -2,14 +2,14 @@ let classNameToComputedStyles = {};
 const CHARIOT_COMPUTED_STYLE_CLASS_PREFIX = 'chariot_computed_styles';
 
 class Style {
-  static calculateLeft($tooltip, $anchor, xOffset, position) {
+  static calculateLeft($tooltip, $anchor, xOffset, position, arrowOffset) {
     let offset = 0;
     switch (position) {
       case 'left':
-        offset = $anchor.offset().left - $tooltip.outerWidth() + xOffset;
+        offset = $anchor.offset().left - $tooltip.outerWidth() + xOffset - arrowOffset;
         break;
       case 'right':
-        offset = $anchor.offset().left + $anchor.outerWidth() + xOffset;
+        offset = $anchor.offset().left + $anchor.outerWidth() + xOffset + arrowOffset;
         break;
       case 'top':
       case 'bottom':
@@ -21,14 +21,15 @@ class Style {
     }
     return offset;
   }
-  static calculateTop($tooltip, $anchor, yOffset, position) {
+
+  static calculateTop($tooltip, $anchor, yOffset, position, arrowOffset) {
     let offset = 0;
     switch (position) {
       case 'top':
-        offset = $anchor.offset().top - $tooltip.outerHeight() + yOffset;
+        offset = $anchor.offset().top - $tooltip.outerHeight() + yOffset - arrowOffset;
         break;
       case 'bottom':
-        offset = $anchor.offset().top + $anchor.outerHeight() + yOffset;
+        offset = $anchor.offset().top + $anchor.outerHeight() + yOffset + arrowOffset;
         break;
       case 'left':
       case 'right':
@@ -42,7 +43,8 @@ class Style {
   }
 
   static getComputedStylesFor($selector) {
-    let match = $selector.length && $selector.attr('class') ?
+    if ($selector.length == 0) return null;
+    let match = $selector.attr('class') ?
         $selector.attr('class').
         match(new RegExp('chariot_computed_styles[^\s]*')) :
         null;
@@ -77,6 +79,7 @@ class Style {
     return `${prefix}_${Math.floor(Math.random() * 1000000)}`;
   }
 
+  // NOTE: unused currently
   static _clonePseudoStyle($element, $clone, pseudoClass) {
     let pseudoStyle = window.getComputedStyle($element[0], `:${pseudoClass}` );
     if (pseudoStyle.content && pseudoStyle.content !== '') {

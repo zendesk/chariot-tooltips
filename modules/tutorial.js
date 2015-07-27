@@ -8,16 +8,22 @@ class Tutorial {
     this.prepared = false;
     this.chariot = chariot;
     this.steps = [];
-    if (typeof config.steps === 'object') {
-      config.steps.forEach(step => {
-        this.steps.push(new Step(step, this));
-      });
+    if (typeof config.steps !== 'object') {
+      throw new Error('steps must be an array');
+      return;
     }
+    config.steps.forEach(step => {
+      this.steps.push(new Step(step, this));
+    });
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
     this.overlayStyle = config.overlayStyle;
   }
 
   start() {
+    if (this.steps.length === 0) {
+      throw new Error('steps should not be empty');
+      return;
+    }
     this._renderOverlay();
     this.steps[0].render();
   }

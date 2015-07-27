@@ -1,23 +1,28 @@
-/* The config argument to chariot should be a dictionary of various tutorial configs.
-
-  Each sub-configuration can contain the following possible keys & values.
-
-  Tutorial configuration (dict):
-    steps (array): An array of step configuration dictionaries (see below).
-    complete (function): A callback that is called once the tutorial has gone through
-      all steps.
-    overlay (dict): A dictionary containing CSS for the overlay that appears behind
-      the tutorial. (TODO)
-
-  Step configuration (dict):
-    selectors (dict): Contains arbitrarily-named keys with CSS selector values.
-      Note: Specifying a selector that lives within another specified selector will
-      result in unpredictable behavior.
-    tooltip (dict): Tooltip configuration.
-    before (function): A callback that is called once before step is rendered.
-    after (function): A callback that is called once after step is rendered.
-
-  Tooltip configuration (dict):
+/*
+ * Configure chariot with a dictionary of multiple tutorial configs.
+ * @param {Object.<string, TutorialConfig>} config - The main configuration containing all tutorials.
+ *
+ * Tutorial configuration:
+ * @typedef TutorialConfig
+ * @property {Object} config - The main configuration containing all tutorials.
+ * @property {Object} overlay - CSS styles for the overlay that appears behind
+ *  the tutorial.
+ * @property {StepConfiguration[]} steps - An array of step configurations (see below).
+ * @callback complete - Callback that is called once the tutorial has gone
+ *  through all steps.
+ *
+ * Step configuration:
+ * @typedef StepConfiguration
+ * @property {Object.<string, string>} selectors - Contains arbitrarily-named
+ *  keys with CSS selector values. These keys can be referenced from
+ *  TooltipConfiguration.anchorElement.
+ *  Note: Specifying a selector that lives within another specified selector will
+ *  result in unpredictable behavior.
+ * @property {TooltipConfiguration} tooltip - Tooltip configuration.
+ * @callback before - Callback called once before step is rendered.
+ * @callback after - Callback called once after step is rendered.
+ *
+ * Tooltip configuration:
     position (string): Possible values: 'top' | 'left' | 'bottom' | 'right'
     xOffset (string): Value in pixels to offset the x-coordinate of the tooltip.
     yOffset (string): Value in pixels to offset the y-coordinate of the tooltip.
@@ -29,6 +34,9 @@
     anchorElement (string): Contains either (1) a key from the step's "selectors"
       dict above, or (2) a CSS selector. (TODO)
     subtext (function) (optional): A function that returns subtext content.
+    @param {Object} [attr] -
+    @param {Number} [arrowLength] - Distance between arrow tip and edge of
+      tooltip, not including border.
 
 */
 
@@ -69,7 +77,8 @@ var OnboardingConfig = {
           position: 'right',
           text: 'Some text',
           anchorElement: "assignee",
-          cta: 'Done'
+          cta: 'Done',
+          arrowLength: 30
         },
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)

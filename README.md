@@ -6,7 +6,11 @@ A javascript library for create on screen step by step tutorials.
 Because we can.
 
 # Usage
-TBD
+
+To launch the tutorial, add the query parameter "tutorial" equal to the name of a
+tutorial in your configuration.
+`http://www.example.com?tutorial=test`
+
 
 # Setup
 Install packages
@@ -43,7 +47,7 @@ The browsers to test can be configured in `testem.yml`, currently it is configur
 Run the following to build `chariot.js` into thd `/dist` directory.
 
 	gulp
-	
+
 *Do not check in the `dist` directory. Release on github will contain the tarballs with compiled js/css.*
 
 # Release
@@ -52,5 +56,5 @@ Run the following style-checker before pushing your branch.
 	npm run jscs
 
 To automatically fix the style errors:
-	
+
 	npm run jscs-fix

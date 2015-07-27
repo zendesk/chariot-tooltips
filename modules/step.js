@@ -37,8 +37,7 @@ class Step {
       this._renderTooltip();
     }).catch(error => {
       console.log(error);
-      console.log("Skipping this step...");
-      this.next();
+      this.tutorial.tearDown();
     });
   }
 
@@ -64,7 +63,6 @@ class Step {
       this._computeStyles($(selector));
     }
   }
-
 
   // PRIVATE
 
