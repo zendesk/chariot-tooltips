@@ -108,6 +108,8 @@ class Step {
   }
 
   _cloneElements(selectors) {
+    if (this.tutorial.hasNoOverlay()) return;
+
     setTimeout(() => {
       this.tutorial.prepare();
     }, 0);

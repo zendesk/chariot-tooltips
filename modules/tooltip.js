@@ -95,6 +95,7 @@ class Tooltip {
   }
 
   _arrowMarkup() {
+    if (this.arrowLength === 0) return '';
     return `<div class="chariot-tooltip-arrow ${this.arrowClass}"></div>`;
   }
 
@@ -155,6 +156,7 @@ class Tooltip {
     If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
   */
   _positionArrow($tooltip, $tooltipArrow) {
+    if (this.arrowLength === 0) return;
     let arrowDiagonal = this.arrowLength * 2;
 
     // Calculate length of arrow sides
@@ -177,28 +179,28 @@ class Tooltip {
         min = borderRadius;
         max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
         arrowStyles.top = Math.max(Math.min(top, max), min);
-        arrowStyles.left = (-arrowDiagonal / 2) + this.borderLeftWidth;
+        arrowStyles.left = -(arrowEdge / 2 + this.borderLeftWidth);
         break;
       case 'chariot-tooltip-arrow-right':
         top = (($tooltip.outerHeight() - arrowDiagonal) / 2) - this.yOffset;
         min = borderRadius;
         max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
         arrowStyles.top = Math.max(Math.min(top, max), min);
-        arrowStyles.right = (-arrowDiagonal / 2) + this.borderRightWidth;
+        arrowStyles.right = -(arrowEdge / 2 + this.borderRightWidth);
         break;
       case 'chariot-tooltip-arrow-bottom':
         left = (($tooltip.outerWidth() - arrowDiagonal) / 2) - this.xOffset;
         min = borderRadius;
         max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
         arrowStyles.left = Math.max(Math.min(left, max), min);
-        arrowStyles.bottom = (-arrowDiagonal / 2) + this.borderBottomWidth;
+        arrowStyles.bottom = -(arrowEdge / 2 + this.borderBottomWidth);
         break;
       case 'chariot-tooltip-arrow-top':
         left = (($tooltip.outerWidth() - arrowDiagonal) / 2) - this.xOffset;
         min = borderRadius;
         max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
         arrowStyles.left = Math.max(Math.min(left, max), min);
-        arrowStyles.top = (-arrowDiagonal / 2) + this.borderTopWidth;
+        arrowStyles.top = -(arrowEdge / 2 + this.borderTopWidth);
         break;
     }
 
@@ -206,10 +208,15 @@ class Tooltip {
   }
 
   _getAnchorElement() {
-    // Look for defined selectors first
+    // Look for already cloned elements first
     let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
     if (clonedSelectedElement) return clonedSelectedElement;
+    // Try fetching from DOM
     let $element = $(this.anchorElement);
+    if ($element.length === 0) {
+      // Try fetching from selectors
+      $element = $(this.step.selectors[this.anchorElement]);
+    }
     if ($element.length === 0) {
       console.log("Anchor element not found: " + this.anchorElement);
     }

@@ -57,7 +57,7 @@ new Chariot.chariot({
           topLeft: ".top-left",
         },
         tooltip: {
-          position: 'right', // 'top' | 'left' | 'bottom' | 'right'
+          position: 'bottom', // 'top' | 'left' | 'bottom' | 'right'
           title: 'Know your customer',
           text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
           // yOffset: 250,
@@ -68,7 +68,8 @@ new Chariot.chariot({
           subtext: function(currentStep, totalSteps) {
             return `${currentStep} of ${totalSteps}`;
           },
-          attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' }
+          attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
+          arrowLength: 20
         },
         before: function() {
           // any arbitrary code to run before showing this step (after the timeout between steps)
@@ -127,6 +128,7 @@ new Chariot.chariot({
         }
       }
     ],
+    // overlayStyle: false,
     complete: function(){
 
     }

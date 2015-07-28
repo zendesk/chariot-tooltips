@@ -16,7 +16,7 @@ class Tutorial {
       this.steps.push(new Step(step, this));
     });
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
-    this.overlayStyle = config.overlayStyle;
+    this.overlayStyle = config.overlayStyle || true;
   }
 
   start() {
@@ -66,9 +66,15 @@ class Tutorial {
     });
   }
 
+  hasNoOverlay() {
+    return this.overlayStyle === false;
+  }
+
   _renderOverlay() {
+    if (this.hasNoOverlay()) return;
+
     let $overlay = $("<div class='overlay'></div>");
-    if (!this.overlayStyle) {
+    if (this.overlayStyle === true) {
       $overlay.css({
         top: 0,
         left: 0,

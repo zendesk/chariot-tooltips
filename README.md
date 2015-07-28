@@ -2,8 +2,12 @@
 # Chariot
 A javascript library for create on screen step by step tutorials.
 
-## Why did we create this?
-Because we can.
+## Motivation
+We believe that tooltips are better at drawing focus to highlighted elements
+on a website when the background is dimmed out.  Existing tooltip overlay
+solutions did not use overlay backgrounds, and they also fail when parent
+elements already make use of z-index property.
+(A child's z-index cannot override it's parent's z-index).
 
 # Usage
 
@@ -53,8 +57,12 @@ Run the following to build `chariot.js` into thd `/dist` directory.
 # Release
 Run the following style-checker before pushing your branch.
 
-	npm run jscs
+	gulp style
 
 To automatically fix the style errors:
 
-	npm run jscs-fix
+	gulp style-fix
+
+To update the generated docs:
+
+	gulp js-doc
