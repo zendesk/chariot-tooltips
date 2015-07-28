@@ -31,21 +31,25 @@ describe('Step', () => {
   context('constructor', () => {
     let step = null,
       tutorial = null;
+
     before(() => {
-      tutorial = new Tutorial('test', {});
+      tutorial = new Tutorial('test', { steps: [] });
       step = new Step(stepConfiguration, tutorial);
     });
 
     it('reads selectors', () => {
       expect(step.selectors).to.equal(stepConfiguration.selectors);
     });
+
     it('reads before', () => {
       expect(step.before).to.be.a('Function');
       expect(step.before()).to.equal(stepConfiguration.before());
     });
+
     it('reads cta', () => {
       expect(step.cta).to.equal(stepConfiguration.cta);
     });
+
     it('reads tutorial', () => {
       expect(step.tutorial).to.equal(tutorial);
     });
@@ -55,21 +59,25 @@ describe('Step', () => {
     let step = null,
       tutorial = null,
       clone = null;
+
     before(() => {
-      tutorial = new Tutorial('test', {});
+      tutorial = new Tutorial('test', { steps: [] });
       step = new Step(stepConfiguration, tutorial);
       sinon.stub(step.tooltip, ('tearDown'));
     });
+
     it('tearsDown with no cloned elements', () => {
       clone = { remove: () => ({}) };
       step.clonedElements = null;
       expect(step.tearDown.bind(step)).not.to.throw(Error);
     });
+
     it('tearsDown with no cloned elements', () => {
       clone = { remove: () => ({}) };
       step.clonedElements = [];
       expect(step.tearDown.bind(step)).not.to.throw(Error);
     });
+
     it('tearsDown all clone elements', () => {
       clone = { remove: () => ({}) };
       sinon.spy(clone, 'remove');

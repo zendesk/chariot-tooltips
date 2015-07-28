@@ -60,7 +60,8 @@ new Chariot.chariot({
           position: 'right', // 'top' | 'left' | 'bottom' | 'right'
           title: 'Know your customer',
           text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
-          yOffset: 50,
+          // yOffset: 250,
+          // xOffset: 200,
           anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
           cta: 'Next',
@@ -84,7 +85,7 @@ new Chariot.chariot({
           position: 'top',
           title: 'Tooltip #2',
           text: 'Two selectors being highlighted.',
-          xOffset: -50,
+          // xOffset: -50,
           anchorElement: "topRight",
           cta: 'Next',
           subtext: function(currentStep, totalSteps) {
@@ -117,7 +118,7 @@ new Chariot.chariot({
         tooltip: {
           position: 'left',
           title: 'Tooltip #4',
-          text: 'Did you notice tooltip #3 was skipped?  Its configuration had an invalid selector.',
+          text: 'This tooltip is skipped because tooltip #3 config had an invalid selector.',
           anchorElement: "topRight",
           cta: 'Next',
           subtext: function(currentStep, totalSteps) {

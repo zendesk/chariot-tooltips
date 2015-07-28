@@ -2,7 +2,8 @@ import $ from 'jquery';
 import { TOOLTIP_Z_INDEX } from './constants';
 import Style from './libs/style';
 
-const DEFAULT_PADDING = 15;
+// distance between arrow tip and edge of tooltip, not including border
+const DEFAULT_ARROW_LENGTH = 11;
 
 class Tooltip {
   constructor(config, step, tutorial) {
@@ -10,32 +11,26 @@ class Tooltip {
     this.tutorial = tutorial;
     this.position = config.position;
     this.text = config.text;
-    let defaultXOffset, defaultYOffset, arrowClass = 'chariot-tooltip';
+    let arrowClass = 'chariot-tooltip';
+
     switch (this.position) {
       case 'left':
-        defaultXOffset = -DEFAULT_PADDING;
-        defaultYOffset = 0;
         arrowClass += '-arrow-right';
         break;
       case 'right':
-        defaultXOffset = DEFAULT_PADDING;
-        defaultYOffset = 0;
         arrowClass += '-arrow-left';
         break;
       case 'top':
-        defaultXOffset = 0;
-        defaultYOffset = -DEFAULT_PADDING;
         arrowClass += '-arrow-bottom';
         break;
       case 'bottom':
-        defaultXOffset = 0;
-        defaultYOffset = DEFAULT_PADDING;
         arrowClass += '-arrow-top';
         break;
     }
 
-    this.xOffset = config.xOffset ? parseInt(config.xOffset) : defaultXOffset;
-    this.yOffset = config.yOffset ? parseInt(config.yOffset) : defaultYOffset;
+    this.xOffset = config.xOffset ? parseInt(config.xOffset) : 0;
+    this.yOffset = config.yOffset ? parseInt(config.yOffset) : 0;
+
     this.arrowClass = arrowClass;
     this.z_index = TOOLTIP_Z_INDEX;
 
@@ -49,6 +44,7 @@ class Tooltip {
     this.cta = config.cta;
     this.subtext = config.subtext;
     this.attr = config.attr || {};
+    this.arrowLength = config.arrowLength || DEFAULT_ARROW_LENGTH;
   }
 
   _createTooltipTemplate() {
@@ -57,7 +53,7 @@ class Tooltip {
     let buttonFloat = subtextMarkup == '' ? 'center' : 'right';
     let template = `
       <div class="chariot-tooltip chariot-step-${stepNum}">
-        <div class="chariot-tooltip-arrow ${this.arrowClass}"></div>
+        ${this._arrowMarkup()}
         <div class="chariot-tooltip-content">
           ${this._iconMarkup()}
         </div>
@@ -98,6 +94,10 @@ class Tooltip {
     </span>`;
   }
 
+  _arrowMarkup() {
+    return `<div class="chariot-tooltip-arrow ${this.arrowClass}"></div>`;
+  }
+
   render() {
     let $tooltip = this.$tooltip = this._createTooltipTemplate();
     $('body').append($tooltip);
@@ -129,10 +129,18 @@ class Tooltip {
     let $anchorElement = this._getAnchorElement();
     if (!$anchorElement) return;
 
+    this.borderLeftWidth = parseInt($tooltip.css('border-left-width')) || 0;
+    this.borderRightWidth = parseInt($tooltip.css('border-right-width')) || 0;
+    this.borderBottomWidth = parseInt($tooltip.css('border-bottom-width')) || 0;
+    this.borderTopWidth = parseInt($tooltip.css('border-top-width')) || 0;
     let top = Style.calculateTop($tooltip,
-      $anchorElement, this.yOffset, this.position);
+      $anchorElement, this.yOffset, this.position,
+      this.arrowLength + this.borderTopWidth + this.borderBottomWidth
+    );
     let left = Style.calculateLeft($tooltip,
-      $anchorElement, this.xOffset, this.position);
+      $anchorElement, this.xOffset, this.position,
+      this.arrowLength + this.borderLeftWidth + this.borderRightWidth
+    );
     let tooltipStyles = {
       top: top,
       left: left,
@@ -147,46 +155,54 @@ class Tooltip {
     If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
   */
   _positionArrow($tooltip, $tooltipArrow) {
-    let arrowDimension = 15; // px
-    let tooltipStyles = { 'z-index': this.z_index + 1 };
-    let top, left, min, max;
+    let arrowDiagonal = this.arrowLength * 2;
+
+    // Calculate length of arrow sides
+    // a^2 + b^2 = c^2, but a=b since arrow is a square, so a = sqrt(c^2 / 2)
+    let arrowEdge = Math.sqrt(Math.pow(arrowDiagonal, 2) / 2);
+
+    let arrowEdgeStyle = `${arrowEdge}px`;
+    let arrowStyles = {
+      'z-index': this.z_index + 1,
+      width: arrowEdgeStyle,
+      height: arrowEdgeStyle
+    };
+    let top, left, min, max, borderWidth;
+
+    let borderRadius = parseInt($tooltip.css('border-radius')) || 0;
 
     switch (this.arrowClass) {
       case 'chariot-tooltip-arrow-left':
-        top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
-        min = arrowDimension / 2;
-        max = $tooltip.outerHeight() - 2 * arrowDimension;
-        tooltipStyles.top = Math.max(Math.min(top, max), min);
-
-        tooltipStyles.left = -arrowDimension / 2 - 2; // 2 is a fudge factor
+        top = (($tooltip.outerHeight() - arrowDiagonal) / 2) - this.yOffset;
+        min = borderRadius;
+        max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
+        arrowStyles.top = Math.max(Math.min(top, max), min);
+        arrowStyles.left = (-arrowDiagonal / 2) + this.borderLeftWidth;
         break;
       case 'chariot-tooltip-arrow-right':
-        top = (($tooltip.outerHeight() - arrowDimension) / 2) - this.yOffset;
-        min = arrowDimension / 2;
-        max = $tooltip.outerHeight() - 2 * arrowDimension;
-        tooltipStyles.top = Math.max(Math.min(top, max), min);
-
-        tooltipStyles.right = -arrowDimension / 2 - 1;
+        top = (($tooltip.outerHeight() - arrowDiagonal) / 2) - this.yOffset;
+        min = borderRadius;
+        max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
+        arrowStyles.top = Math.max(Math.min(top, max), min);
+        arrowStyles.right = (-arrowDiagonal / 2) + this.borderRightWidth;
         break;
       case 'chariot-tooltip-arrow-bottom':
-        left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
-        min = arrowDimension / 2;
-        max = $tooltip.outerWidth() - 2 * arrowDimension;
-        tooltipStyles.left = Math.max(Math.min(left, max), min);
-
-        tooltipStyles.bottom = -arrowDimension / 2 - 1;
+        left = (($tooltip.outerWidth() - arrowDiagonal) / 2) - this.xOffset;
+        min = borderRadius;
+        max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
+        arrowStyles.left = Math.max(Math.min(left, max), min);
+        arrowStyles.bottom = (-arrowDiagonal / 2) + this.borderBottomWidth;
         break;
       case 'chariot-tooltip-arrow-top':
-        left = (($tooltip.outerWidth() - arrowDimension) / 2) - this.xOffset;
-        min = arrowDimension / 2;
-        max = $tooltip.outerWidth() - 2 * arrowDimension;
-        tooltipStyles.left = Math.max(Math.min(left, max), min);
-
-        tooltipStyles.top = -arrowDimension / 2 - 2;
+        left = (($tooltip.outerWidth() - arrowDiagonal) / 2) - this.xOffset;
+        min = borderRadius;
+        max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
+        arrowStyles.left = Math.max(Math.min(left, max), min);
+        arrowStyles.top = (-arrowDiagonal / 2) + this.borderTopWidth;
         break;
     }
 
-    $tooltipArrow.css(tooltipStyles);
+    $tooltipArrow.css(arrowStyles);
   }
 
   _getAnchorElement() {
