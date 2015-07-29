@@ -14,6 +14,8 @@ var uglify = require('gulp-uglify');
 var clean = require('gulp-clean');
 var runSequence = require('run-sequence');
 var rename = require('gulp-rename');
+var shell = require('gulp-shell');
+var jscs = require('gulp-jscs');
 
 var projectName = 'chariot';
 
@@ -91,12 +93,32 @@ gulp.task("compile-test", function() {
 
 //################ BUILD ####################
 
+gulp.task('js-doc', shell.task([
+  './node_modules/.bin/jsdoc modules/* --destination docs/'
+//  './node_modules/.bin/jsdoc modules/config.example.js --destination docs/'
+]));
+
+gulp.task('style', function () {
+  return gulp.src(['modules/**', 'test/**'])
+    .pipe(jscs());
+});
+
+gulp.task('style-fix', function () {
+  return gulp.src(['modules/**', 'test/**'], { base: './' })
+    .pipe(jscs({
+      configPath: '.jscsrc',
+      fix: true
+    }))
+    .pipe(gulp.dest('./'));
+});
+
 gulp.task('release', ['build-release'], function(){
 
 });
 
 gulp.task('build-release', ['clean'],function(){
   return runSequence(
+    'style-fix',
     ['js-minify', 'css-minify'],
     function(){
       gulp.src(['./modules/**/*'

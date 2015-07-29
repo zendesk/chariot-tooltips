@@ -16,7 +16,7 @@ class Tutorial {
       this.steps.push(new Step(step, this));
     });
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
-    this.overlayStyle = config.overlayStyle;
+    this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
   }
 
   start() {
@@ -66,22 +66,15 @@ class Tutorial {
     });
   }
 
+  hasNoOverlay() {
+    return this.shouldOverlay === false;
+  }
+
   _renderOverlay() {
-    let $overlay = $("<div class='overlay'></div>");
-    if (!this.overlayStyle) {
-      $overlay.css({
-        top: 0,
-        left: 0,
-        background: 'white',
-        'z-index': OVERLAY_Z_INDEX,
-        opacity: 0.7,
-        position: 'absolute',
-        height: '100%',
-        width: '100%'
-      });
-    } else {
-      $overlay.css(this.overlayStyle);
-    }
+    if (this.hasNoOverlay()) return;
+
+    let $overlay = $("<div class='chariot-overlay'></div>");
+    $overlay.css({ 'z-index': OVERLAY_Z_INDEX });
     $('body').append($overlay);
     this.$overlay = $overlay;
   }

@@ -67,7 +67,7 @@ describe('Styles', () => {
     });
   });
 
-  context('caclulate top position', () => {
+  context('calculate top position', () => {
     let tooltip = { outerHeight: () => {
       return 20;
     }
