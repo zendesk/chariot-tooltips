@@ -481,6 +481,8 @@ var Step = (function () {
     value: function _cloneElements(selectors) {
       var _this5 = this;
 
+      if (this.tutorial.hasNoOverlay()) return;
+
       setTimeout(function () {
         _this5.tutorial.prepare();
       }, 0);
@@ -614,7 +616,7 @@ var Tooltip = (function () {
       var stepNum = this.currentStep();
       var subtextMarkup = this._subtextMarkup();
       var buttonFloat = subtextMarkup == '' ? 'center' : 'right';
-      var template = '\n      <div class="chariot-tooltip chariot-step-' + stepNum + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">\n          ' + this._iconMarkup() + '\n        </div>\n        <div class="chariot-tooltip-header">\n          ' + this.title + '\n        </div>\n        <div class="chariot-tooltip-content">\n          <p>' + this.text + '</p>\n        </div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
+      var template = '\n      <div class="chariot-tooltip chariot-step-' + stepNum + '">\n        ' + this._arrowMarkup() + '\n        <h1 class="chariot-tooltip-content">' + this._iconMarkup() + '</h1>\n        <div class="chariot-tooltip-header">' + this.title + '</div>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
       var $template = (0, _jquery2['default'])(template);
 
       // Add default data attributes
@@ -642,6 +644,7 @@ var Tooltip = (function () {
   }, {
     key: '_arrowMarkup',
     value: function _arrowMarkup() {
+      if (this.arrowLength === 0) return '';
       return '<div class="chariot-tooltip-arrow ' + this.arrowClass + '"></div>';
     }
   }, {
@@ -704,6 +707,7 @@ var Tooltip = (function () {
   }, {
     key: '_positionArrow',
     value: function _positionArrow($tooltip, $tooltipArrow) {
+      if (this.arrowLength === 0) return;
       var arrowDiagonal = this.arrowLength * 2;
 
       // Calculate length of arrow sides
@@ -730,28 +734,28 @@ var Tooltip = (function () {
           min = borderRadius;
           max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
           arrowStyles.top = Math.max(Math.min(top, max), min);
-          arrowStyles.left = -arrowDiagonal / 2 + this.borderLeftWidth;
+          arrowStyles.left = -(arrowEdge / 2 + this.borderLeftWidth);
           break;
         case 'chariot-tooltip-arrow-right':
           top = ($tooltip.outerHeight() - arrowDiagonal) / 2 - this.yOffset;
           min = borderRadius;
           max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
           arrowStyles.top = Math.max(Math.min(top, max), min);
-          arrowStyles.right = -arrowDiagonal / 2 + this.borderRightWidth;
+          arrowStyles.right = -(arrowEdge / 2 + this.borderRightWidth);
           break;
         case 'chariot-tooltip-arrow-bottom':
           left = ($tooltip.outerWidth() - arrowDiagonal) / 2 - this.xOffset;
           min = borderRadius;
           max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
           arrowStyles.left = Math.max(Math.min(left, max), min);
-          arrowStyles.bottom = -arrowDiagonal / 2 + this.borderBottomWidth;
+          arrowStyles.bottom = -(arrowEdge / 2 + this.borderBottomWidth);
           break;
         case 'chariot-tooltip-arrow-top':
           left = ($tooltip.outerWidth() - arrowDiagonal) / 2 - this.xOffset;
           min = borderRadius;
           max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
           arrowStyles.left = Math.max(Math.min(left, max), min);
-          arrowStyles.top = -arrowDiagonal / 2 + this.borderTopWidth;
+          arrowStyles.top = -(arrowEdge / 2 + this.borderTopWidth);
           break;
       }
 
@@ -760,10 +764,15 @@ var Tooltip = (function () {
   }, {
     key: '_getAnchorElement',
     value: function _getAnchorElement() {
-      // Look for defined selectors first
+      // Look for already cloned elements first
       var clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
       if (clonedSelectedElement) return clonedSelectedElement;
+      // Try fetching from DOM
       var $element = (0, _jquery2['default'])(this.anchorElement);
+      if ($element.length === 0) {
+        // Try fetching from selectors
+        $element = (0, _jquery2['default'])(this.step.selectors[this.anchorElement]);
+      }
       if ($element.length === 0) {
         console.log("Anchor element not found: " + this.anchorElement);
       }
@@ -824,7 +833,7 @@ var Tutorial = (function () {
       _this.steps.push(new _step2['default'](step, _this));
     });
     this.complete = typeof config.complete === 'function' ? config.complete : function () {};
-    this.overlayStyle = config.overlayStyle;
+    this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
   }
 
   _createClass(Tutorial, [{
@@ -882,23 +891,17 @@ var Tutorial = (function () {
       });
     }
   }, {
+    key: 'hasNoOverlay',
+    value: function hasNoOverlay() {
+      return this.shouldOverlay === false;
+    }
+  }, {
     key: '_renderOverlay',
     value: function _renderOverlay() {
-      var $overlay = (0, _jquery2['default'])("<div class='overlay'></div>");
-      if (!this.overlayStyle) {
-        $overlay.css({
-          top: 0,
-          left: 0,
-          background: 'white',
-          'z-index': _constants.OVERLAY_Z_INDEX,
-          opacity: 0.7,
-          position: 'absolute',
-          height: '100%',
-          width: '100%'
-        });
-      } else {
-        $overlay.css(this.overlayStyle);
-      }
+      if (this.hasNoOverlay()) return;
+
+      var $overlay = (0, _jquery2['default'])("<div class='chariot-overlay'></div>");
+      $overlay.css({ 'z-index': _constants.OVERLAY_Z_INDEX });
       (0, _jquery2['default'])('body').append($overlay);
       this.$overlay = $overlay;
     }
