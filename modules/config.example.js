@@ -12,8 +12,8 @@
  * available for end of tutorial cleanup.
  *
  * @typedef TutorialConfiguration
- * @property {Object} overlayStyle - CSS styles for the overlay that appears
- * behind the tutorial. Pass in false to disable the overlay.
+ * @property {boolean} [shouldOverlay=true] - Setting to false will disable the
+ * overlay that normally appears over the page and behind the tooltips.
  * @property {StepConfiguration[]} steps - An array of step configurations (see below).
  * @property {Tutorial-completeCallback} [complete] - Callback that is called
  * once the tutorial has gone through all steps.
@@ -136,6 +136,6 @@ var OnboardingConfig = {
     ],
     complete: function() {
     },
-    overlayStyle: { opacity: 0.7, background: 'white' }
+    shouldOverlay: { opacity: 0.7, background: 'white' }
   }
 };
