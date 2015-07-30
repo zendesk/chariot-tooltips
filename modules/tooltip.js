@@ -54,8 +54,8 @@ class Tooltip {
     let template = `
       <div class="chariot-tooltip chariot-step-${stepNum}">
         ${this._arrowMarkup()}
-        <h1 class="chariot-tooltip-content">${this._iconMarkup()}</h1>
-        <div class="chariot-tooltip-header">${this.title}</div>
+        <div class="chariot-tooltip-content">${this._iconMarkup()}</div>
+        <h1 class="chariot-tooltip-header">${this.title}</h1>
         <div class="chariot-tooltip-content"><p>${this.text}</p></div>
         <div class="chariot-btn-row">
           ${subtextMarkup}

@@ -32,18 +32,21 @@ $warm-grey: #999;
     margin: auto;
 
     img {
-      width: 55px;
-      height: 55px;
+      width: 52px;
+      height: 52px;
     }
   }
 
   .chariot-tooltip-header {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 500;
     color: $greyish-brown;
+    padding: 5px 0;
   }
 
   .chariot-tooltip-content {
+    padding: 5px 0;
+
     p {
       font-size: 14px;
       font-weight: 300;
@@ -52,6 +55,8 @@ $warm-grey: #999;
   }
 
   .chariot-btn-row {
+    padding-top: 5px;
+
     .btn {
       font-size: 13px;
       font-weight: 600;
@@ -61,6 +66,10 @@ $warm-grey: #999;
       height: 36px;
       padding: 0 20px;
       border: none;
+
+      &:hover {
+        background-color: #78A300;
+      }
     }
 
     .chariot-tooltip-subtext {

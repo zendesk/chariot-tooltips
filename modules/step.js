@@ -124,7 +124,7 @@ class Step {
     if (!$element.is(":visible")) {
       return;
     }
-    $clone.addClass('chariot-overlay');
+    $clone.addClass('chariot-clone');
     Style.cloneStyles($element, $clone);
     let clonedChildren = $clone.children().toArray();
     $element.children().toArray().forEach((child, index) => {

@@ -1,19 +1,51 @@
 ![alt tag](http://thumbs3.jigidi.com/thumbs/GM5R5TBP/l)
 # Chariot
-A javascript library for create on screen step by step tutorials.
+> Walkthroughs so easy, you might as well be flying in a chariot.
+A Javascript library for creating step-by-step tooltip tutorials, using an
+overlay to hide the background noise..
 
-## Motivation
+# Demo
+
+Refer to Development section below.
+
+# Motivation
 We believe that tooltips are better at drawing focus to highlighted elements
-on a website when the background is dimmed out.  Existing tooltip overlay
-solutions did not use overlay backgrounds, and they also fail when parent
-elements already make use of z-index property.
-(A child's z-index cannot override it's parent's z-index).
+on a website when the background is dimmed out.
+Existing tooltip overlay solutions don't use overlay backgrounds, or if they
+do, they fail to consider when parent containers already have the CSS
+`z-index` property set.
+(A child element's `z-index` cannot override it's parent's `z-index`).
+
+# Features
+
+- Tutorial kicked off by query param
+- Overlay hides background and clones your key elements over it
+- `z-index` is taken care of
+- Programmatic API and configurable callbacks
+- Browser support includes every sane browser and IE9+.
 
 # Usage
 
-To launch the tutorial, add the query parameter "tutorial" equal to the name of a
-tutorial in your configuration.
-`http://www.example.com?tutorial=test`
+First, initialize chariot.
+
+## `new Chariot.chariot(config)`
+
+Once configured, to launch the tutorial, append the query parameter `tutorial`
+to your URL setting it to the name of a tutorial defined in your configuration.
+
+`http://www.example.com?tutorial=tutorialName`
+
+## Configuration
+
+Here's how to configure `chariot`:
+
+[example](https://github.com/zendesk/chariot/blob/master/modules/config.example.js)
+
+## API
+
+### `Chariot.chariot(config)`
+
+Creates the chariot instance.
 
 
 # Setup
@@ -66,3 +98,12 @@ To automatically fix the style errors:
 To update the generated docs:
 
 	gulp js-doc
+
+# Implementation
+
+Chariot uses the hashchange event to determine if a tutorial query parameter
+is present, then starts the corresponding tutorial.
+
+# Copyright and License
+
+Copyright 2014, Zendesk Inc. Licensed under the Apache License Version 2.0, http://www.apache.org/licenses/LICENSE-2.0

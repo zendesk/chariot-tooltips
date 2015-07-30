@@ -65,7 +65,7 @@
  *  the tooltip.
  * @property {number} [yOffset] - Value in pixels to offset the y-coordinate of
  *  the tooltip.
- * @property {function} [renderCallback] - (TODO) Renders a custom template,
+ * @property {Tooltip-renderCallback} [render] - (TODO) Renders a custom template,
  *  thereby ignoring all other properties below.
  * @property {string} [iconUrl] - Path to an image displayed above the title.
  * @property {string} [title] - The title text of a toolip.
@@ -78,6 +78,14 @@
  * @property {Tooltip-subtextCallback} [subtext] - Callback that returns subtext
  *  content.
  *
+ */
+
+/**
+ * A function that provides step information and returns subtext content.
+ * @callback Tooltip-renderCallback
+ * @param {number} currentStep - The current step number
+ * @param {number} totalSteps - The total # of steps
+ * @returns {string} markup - The HTML markup that represents the subtext
  */
 
 /**
