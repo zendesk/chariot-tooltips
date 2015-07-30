@@ -139,7 +139,7 @@ gulp.task('git-tag', function(cb){
         message: "A simple message for tagging v" + version + ":"
       }, function(res){
         var message = res.message;
-        return git.tag("v" + version, message, function(err){
+        return git.tag("v" + version, message, {args: '-a'}, function(err){
           if (!err) {
             console.log("Successfully tagged v" + version);
             git.push('origin', "master", {args: '--tags'}, function(err){
