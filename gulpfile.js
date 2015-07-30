@@ -136,7 +136,7 @@ gulp.task('git-tag', function(cb){
       prompt.prompt({
         type: 'input',
         name: 'message',
-        message: "A simple simple for tagging v" + version + ":"
+        message: "A simple message for tagging v" + version + ":"
       }, function(res){
         var message = res.message;
         return git.tag("v" + version, message, function(err){
