@@ -8,8 +8,8 @@
   ],
   "description": "Framework for creating beautifully simple onboarding tutorials",
   "main": [
-    "chariot.js",
-    "chariot.css"
+    "release/chariot.js",
+    "release/chariot.css"
   ],
   "moduleType": [
     "amd",
