@@ -1,9 +1,6 @@
 # compiled output
 /dist
 /tmp
-/release/chariot.tar.gz
-/release/source
-
 
 # dependencies
 /node_modules

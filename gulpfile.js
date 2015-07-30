@@ -16,8 +16,6 @@ var runSequence = require('run-sequence');
 var rename = require('gulp-rename');
 var shell = require('gulp-shell');
 var jscs = require('gulp-jscs');
-var tar = require('gulp-tar');
-var gzip = require('gulp-gzip');
 var bump = require('gulp-bump');
 var prompt = require('gulp-prompt');
 var git = require('gulp-git');
@@ -132,7 +130,8 @@ gulp.task('release', function(cb){
 
 gulp.task('git-tag', function(cb){
   var version = getVersion();
-  return gulp.src("*")
+  return gulp.src(["package.json", "npm-shrinkwrap.json", "bower.json"])
+    .pipe(git.commit('bump version'))
     .pipe(
       prompt.prompt({
         type: 'input',
@@ -140,17 +139,17 @@ gulp.task('git-tag', function(cb){
         message: "A simple simple for tagging v" + version + ":"
       }, function(res){
         var message = res.message;
-        return git.tag("v" + version, message, function(stderr){
-          if (!stderr) {
+        return git.tag("v" + version, message, function(err){
+          if (!err) {
             console.log("Successfully tagged v" + version);
-            git.push('origin', "v" + version, function(err){
+            git.push('origin', "master", {args: '--tags'}, function(err){
               if(err){
-                console.log(err);
+                throw err;
               }
             });
           }
           else {
-            throw new Error(stderr)
+            throw err;
           }
         });
       })
@@ -162,8 +161,7 @@ gulp.task('build-release',function(cb){
     'style-fix',
     ['clean'],
     ['js-minify', 'css-minify'],
-    ['copy-source', 'copy-dist'],
-    ['tar-gzip'],
+    'copy-dist',
     cb
   );
 });
@@ -177,17 +175,6 @@ gulp.task('copy-dist', function(){
     .pipe(gulp.dest('release/'));
 })
 
-gulp.task('copy-source', function(){
-  return gulp.src(['./modules/**/*'
-    , './stylesheets/**/*'
-    , './test/**/*'
-    , './assets/**/*'
-    , './dist/**/*'
-    , './package.json'
-    , './index.html'], {base: './'})
-    .pipe(gulp.dest('release/source/'));
-})
-
 gulp.task('js-minify', ['js'], function(){
   return gulp.src('./dist/javascripts/' + projectName + '.js')
     .pipe(uglify())
@@ -199,13 +186,6 @@ gulp.task('css-minify', ['sass'], function(){
     .pipe(minifyCss({compatibility: 'ie8'}))
     .pipe(rename(projectName + '.min.css'))
     .pipe(gulp.dest('./dist/stylesheets'));
-})
-
-gulp.task('tar-gzip', function(){
-  return gulp.src('./release/**/*')
-    .pipe(tar('chariot.tar'))
-    .pipe(gzip())
-    .pipe(gulp.dest('release'));
 })
 
 gulp.task('clean', function () {

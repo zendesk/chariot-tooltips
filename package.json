@@ -31,6 +31,7 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
     "jscs": "^1.13.1",
+    "jsdoc": "^3.3.2",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
     "run-sequence": "^1.1.1",
@@ -39,9 +40,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "gulp-shell": "^0.4.2",
     "jquery": "^2.1.4",
-    "jsdoc": "^3.3.2",
     "query-parse": "^0.1.1"
   },
   "scripts": {
