@@ -20,6 +20,7 @@ var bump = require('gulp-bump');
 var prompt = require('gulp-prompt');
 var git = require('gulp-git');
 var fs = require('fs');
+var insert = require('gulp-insert');
 var projectName = 'chariot';
 
 gulp.task("default", ['js', 'sass']);
@@ -130,7 +131,7 @@ gulp.task('release', function(cb){
 
 gulp.task('git-tag', function(cb){
   var version = getVersion();
-  return gulp.src(["package.json", "npm-shrinkwrap.json", "bower.json"])
+  return gulp.src(["release", "package.json", "npm-shrinkwrap.json", "bower.json"])
     .pipe(git.commit('bump version'))
     .pipe(
       prompt.prompt({
@@ -161,10 +162,18 @@ gulp.task('build-release',function(cb){
     'style-fix',
     ['clean'],
     ['js-minify', 'css-minify'],
+    'prepend-version',
     'copy-dist',
     cb
   );
 });
+
+gulp.task('prepend-version', function(){
+  return gulp.src(['dist/javascripts/' + projectName + '.js', 
+    'dist/stylesheets/' + projectName + '.css'], {base: 'dist/'})
+    .pipe(insert.prepend("// Chariot v" + getVersion() + "\n"))
+    .pipe(gulp.dest('dist/'))
+})
 
 gulp.task('copy-dist', function(){
   return gulp.src(['dist/javascripts/'+projectName+'.js'
