@@ -16,7 +16,11 @@ var runSequence = require('run-sequence');
 var rename = require('gulp-rename');
 var shell = require('gulp-shell');
 var jscs = require('gulp-jscs');
-
+var bump = require('gulp-bump');
+var prompt = require('gulp-prompt');
+var git = require('gulp-git');
+var fs = require('fs');
+var insert = require('gulp-insert');
 var projectName = 'chariot';
 
 gulp.task("default", ['js', 'sass']);
@@ -28,7 +32,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 gulp.task('js', function() {
   return browserify({
     entries: './modules/index.js',
-    //debug: true
+    // debug: true
   })
     .transform(babelify)
     .bundle()
@@ -112,32 +116,73 @@ gulp.task('style-fix', function () {
     .pipe(gulp.dest('./'));
 });
 
-gulp.task('release', ['build-release'], function(){
+function getVersion(){
+  return JSON.parse(fs.readFileSync('package.json', 'utf8')).version;
+}
 
+gulp.task('release', function(cb){
+  return runSequence(
+    'bump',
+    'build-release',
+    'git-tag',
+    cb
+    );
 });
 
-gulp.task('build-release', ['clean'],function(){
+gulp.task('git-tag', function(cb){
+  var version = getVersion();
+  return gulp.src(["release", "package.json", "npm-shrinkwrap.json", "bower.json"])
+    .pipe(git.commit('bump version'))
+    .pipe(
+      prompt.prompt({
+        type: 'input',
+        name: 'message',
+        message: "A simple message for tagging v" + version + ":"
+      }, function(res){
+        var message = res.message;
+        return git.tag("v" + version, message, {args: '-a'}, function(err){
+          if (!err) {
+            console.log("Successfully tagged v" + version);
+            git.push('origin', "master", {args: '--tags'}, function(err){
+              if(err){
+                throw err;
+              }
+            });
+          }
+          else {
+            throw err;
+          }
+        });
+      })
+    );
+});
+
+gulp.task('build-release',function(cb){
   return runSequence(
     'style-fix',
+    ['clean'],
     ['js-minify', 'css-minify'],
-    function(){
-      gulp.src(['./modules/**/*'
-        , './stylesheets/**/*'
-        , './test/**/*'
-        , './assets/**/*'
-        , './dist/**/*'
-        , './package.json'
-        , './index.html'], {base: './'})
-        .pipe(gulp.dest('release/source/'));
-      gulp.src(['dist/javascripts/'+projectName+'.js'
-       ,'dist/javascripts/'+projectName+'.min.js'
-       ,'dist/stylesheets/'+projectName+'.css'
-       ,'dist/stylesheets/'+projectName+'.min.css'
-       ])
-        .pipe(gulp.dest('release/'));
-    }
+    'prepend-version',
+    'copy-dist',
+    cb
   );
 });
+
+gulp.task('prepend-version', function(){
+  return gulp.src(['dist/javascripts/' + projectName + '.js',
+    'dist/stylesheets/' + projectName + '.css'], {base: 'dist/'})
+    .pipe(insert.prepend("// Chariot v" + getVersion() + "\n"))
+    .pipe(gulp.dest('dist/'))
+})
+
+gulp.task('copy-dist', function(){
+  return gulp.src(['dist/javascripts/'+projectName+'.js'
+    ,'dist/javascripts/'+projectName+'.min.js'
+    ,'dist/stylesheets/'+projectName+'.css'
+    ,'dist/stylesheets/'+projectName+'.min.css'
+    ])
+    .pipe(gulp.dest('release/'));
+})
 
 gulp.task('js-minify', ['js'], function(){
   return gulp.src('./dist/javascripts/' + projectName + '.js')
@@ -156,3 +201,25 @@ gulp.task('clean', function () {
   return gulp.src(['dist/', 'release/'], {read: false})
     .pipe(clean());
 });
+
+var versionBumpType;
+gulp.task('bump-prompt', function(cb){
+  return gulp.src(['./bower.json', './package.json', './npm-shrinkwrap.json'])
+    .pipe(prompt.prompt({
+      type: 'checkbox',
+      name: 'bump',
+      message: 'What would you like to bump? Choose one, or leave empty to skip',
+      choices: ['patch', 'minor', 'major']
+    }, function(res){
+      if (res.bump.length > 1) {
+        throw Error("Y U NO FOLLOW INSTRUCTIONS!");
+      }
+      versionBumpType = res.bump[0]
+    }));
+})
+gulp.task('bump', ['bump-prompt'], function(){
+  return gulp.src(['./bower.json', './package.json', './npm-shrinkwrap.json'])
+    .pipe(bump({type: versionBumpType}))
+    .pipe(gulp.dest('./'));
+});
+

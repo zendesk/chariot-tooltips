@@ -1,4 +1,12 @@
-![alt tag](http://thumbs3.jigidi.com/thumbs/GM5R5TBP/l)
+<pre>
+   ___    _                         _              _
+  / __|  | |_     __ _      _ _    (_)     ___    | |_
+ | (__   | ' \   / _` |    | '_|   | |    / _ \   |  _|
+  \___|  |_||_|  \__,_|   _|_|_   _|_|_   \___/   _\__|
+_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|
+"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'
+</pre>
+
 # Chariot
 > Walkthroughs so easy, you might as well be flying in a chariot.
 A Javascript library for creating step-by-step tooltip tutorials, using an
@@ -65,6 +73,18 @@ To run a simple server to test out the script. Run:
 
 This will start a simple server that serves `index.html`, and loads `chariot.js` onto the page. The task will also watch your changes and reloads the page as the files are updated.
 
+Run the following style-checker before pushing your branch.
+
+	gulp style
+
+To automatically fix the style errors:
+
+	gulp style-fix
+
+To update the generated docs:
+
+	gulp js-doc
+
 # Test
 
 ## Command Line
@@ -87,17 +107,21 @@ Run the following to build `chariot.js` into thd `/dist` directory.
 *Do not check in the `dist` directory. Release on github will contain the tarballs with compiled js/css.*
 
 # Release
-Run the following style-checker before pushing your branch.
 
-	gulp style
+When you have merge in all your changes from your branch. Run the following **IN MASTER**:
 
-To automatically fix the style errors:
+	gulp release
 
-	gulp style-fix
+This gulp task will
 
-To update the generated docs:
+1. Bump version in package.json, npm-shrinkwrap.json, bower.json
+1. Package release into the ```release/``` folder
+1. Commit the version bump changes in package.json npm-shrinkwrap bower.json
+1. Push the bump changes
+1. Tag with the new version
 
-	gulp js-doc
+After releasing, update the relevant files in your project which uses ChariotJS. Update version in bower/npm, or copy release/chariot.[min.]js, release/chariot.[min.]css into your project's ```vendor/``` folder
+
 
 # Implementation
 
@@ -107,3 +131,5 @@ is present, then starts the corresponding tutorial.
 # Copyright and License
 
 Copyright 2014, Zendesk Inc. Licensed under the Apache License Version 2.0, http://www.apache.org/licenses/LICENSE-2.0
+
+
