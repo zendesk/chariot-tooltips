@@ -1,3 +1,4 @@
+// Chariot v1.0.1
 .chariot-tooltip {
   background-color: #fff;
   border: 1px solid #ddd;
@@ -19,30 +20,37 @@
     height: 52px;
     margin: auto; }
     .chariot-tooltip .chariot-tooltip-icon img {
-      width: 55px;
-      height: 55px; }
+      width: 52px;
+      height: 52px; }
   .chariot-tooltip .chariot-tooltip-header {
     font-size: 18px;
-    font-weight: 600;
-    color: #555; }
-  .chariot-tooltip .chariot-tooltip-content p {
-    font-size: 14px;
-    font-weight: 300;
-    color: #999; }
-  .chariot-tooltip .chariot-btn-row .btn {
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    background-color: #78A300;
-    border-radius: 3px;
-    height: 36px;
-    padding: 0 20px;
-    border: none; }
-  .chariot-tooltip .chariot-btn-row .chariot-tooltip-subtext {
-    float: left;
-    color: #ddd;
-    font-size: 13px;
-    padding-top: 10px; }
+    font-weight: 500;
+    color: #555;
+    padding: 5px 0; }
+  .chariot-tooltip .chariot-tooltip-content {
+    padding: 5px 0; }
+    .chariot-tooltip .chariot-tooltip-content p {
+      font-size: 14px;
+      font-weight: 300;
+      color: #999; }
+  .chariot-tooltip .chariot-btn-row {
+    padding-top: 5px; }
+    .chariot-tooltip .chariot-btn-row .btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background-color: #78A300;
+      border-radius: 3px;
+      height: 36px;
+      padding: 0 20px;
+      border: none; }
+      .chariot-tooltip .chariot-btn-row .btn:hover {
+        background-color: #78A300; }
+    .chariot-tooltip .chariot-btn-row .chariot-tooltip-subtext {
+      float: left;
+      color: #ddd;
+      font-size: 13px;
+      padding-top: 10px; }
   .chariot-tooltip-arrow {
     background: #fff;
     width: 15px;

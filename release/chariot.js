@@ -1,3 +1,4 @@
+// Chariot v1.0.1
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*global
 history, location
@@ -500,7 +501,7 @@ var Step = (function () {
       if (!$element.is(":visible")) {
         return;
       }
-      $clone.addClass('chariot-overlay');
+      $clone.addClass('chariot-clone');
       _libsStyle2['default'].cloneStyles($element, $clone);
       var clonedChildren = $clone.children().toArray();
       $element.children().toArray().forEach(function (child, index) {
@@ -616,7 +617,7 @@ var Tooltip = (function () {
       var stepNum = this.currentStep();
       var subtextMarkup = this._subtextMarkup();
       var buttonFloat = subtextMarkup == '' ? 'center' : 'right';
-      var template = '\n      <div class="chariot-tooltip chariot-step-' + stepNum + '">\n        ' + this._arrowMarkup() + '\n        <h1 class="chariot-tooltip-content">' + this._iconMarkup() + '</h1>\n        <div class="chariot-tooltip-header">' + this.title + '</div>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
+      var template = '\n      <div class="chariot-tooltip chariot-step-' + stepNum + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
       var $template = (0, _jquery2['default'])(template);
 
       // Add default data attributes
