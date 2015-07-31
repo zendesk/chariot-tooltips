@@ -168,10 +168,29 @@ gulp.task('build-release',function(cb){
   );
 });
 
+function releaseHeader() {
+  var license = fs.readFileSync('LICENSE.txt', 'utf8'),
+    packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8')),
+    version = packageJson.version,
+    repository = packageJson.repository,
+    name = packageJson.name,
+    description = packageJson.description;
+
+  return [ "/**",
+    [" *", name, "v"+version, "-", description].join(" "),
+    " *",
+    [" *", repository].join(" "),
+    " *",
+    license,
+    " */\n"
+  ].join('\n')
+
+}
+
 gulp.task('prepend-version', function(){
   return gulp.src(['dist/javascripts/' + projectName + '.js',
     'dist/stylesheets/' + projectName + '.css'], {base: 'dist/'})
-    .pipe(insert.prepend("// Chariot v" + getVersion() + "\n"))
+    .pipe(insert.prepend(releaseHeader()))
     .pipe(gulp.dest('dist/'))
 })
 
