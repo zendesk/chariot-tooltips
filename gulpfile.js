@@ -169,7 +169,7 @@ gulp.task('build-release',function(cb){
 });
 
 gulp.task('prepend-version', function(){
-  return gulp.src(['dist/javascripts/' + projectName + '.js', 
+  return gulp.src(['dist/javascripts/' + projectName + '.js',
     'dist/stylesheets/' + projectName + '.css'], {base: 'dist/'})
     .pipe(insert.prepend("// Chariot v" + getVersion() + "\n"))
     .pipe(gulp.dest('dist/'))
