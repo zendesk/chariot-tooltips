@@ -4,6 +4,9 @@
 <link rel="stylesheet" type="text/css" href="./dist/stylesheets/chariot.css">
 
 <style>
+  body {
+    background: black;
+  }
 	.outer {
 		position: relative;
 		top: 300px;
@@ -41,9 +44,9 @@ function click() {
 <body>
 <a href='javascript:click()'>Add history</a>
 <div class='outer'>
-  <div class="inner top-left"></div>
-  <div class="inner top-right"></div>
-  <div class="inner bottom-left"></div>
+  <div class="inner top-left">Top Left</div>
+  <div class="inner top-right">Top Right</div>
+  <div class="inner bottom-left">Bottom Left</div>
 </div>
 
 <script>
@@ -94,7 +97,25 @@ new Chariot.chariot({
           }
         }
       },
-      // #3 will illustrate that missing selector results in a skipped step
+      // This step illustrates how a tooltip can be offset
+      {
+        selectors: {
+          bottomLeft: ".bottom-left",
+        },
+        tooltip: {
+          position: 'right',
+          title: 'Tooltip #3',
+          text: 'Placeholder text.',
+          anchorElement: "bottomLeft",
+          yOffset: 50,
+          xOffset: 20,
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
+        }
+      },
+      // This step shows how a missing selector will cause a tutorial to end
       {
         selectors: {
           bottomLeft: ".bottom-left",
@@ -111,7 +132,7 @@ new Chariot.chariot({
           }
         }
       },
-      // #4 nothing special
+      // This step is skipped entirely because of the last step
       {
         selectors: {
           topRight: ".top-right"

@@ -14,6 +14,7 @@
  * @typedef TutorialConfiguration
  * @property {boolean} [shouldOverlay=true] - Setting to false will disable the
  * overlay that normally appears over the page and behind the tooltips.
+ * @property {string} [overlayColor='rgba(255,255,255,0.7)'] - Overlay CSS color
  * @property {StepConfiguration[]} steps - An array of step configurations (see below).
  * @property {Tutorial-completeCallback} [complete] - Callback that is called
  * once the tutorial has gone through all steps.

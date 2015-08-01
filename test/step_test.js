@@ -68,20 +68,20 @@ describe('Step', () => {
 
     it('tearsDown with no cloned elements', () => {
       clone = { remove: () => ({}) };
-      step.clonedElements = null;
+      step._clonedElements = null;
       expect(step.tearDown.bind(step)).not.to.throw(Error);
     });
 
     it('tearsDown with no cloned elements', () => {
       clone = { remove: () => ({}) };
-      step.clonedElements = [];
+      step._clonedElements = [];
       expect(step.tearDown.bind(step)).not.to.throw(Error);
     });
 
     it('tearsDown all clone elements', () => {
       clone = { remove: () => ({}) };
       sinon.spy(clone, 'remove');
-      step.clonedElements = [clone];
+      step._clonedElements = [clone];
       step.tearDown();
       expect(clone.remove.calledOnce).to.be.true;
     });

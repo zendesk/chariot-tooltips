@@ -17,6 +17,7 @@ class Tutorial {
     });
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
     this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
+    this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.7)';
   }
 
   start() {
@@ -77,6 +78,51 @@ class Tutorial {
     $overlay.css({ 'z-index': OVERLAY_Z_INDEX });
     $('body').append($overlay);
     this.$overlay = $overlay;
+  }
+
+  useOverlayWithClones() {
+    $(window).unbind('resize');
+
+    this.$overlay.css({
+      background: this.overlayColor,
+      width: '100%',
+      height: '100%',
+      border: 'none'
+    });
+  }
+
+  useOverlayWithoutClones($element) {
+    this.resizeOverlayToElement($element);
+
+    $(window).resize(() => {
+      this.resizeOverlayToElement($element);
+    });
+  }
+
+  resizeOverlayToElement($element) {
+    // First position the overlay
+    let offset = $element.offset();
+
+    // Then resize it
+    let borderStyles = `solid ${this.overlayColor}`;
+    let docWidth = $(window).outerWidth();
+    let docHeight = $(window).outerHeight();
+
+    let width = $element.outerWidth();
+    let height = $element.outerHeight();
+    let leftWidth = offset.left;
+    let rightWidth = docWidth - (offset.left + width);
+    let topWidth = offset.top;
+    let bottomWidth = docHeight - (offset.top + height);
+
+    this.$overlay.css({
+      background: 'transparent',
+      width, height,
+      'border-left': `${leftWidth}px ${borderStyles}`,
+      'border-top': `${topWidth}px ${borderStyles}`,
+      'border-right': `${rightWidth}px ${borderStyles}`,
+      'border-bottom': `${bottomWidth}px ${borderStyles}`,
+    });
   }
 
   _end() {

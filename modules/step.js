@@ -20,7 +20,8 @@ class Step {
     this.after = config.after;
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
     this.cta = config.cta || 'Next';
-    this.clonedElements = {};
+    this._selectedElements = {};
+    this._clonedElements = {};
   }
 
   render() {
@@ -33,7 +34,17 @@ class Step {
     }).then(() => {
       return this._waitForElements();
     }).then(() => {
-      this._cloneElements(this.selectors);
+      if(Object.keys(this.selectors).length === 1) {
+        // Only use an overlay
+        let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
+        let $element =  this._selectedElements[selectors[0]];
+        this.tutorial.useOverlayWithoutClones($element);
+      } else {
+        // Clone elements if multiple selectors
+        this.tutorial.useOverlayWithClones();
+        this._cloneElements(this.selectors);
+      }
+
       this._renderTooltip();
     }).catch(error => {
       console.log(error);
@@ -46,14 +57,14 @@ class Step {
   }
 
   getClonedElement(name) {
-    return this.clonedElements[name];
+    return this._clonedElements[name];
   }
 
   tearDown() {
-    for (let elementName in this.clonedElements) {
-      this.clonedElements[elementName].remove();
+    for (let elementName in this._clonedElements) {
+      this._clonedElements[elementName].remove();
     }
-    this.clonedElements = {};
+    this._clonedElements = {};
     this.tooltip.tearDown();
   }
 
@@ -96,6 +107,7 @@ class Step {
         }, DOM_QUERY_DELAY);
       }
     } else {
+      this._selectedElements[selector] = element;
       resolve();
     }
   }
@@ -116,7 +128,7 @@ class Step {
     for (let selectorName in selectors) {
       let sel = selectors[selectorName];
       let clone = this._cloneElement(sel);
-      this.clonedElements[selectorName] = clone;
+      this._clonedElements[selectorName] = clone;
     }
   }
 
@@ -133,7 +145,10 @@ class Step {
   }
 
   _cloneElement(sel) {
-    let $element = $(sel);
+    // TODO: replace this with a cached selected elmeent
+    // let $element = $(sel);
+    let $element = this._selectedElements[sel];
+
     if ($element.length == 0) {
       console.log("Can't find selector to clone: " + sel);
       return null;
