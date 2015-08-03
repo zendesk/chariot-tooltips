@@ -18,6 +18,7 @@ class Tutorial {
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
     this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
     this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.7)';
+    this.highlightTransparentRegion = config.highlightTransparentRegion || false;
   }
 
   start() {
@@ -121,7 +122,7 @@ class Tutorial {
       'border-left': `${leftWidth}px ${borderStyles}`,
       'border-top': `${topWidth}px ${borderStyles}`,
       'border-right': `${rightWidth}px ${borderStyles}`,
-      'border-bottom': `${bottomWidth}px ${borderStyles}`,
+      'border-bottom': `${bottomWidth}px ${borderStyles}`
     });
   }
 

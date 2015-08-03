@@ -13,15 +13,14 @@ class Step {
     if (config.before && typeof config.before !== 'function') {
       throw "before must be a function";
     }
-    this.selectors = config.selectors;
     this.tutorial = tutorial;
-    this.text = config.text;
+    this.selectors = config.selectors;
     this.before = config.before;
     this.after = config.after;
-    this.tooltip = new Tooltip(config.tooltip, this, tutorial);
-    this.cta = config.cta || 'Next';
+    this._resizeTimeout = null;
     this._selectedElements = {};
     this._clonedElements = {};
+    this.tooltip = new Tooltip(config.tooltip, this, tutorial);
   }
 
   render() {
@@ -34,7 +33,7 @@ class Step {
     }).then(() => {
       return this._waitForElements();
     }).then(() => {
-      if(Object.keys(this.selectors).length === 1) {
+      if (this.tutorial.highlightTransparentRegion && Object.keys(this.selectors).length === 1) {
         // Only use an overlay
         let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
         let $element =  this._selectedElements[selectors[0]];
@@ -150,13 +149,24 @@ class Step {
     let $element = this._selectedElements[sel];
 
     if ($element.length == 0) {
-      console.log("Can't find selector to clone: " + sel);
       return null;
     }
     let $clone = $element.clone();
     $('body').append($clone);
     this._applyComputedStyles($clone, $element);
     this._positionClone($clone, $element);
+
+    $(window).resize(() => {
+      if (this._resizeTimeout) {
+        clearTimeout(this._resizeTimeout);
+      }
+      this.resizeTimeout = setTimeout(() => {
+        Style.clearCache();
+        this._applyComputedStyles($clone, $element);
+        this._positionClone($clone, $element);
+        this._resizeTimeout = null;
+      }, 50)
+    });
 
     return $clone;
   }

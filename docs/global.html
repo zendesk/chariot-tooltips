@@ -272,7 +272,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line50">line 50</a>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -354,7 +354,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line45">line 45</a>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -416,6 +416,8 @@ be cloned and placed over the overlay.
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -447,6 +449,10 @@ be cloned and placed over the overlay.
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
             <td class="description last">Tooltip configuration.</td>
         </tr>
@@ -477,6 +483,10 @@ be cloned and placed over the overlay.
                 </td>
             
 
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">Contains arbitrarily-named
@@ -513,6 +523,10 @@ be cloned and placed over the overlay.
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
             <td class="description last">Callback called once before step
  is rendered.</td>
@@ -545,9 +559,54 @@ be cloned and placed over the overlay.
             
 
             
+                <td class="default">
+                
+                </td>
+            
 
             <td class="description last">Callback called once after step is
  rendered.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>highlightTransparentRegion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Setting to true will
+ result in elements being highlighted with a transparent square region,
+ instead of the individual selected element. This is useful if you want to
+ enable spotlight-like transitions between steps.
+ Note: This value is ignored when selectors contain multiple keys.</td>
         </tr>
 
     
@@ -586,7 +645,7 @@ be cloned and placed over the overlay.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line28">line 28</a>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line29">line 29</a>
     </li></ul></dd>
     
 
@@ -599,6 +658,182 @@ be cloned and placed over the overlay.
 
 
 
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="Tooltip-renderCallback"><span class="type-signature"></span>Tooltip-renderCallback<span class="signature">(currentStep, totalSteps)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    A function that provides step information and returns subtext content.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>currentStep</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current step number</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>totalSteps</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The total # of steps</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    markup - The HTML markup that represents the subtext
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -730,7 +965,7 @@ be cloned and placed over the overlay.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line83">line 83</a>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -949,13 +1184,13 @@ provided, which can be configured
 
         <tr>
             
-                <td class="name"><code>renderCallback</code></td>
+                <td class="name"><code>render</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type"><a href="global.html#Tooltip-renderCallback">Tooltip-renderCallback</a></span>
 
 
             
@@ -1236,7 +1471,7 @@ provided, which can be configured
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line55">line 55</a>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -1308,7 +1543,7 @@ provided, which can be configured
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line23">line 23</a>
+        <a href="config.example.js.html">config.example.js</a>, <a href="config.example.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -1415,6 +1650,43 @@ available for end of tutorial cleanup.
 
             <td class="description last">Setting to false will disable the
 overlay that normally appears over the page and behind the tooltips.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>overlayColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'rgba(255,255,255,0.7)'
+                
+                </td>
+            
+
+            <td class="description last">Overlay CSS color</td>
         </tr>
 
     
@@ -1558,7 +1830,7 @@ once the tutorial has gone through all steps.</td>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Jul 28 2015 17:21:17 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Mon Aug 03 2015 09:59:14 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>
