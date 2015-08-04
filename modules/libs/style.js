@@ -63,6 +63,7 @@ class Style {
       this._ieBoxModelStyleFix('width', $clone, cssText);
       this._ieBoxModelStyleFix('height', $clone, cssText);
     }
+    $clone.css('pointer-events', 'none');
     //this._clonePseudoStyle($element, $clone, 'before');
     //this._clonePseudoStyle($element, $clone, 'after');
   }
