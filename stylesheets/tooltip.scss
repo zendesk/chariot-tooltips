@@ -1,15 +1,15 @@
 $border-color: #ddd;
-$shadow-color: #000 8%;
+$shadow-color: rgba(31, 28, 28, 0.3);
+$arrow-shadow-color: rgba(31, 28, 28, 0.1);
 $white: #fff;
 $greyish-brown: #555;
 $ugly-green-30: #77a300;
 $warm-grey: #999;
 
 .chariot-tooltip {
-  box-shadow: 0 2px 2px rgba(31, 28, 28, 0.08);
+  box-shadow: 0 0 5px 0 $shadow-color;
   background-color: $white;
   border: 1px solid $border-color;
-  box-shadow: 0px 2px 2px $shadow-color;
   padding: 30px;
   width: 220px;
   position: absolute;
@@ -95,24 +95,24 @@ $warm-grey: #999;
   &-arrow-left {
     border-left: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
-    box-shadow: -1px 1px 1px $shadow-color;
+    box-shadow: -2px 2px 2px 0 $arrow-shadow-color;
   }
 
   &-arrow-right {
     border-right: 1px solid $border-color;
     border-top: 1px solid $border-color;
-    box-shadow: 1px -1px 1px $shadow-color;
+    box-shadow: 2px -2px 2px 0 $arrow-shadow-color;
   }
 
   &-arrow-top {
     border-left: 1px solid $border-color;
     border-top: 1px solid $border-color;
-    // No shadow here
+    box-shadow: -2px -2px 4px 0 $arrow-shadow-color;
   }
 
   &-arrow-bottom {
     border-right: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
-    box-shadow: 1px 1px 1px $shadow-color;
+    box-shadow: 2px 2px 4px 0 $arrow-shadow-color;
   }
 }
