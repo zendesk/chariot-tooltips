@@ -9,11 +9,12 @@ let DOM_QUERY_DELAY = 100;
 let Promise = require('es6-promise').Promise;
 
 class Step {
-  constructor(config = {}, tutorial) {
+  constructor(config = {}, tutorial, overlay) {
     if (config.before && typeof config.before !== 'function') {
       throw "before must be a function";
     }
     this.tutorial = tutorial;
+    this.overlay = overlay;
     this.selectors = config.selectors;
     this.before = config.before;
     this.after = config.after;
@@ -37,10 +38,10 @@ class Step {
         // Only use an overlay
         let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
         let $element =  this._selectedElements[selectors[0]];
-        this.tutorial.useOverlayWithoutClones($element);
+        this.overlay.useWithoutClones($element);
       } else {
         // Clone elements if multiple selectors
-        this.tutorial.useOverlayWithClones();
+        this.overlay.useWithClones();
         this._cloneElements(this.selectors);
       }
 
@@ -119,7 +120,7 @@ class Step {
   }
 
   _cloneElements(selectors) {
-    if (this.tutorial.hasNoOverlay()) return;
+    if (this.overlay.isVisible()) return;
 
     setTimeout(() => {
       this.tutorial.prepare();
@@ -144,8 +145,6 @@ class Step {
   }
 
   _cloneElement(sel) {
-    // TODO: replace this with a cached selected elmeent
-    // let $element = $(sel);
     let $element = this._selectedElements[sel];
 
     if ($element.length == 0) {
