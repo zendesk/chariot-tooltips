@@ -18,16 +18,12 @@
  * @property {StepConfiguration[]} steps - An array of step configurations (see below).
  * @property {Tutorial-completeCallback} [complete] - Callback that is called
  * once the tutorial has gone through all steps.
- * @property {boolean} [highlightTransparentRegion=false] - Setting to true will
- *  result in elements being highlighted with a transparent square region,
- *  instead of the individual selected element.
- *  Note: This value is ignored when a step contains multiple selectors.
  * @property {boolean} [compatibilityMode=false] - Setting to true will use an
  *  implementation that does not rely on cloning highlighted elements.
- *  Caveat: This value is ignored if a step contains multiple selectors.
+ *  Note: This value is ignored if a step contains multiple selectors.
  * @property {boolean} [animated=false] - (TODO) Enables spotlight-like
  *  transitions between steps.  Setting to true will enable compatibilityMode.
- *  Caveat: Animations will not occur for steps containing multiple selectors.
+ *  Note: Animations will not occur for steps containing multiple selectors.
  */
 
 /**
@@ -154,6 +150,6 @@ var OnboardingConfig = {
     complete: () => {
     },
     shouldOverlay: true,
-    highlightTransparentRegion: true
+    compatibilityMode: true
   }
 };

@@ -34,7 +34,7 @@ class Step {
     }).then(() => {
       return this._waitForElements();
     }).then(() => {
-      if (this.tutorial.highlightTransparentRegion && Object.keys(this.selectors).length === 1) {
+      if (this.tutorial.compatibilityMode && Object.keys(this.selectors).length === 1) {
         // Only use an overlay
         let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
         let $element =  this._selectedElements[selectors[0]];

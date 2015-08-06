@@ -12,7 +12,7 @@ class Tutorial {
     }
 
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
-    this.highlightTransparentRegion = config.highlightTransparentRegion || false;
+    this.compatibilityMode = config.compatibilityMode || false;
 
     this.steps = [];
     this.overlay = new Overlay(config);
