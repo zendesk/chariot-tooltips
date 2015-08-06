@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { OVERLAY_Z_INDEX } from './constants';
+import { OVERLAY_Z_INDEX, CLONE_Z_INDEX } from './constants';
 
 class Overlay {
   constructor(config) {
@@ -18,9 +18,26 @@ class Overlay {
     $overlay.css({ 'z-index': OVERLAY_Z_INDEX });
     $('body').append($overlay);
     this.$overlay = $overlay;
+
+    let $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
+    $transparentOverlay.css({
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      'z-index': CLONE_Z_INDEX + 1,
+      background: 'transparent',
+      display: 'none'
+    });
+    $('body').append($transparentOverlay);
+    this.$transparentOverlay = $transparentOverlay;
   }
 
-  useWithClones() {
+  showBackgroundOverlay() {
+    // Remove the resize handler that might exist from focusOnElement
+    // (Note: take care to not call this after cloning elements, because they
+    //  have their own window resize handlers)
     $(window).unbind('resize');
 
     this.$overlay.css({
@@ -31,7 +48,14 @@ class Overlay {
     });
   }
 
-  useWithoutClones($element) {
+  showTransparentOverlay() {
+    this.$transparentOverlay.show();
+  }
+
+  focusOnElement($element) {
+    // Hide overlay from showTransparentOverlay
+    this.$transparentOverlay.hide();
+
     this._resizeOverlayToElement($element);
 
     $(window).resize(() => {
@@ -67,6 +91,9 @@ class Overlay {
 
   tearDown() {
     this.$overlay.remove();
+    if (this.$transparentOverlay) {
+      this.$transparentOverlay.remove();
+    }
   }
 }
 

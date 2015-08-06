@@ -35,14 +35,9 @@ class Step {
       return this._waitForElements();
     }).then(() => {
       if (this.tutorial.compatibilityMode && Object.keys(this.selectors).length === 1) {
-        // Only use an overlay
-        let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
-        let $element =  this._selectedElements[selectors[0]];
-        this.overlay.useWithoutClones($element);
+        this._transparentOverlayStrategy();
       } else {
-        // Clone elements if multiple selectors
-        this.overlay.useWithClones();
-        this._cloneElements(this.selectors);
+        this._clonedElementStrategy();
       }
 
       this._renderTooltip();
@@ -76,6 +71,20 @@ class Step {
   }
 
   // PRIVATE
+
+  _transparentOverlayStrategy() {
+    // Only use an overlay
+    let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
+    let $element =  this._selectedElements[selectors[0]];
+    this.overlay.focusOnElement($element);
+  }
+
+  _clonedElementStrategy() {
+    // Clone elements if multiple selectors
+    this.overlay.showBackgroundOverlay();
+    this._cloneElements(this.selectors);
+    this.overlay.showTransparentOverlay();
+  }
 
   _renderTooltip() {
     this.tooltip.render();
@@ -132,6 +141,31 @@ class Step {
     }
   }
 
+  _cloneElement(sel) {
+    let $element = this._selectedElements[sel];
+
+    if ($element.length == 0) { return null; }
+
+    let $clone = $element.clone();
+    $('body').append($clone);
+    this._applyComputedStyles($clone, $element);
+    this._positionClone($clone, $element);
+
+    $(window).resize(() => {
+      if (this._resizeTimeout) {
+        clearTimeout(this._resizeTimeout);
+      }
+      this._resizeTimeout = setTimeout(() => {
+        Style.clearCache();
+        this._applyComputedStyles($clone, $element);
+        this._positionClone($clone, $element);
+        this._resizeTimeout = null;
+      }, 50)
+    });
+
+    return $clone;
+  }
+
   _applyComputedStyles($clone, $element) {
     if (!$element.is(":visible")) {
       return;
@@ -142,32 +176,6 @@ class Step {
     $element.children().toArray().forEach((child, index) => {
       this._applyComputedStyles($(clonedChildren[index]), $(child));
     });
-  }
-
-  _cloneElement(sel) {
-    let $element = this._selectedElements[sel];
-
-    if ($element.length == 0) {
-      return null;
-    }
-    let $clone = $element.clone();
-    $('body').append($clone);
-    this._applyComputedStyles($clone, $element);
-    this._positionClone($clone, $element);
-
-    $(window).resize(() => {
-      if (this._resizeTimeout) {
-        clearTimeout(this._resizeTimeout);
-      }
-      this.resizeTimeout = setTimeout(() => {
-        Style.clearCache();
-        this._applyComputedStyles($clone, $element);
-        this._positionClone($clone, $element);
-        this._resizeTimeout = null;
-      }, 50)
-    });
-
-    return $clone;
   }
 
   _positionClone($clone, $element) {

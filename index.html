@@ -20,7 +20,13 @@
     float: left;
 	 	width: 250px;
 		height: 250px;
+
 	}
+  .inner button {
+    padding: 20px;
+    width: 100px;
+    height: 100px;
+  }
   .top-left {
     background: blue;
   }
@@ -44,9 +50,9 @@ function click() {
 <body>
 <a href='javascript:click()'>Add history</a>
 <div class='outer'>
-  <div class="inner top-left">Top Left</div>
-  <div class="inner top-right">Top Right</div>
-  <div class="inner bottom-left">Bottom Left</div>
+  <div class="inner top-left"><button>Top Left</button></div>
+  <div class="inner top-right"><button>Top Right</button></div>
+  <div class="inner bottom-left"><button>Bottom Left</button></div>
 </div>
 
 <script>
@@ -153,7 +159,7 @@ new Chariot.chariot({
     complete: function(){
 
     },
-    highlightTransparentRegion: true
+    compatibilityMode: true
   }
 });
 </script>

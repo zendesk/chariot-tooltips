@@ -52,9 +52,6 @@ class Style {
         match(new RegExp('chariot_computed_styles[^\s]*')) :
         null;
 
-    // return match ? classNameToComputedStyles[match[0]] :
-    //   this._cacheStyleFor($selector);
-
     if (match && classNameToComputedStyles[match[0]]) {
       return classNameToComputedStyles[match[0]];
     } else {
