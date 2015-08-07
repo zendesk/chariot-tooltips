@@ -9,24 +9,27 @@ _|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|
 
 # Chariot
 > Walkthroughs so easy, you might as well be flying in a chariot.
-A Javascript library for creating step-by-step tooltip tutorials, using an
-overlay to hide the background noise..
+
+A Javascript library for creating step-by-step tooltip tutorials, using a
+background overlay to bring focus to the elements you care about.
 
 # Demo
 
-Refer to Development section below.
+Refer to [Development](#development) section below.
 
 # Motivation
 We believe that tooltips are better at drawing focus to highlighted elements
 on a website when the background is dimmed out.
+
 Existing tooltip overlay solutions don't use overlay backgrounds, or if they
 do, they fail to consider when parent containers already have the CSS
 `z-index` property set.
+
 (A child element's `z-index` cannot override it's parent's `z-index`).
 
 # Features
 
-- Tutorial kicked off by query param
+- Tutorial kicked off by query parameter
 - Overlay hides background and clones your key elements over it
 - `z-index` is taken care of
 - Programmatic API and configurable callbacks
