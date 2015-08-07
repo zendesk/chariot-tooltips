@@ -1,0 +1,16 @@
+# compiled output
+/tmp
+/dist
+_site
+/release
+
+# dependencies
+/node_modules
+/bower_components
+
+# misc
+/.sass-cache
+npm-debug.log
+*.sublime-project
+*.sublime-workspace
+.DS_Store

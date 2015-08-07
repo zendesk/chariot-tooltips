@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: overlay.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: overlay.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Constants from './constants';
+
+class Overlay {
+
+  /**
+   * @constructor
+   *
+   */
+  constructor(config) {
+    this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
+    this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
+    this.useTransparentOverlayStrategy = !!config.useTransparentOverlayStrategy;
+    this._resizeHandler = null;
+  }
+
+  isVisible() {
+    return this.shouldOverlay === false;
+  }
+
+  render() {
+    if (this.isVisible()) return;
+
+    this.$document = $(document);
+    let $body = $('body');
+    let $overlay = this._createOverlay();
+    $body.append($overlay);
+    this.$overlay = $overlay;
+
+    let $transparentOverlay = this._createTransparentOverlay();
+    $body.append($transparentOverlay);
+    this.$transparentOverlay = $transparentOverlay;
+  }
+
+  isTransparentOverlayStrategy() {
+    return this.useTransparentOverlayStrategy;
+  }
+
+  // The following 2 methods are part of the "clone element" strategy
+
+  /**
+   * Shows a background overlay to obscure the main interface, and acts as the
+   * background for the cloned elements involved in the tutorial.
+   * This method is involved in the "clone element" strategy.
+   */
+  showBackgroundOverlay() {
+    // Remove the resize handler that might exist from focusOnElement
+    // (Note: take care to not call this after cloning elements, because they
+    //  have their own window resize handlers)
+    let $window = $(window);
+
+    this.$overlay.css({
+      background: this.overlayColor,
+      border: 'none'
+    });
+
+    this._resizeOverlayToFullScreen();
+    this._resizeHandler = this._resizeOverlayToFullScreen.bind(this);
+  }
+
+  /**
+   * Shows a transparent overlay to prevent user from interacting with cloned
+   * elements.
+   */
+  showTransparentOverlay() {
+    this.$transparentOverlay.show();
+  }
+
+  /**
+   * Focuses on an element by resizing a transparent overlay to match its
+   * dimensions and changes the borders to be colored to obscure the main UI.
+   * This method is involved in the "transparent overlay" strategy.
+   */
+  focusOnElement($element) {
+    // Hide overlay from showTransparentOverlay
+    this.$transparentOverlay.hide();
+
+    this._resizeOverlayToElement($element);
+    this._resizeHandler = this._resizeOverlayToElement.bind(this, $element);
+  }
+
+  resize() {
+    this._resizeHandler();
+  }
+
+  tearDown() {
+    this.$overlay.remove();
+    if (this.$transparentOverlay) {
+      this.$transparentOverlay.remove();
+    }
+  }
+
+  toString() {
+    return `[Overlay - shouldOverlay: ${this.shouldOverlay}, ` +
+      `overlayColor: ${this.overlayColor}]`;
+  }
+
+  //// PRIVATE
+
+  _createOverlay() {
+    let $overlay = $("&lt;div class='chariot-overlay'>&lt;/div>");
+    $overlay.css({ 'z-index': Constants.OVERLAY_Z_INDEX });
+    return $overlay;
+  }
+
+  _createTransparentOverlay() {
+    let $transparentOverlay = $("&lt;div class='chariot-transparent-overlay'>&lt;/div>");
+    $transparentOverlay.css({
+      'z-index': Constants.CLONE_Z_INDEX + 1,
+      width: document.body.scrollWidth,
+      height: document.body.scrollHeight
+    });
+    return $transparentOverlay;
+  }
+
+  // Used for clone element strategy
+  _resizeOverlayToFullScreen() {
+    this.$overlay.css({
+      width: document.body.scrollWidth,
+      height: document.body.scrollHeight
+    });
+  }
+
+  // Used for transparent overlay strategy
+  _resizeOverlayToElement($element) {
+    // First position the overlay
+    let offset = $element.offset();
+
+    // Then resize it
+    let borderStyles = `solid ${this.overlayColor}`;
+    let $document = this.$document;
+    let docWidth = $document.outerWidth();
+    let docHeight = $document.outerHeight();
+
+    let width = $element.outerWidth();
+    let height = $element.outerHeight();
+
+    let leftWidth = offset.left;
+    let rightWidth = docWidth - (offset.left + width);
+    let topWidth = offset.top;
+    let bottomWidth = docHeight - (offset.top + height);
+
+    this.$overlay.css({
+      background: 'transparent',
+      width, height,
+      'border-left': `${leftWidth}px ${borderStyles}`,
+      'border-top': `${topWidth}px ${borderStyles}`,
+      'border-right': `${rightWidth}px ${borderStyles}`,
+      'border-bottom': `${bottomWidth}px ${borderStyles}`
+    });
+  }
+}
+
+export default Overlay;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Chariot.html">Chariot</a></li><li><a href="Overlay.html">Overlay</a></li><li><a href="Step.html">Step</a></li><li><a href="Tooltip.html">Tooltip</a></li><li><a href="Tutorial.html">Tutorial</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Tue Nov 15 2016 11:40:20 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

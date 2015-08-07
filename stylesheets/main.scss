@@ -1,0 +1,35 @@
+---
+---
+
+.example-button {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+
+  .button {
+    text-align: center;
+
+    span {
+      padding: 0;
+    }
+  }
+}
+
+span.cta {
+  font-size: 15px;
+}
+
+div.highlight {
+  margin-bottom: 30px;
+}
+
+.anchor-container {
+  text-align: center;
+  margin-top: 30px;
+
+  #anchor-example {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+  }
+}
