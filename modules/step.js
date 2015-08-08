@@ -60,6 +60,7 @@ class Step {
       this._clonedElements[elementName].remove();
     }
     this._clonedElements = {};
+    this._selectedElements = {};
     this.tooltip.tearDown();
   }
 

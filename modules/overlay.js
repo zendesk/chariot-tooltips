@@ -4,7 +4,7 @@ import { OVERLAY_Z_INDEX, CLONE_Z_INDEX } from './constants';
 class Overlay {
   constructor(config) {
     this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
-    this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.7)';
+    this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
   }
 
   isVisible() {
@@ -14,22 +14,11 @@ class Overlay {
   render() {
     if (this.isVisible()) return;
 
-    let $overlay = $("<div class='chariot-overlay'></div>");
-    $overlay.css({ 'z-index': OVERLAY_Z_INDEX });
+    let $overlay = this._createOverlay();
     $('body').append($overlay);
     this.$overlay = $overlay;
 
-    let $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
-    $transparentOverlay.css({
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      'z-index': CLONE_Z_INDEX + 1,
-      background: 'transparent',
-      display: 'none'
-    });
+    let $transparentOverlay = this._createTransparentOverlay();
     $('body').append($transparentOverlay);
     this.$transparentOverlay = $transparentOverlay;
   }
@@ -63,6 +52,28 @@ class Overlay {
     });
   }
 
+
+  tearDown() {
+    this.$overlay.remove();
+    if (this.$transparentOverlay) {
+      this.$transparentOverlay.remove();
+    }
+  }
+
+  //// PRIVATE
+
+  _createOverlay() {
+    let $overlay = $("<div class='chariot-overlay'></div>");
+    $overlay.css({ 'z-index': OVERLAY_Z_INDEX });
+    return $overlay;
+  }
+
+  _createTransparentOverlay() {
+    let $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
+    $transparentOverlay.css({ 'z-index': CLONE_Z_INDEX + 1 });
+    return $transparentOverlay;
+  }
+
   _resizeOverlayToElement($element) {
     // First position the overlay
     let offset = $element.offset();
@@ -87,13 +98,6 @@ class Overlay {
       'border-right': `${rightWidth}px ${borderStyles}`,
       'border-bottom': `${bottomWidth}px ${borderStyles}`
     });
-  }
-
-  tearDown() {
-    this.$overlay.remove();
-    if (this.$transparentOverlay) {
-      this.$transparentOverlay.remove();
-    }
   }
 }
 
