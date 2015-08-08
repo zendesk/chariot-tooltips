@@ -119,6 +119,9 @@ class Step {
     } else {
       this._selectedElements[selector] = element;
       resolve();
+
+      // TODO: fire event when element is ready. Tutorial will listen and call
+      // prepare() on all steps
     }
   }
 

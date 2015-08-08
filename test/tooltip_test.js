@@ -65,12 +65,6 @@ describe('Tooltip', () => {
     it('reads title', function() {
       expect(tooltip.title).to.equal(configuration.title);
     });
-    it('reads cta', function() {
-      expect(tooltip.cta).to.equal(configuration.cta);
-    });
-    it('reads subtext', function() {
-      expect(tooltip.subtext).to.equal(configuration.subtext);
-    });
     it('reads attr', function() {
       expect(tooltip.attr).to.equal(configuration.attr);
     });
@@ -104,6 +98,8 @@ describe('Tooltip', () => {
 
     it('uses elements from config to create markup', () => {
       let templateHtml = template.html();
+      expect(tooltip.cta).to.equal(configuration.cta);
+      expect(tooltip.subtext).to.equal(configuration.subtext);
       expect(template.attr('class').includes('step-1')).to.be.true;
       expect(templateHtml.includes(tooltip.title)).to.be.true;
       expect(templateHtml.includes(tooltip.text)).to.be.true;

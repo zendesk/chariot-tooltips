@@ -25,6 +25,7 @@ class Style {
   static clearCache() {
     classNameToComputedStyles = {};
   }
+
   static calculateTop($tooltip, $anchor, yOffset, position, arrowOffset) {
     let offset = 0;
     switch (position) {

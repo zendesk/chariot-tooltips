@@ -7,10 +7,10 @@ const DEFAULT_ARROW_LENGTH = 11;
 
 class Tooltip {
   constructor(config, step, tutorial) {
+    this.config = config;
     this.step = step;
     this.tutorial = tutorial;
     this.position = config.position;
-    this.text = config.text;
     let arrowClass = 'chariot-tooltip';
 
     switch (this.position) {
@@ -38,21 +38,22 @@ class Tooltip {
     this.height = parseInt(config.height);
     this.anchorElement = config.anchorElement;
 
-    // TODO: Sanitize these user-inputted elements
+    this.text = config.text;
     this.iconUrl = config.iconUrl;
     this.title = config.title;
-    this.cta = config.cta;
-    this.subtext = config.subtext;
     this.attr = config.attr || {};
     this.arrowLength = config.arrowLength || DEFAULT_ARROW_LENGTH;
   }
 
   _createTooltipTemplate() {
-    let stepNum = this.currentStep();
+    let currentStep = this.tutorial.currentStep(this.step);
+    let totalSteps = this.tutorial.steps.length;
+    this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
+    this.subtext = this.config.subtext || () => `${currentStep} of ${totalSteps}`;
     let subtextMarkup = this._subtextMarkup();
     let buttonFloat = subtextMarkup == '' ? 'center' : 'right';
     let template = `
-      <div class="chariot-tooltip chariot-step-${stepNum}">
+      <div class="chariot-tooltip chariot-step-${currentStep}">
         ${this._arrowMarkup()}
         <div class="chariot-tooltip-content">${this._iconMarkup()}</div>
         <h1 class="chariot-tooltip-header">${this.title}</h1>
@@ -65,7 +66,7 @@ class Tooltip {
     let $template = $(template);
 
     // Add default data attributes
-    this.attr['data-step-order'] = stepNum;
+    this.attr['data-step-order'] = currentStep;
     $template.attr(this.attr);
     return $template;
   }
@@ -94,6 +95,7 @@ class Tooltip {
   }
 
   render() {
+
     let $tooltip = this.$tooltip = this._createTooltipTemplate();
     $('body').append($tooltip);
 

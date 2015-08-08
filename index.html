@@ -57,7 +57,6 @@ function click() {
 
 <script>
 
-// new Chariot.chariot({
 new Chariot({
   ticketing: {
     steps: [
@@ -70,20 +69,10 @@ new Chariot({
           position: 'bottom', // 'top' | 'left' | 'bottom' | 'right'
           title: 'Know your customer',
           text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
-          // yOffset: 250,
-          // xOffset: 200,
           anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          },
           attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
           arrowLength: 20
-        },
-        before: function() {
-          // any arbitrary code to run before showing this step (after the timeout between steps)
-          // eg. populate an image outside of the #elem
         },
       },
       // Step #2 illustrates the ability to highlight select two selectors
@@ -98,10 +87,6 @@ new Chariot({
           text: 'Two selectors being highlighted.',
           // xOffset: -50,
           anchorElement: "topRight",
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          }
         }
       },
       // This step illustrates how a tooltip can be offset
@@ -116,12 +101,9 @@ new Chariot({
           anchorElement: "bottomLeft",
           yOffset: 50,
           xOffset: 20,
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          }
         }
       },
+      /*
       // This step shows how a missing selector will cause a tutorial to end
       {
         selectors: {
@@ -155,6 +137,7 @@ new Chariot({
           }
         }
       }
+      */
     ],
     // shouldOverlay: false,
     complete: function(){
