@@ -1,22 +1,25 @@
 import $ from 'jquery';
 import Step from './step';
-import { OVERLAY_Z_INDEX } from './constants';
+import Overlay from './overlay';
 let Promise = require('es6-promise').Promise;
 
 class Tutorial {
   constructor(chariot, config) {
-    this.prepared = false;
     this.chariot = chariot;
-    this.steps = [];
     if (typeof config.steps !== 'object') {
       throw new Error('steps must be an array');
       return;
     }
-    config.steps.forEach(step => {
-      this.steps.push(new Step(step, this));
-    });
+
     this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
-    this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
+    this.compatibilityMode = config.compatibilityMode || false;
+
+    this.steps = [];
+    this.overlay = new Overlay(config);
+    config.steps.forEach(step => {
+      this.steps.push(new Step(step, this, this.overlay));
+    });
+    this._prepared = false;
   }
 
   start() {
@@ -24,15 +27,15 @@ class Tutorial {
       throw new Error('steps should not be empty');
       return;
     }
-    this._renderOverlay();
+    this.overlay.render();
     this.steps[0].render();
   }
 
   prepare() {
-    if (this.prepared) return;
+    if (this._prepared) return;
     this.steps.forEach(step => {
       step.prepare();
-      this.prepared = true;
+      this._prepared = true;
     });
   }
 
@@ -58,25 +61,11 @@ class Tutorial {
   }
 
   tearDown() {
-    this.prepared = false;
-    this.$overlay.remove();
-    // Ensure all steps are torn down
+    this._prepared = false;
+    this.overlay.tearDown();
     this.steps.forEach(step => {
       step.tearDown();
     });
-  }
-
-  hasNoOverlay() {
-    return this.shouldOverlay === false;
-  }
-
-  _renderOverlay() {
-    if (this.hasNoOverlay()) return;
-
-    let $overlay = $("<div class='chariot-overlay'></div>");
-    $overlay.css({ 'z-index': OVERLAY_Z_INDEX });
-    $('body').append($overlay);
-    this.$overlay = $overlay;
   }
 
   _end() {
@@ -85,8 +74,6 @@ class Tutorial {
     this.chariot.endTutorial();
     this.complete();
   }
-
-
 }
 
 export default Tutorial;

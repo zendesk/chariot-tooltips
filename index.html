@@ -4,6 +4,9 @@
 <link rel="stylesheet" type="text/css" href="./dist/stylesheets/chariot.css">
 
 <style>
+  body {
+    background: black;
+  }
 	.outer {
 		position: relative;
 		top: 300px;
@@ -17,7 +20,13 @@
     float: left;
 	 	width: 250px;
 		height: 250px;
+
 	}
+  .inner button {
+    padding: 20px;
+    width: 100px;
+    height: 100px;
+  }
   .top-left {
     background: blue;
   }
@@ -41,14 +50,14 @@ function click() {
 <body>
 <a href='javascript:click()'>Add history</a>
 <div class='outer'>
-  <div class="inner top-left"></div>
-  <div class="inner top-right"></div>
-  <div class="inner bottom-left"></div>
+  <div class="inner top-left"><button>Top Left</button></div>
+  <div class="inner top-right"><button>Top Right</button></div>
+  <div class="inner bottom-left"><button>Bottom Left</button></div>
 </div>
 
 <script>
 
-new Chariot.chariot({
+new Chariot({
   ticketing: {
     steps: [
       // Step #1 illustrates the basic content of a tooltip
@@ -60,20 +69,10 @@ new Chariot.chariot({
           position: 'bottom', // 'top' | 'left' | 'bottom' | 'right'
           title: 'Know your customer',
           text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
-          // yOffset: 250,
-          // xOffset: 200,
           anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          },
           attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
           arrowLength: 20
-        },
-        before: function() {
-          // any arbitrary code to run before showing this step (after the timeout between steps)
-          // eg. populate an image outside of the #elem
         },
       },
       // Step #2 illustrates the ability to highlight select two selectors
@@ -88,13 +87,24 @@ new Chariot.chariot({
           text: 'Two selectors being highlighted.',
           // xOffset: -50,
           anchorElement: "topRight",
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          }
         }
       },
-      // #3 will illustrate that missing selector results in a skipped step
+      // This step illustrates how a tooltip can be offset
+      {
+        selectors: {
+          bottomLeft: ".bottom-left",
+        },
+        tooltip: {
+          position: 'right',
+          title: 'Tooltip #3',
+          text: 'Placeholder text.',
+          anchorElement: "bottomLeft",
+          yOffset: 50,
+          xOffset: 20,
+        }
+      },
+      /*
+      // This step shows how a missing selector will cause a tutorial to end
       {
         selectors: {
           bottomLeft: ".bottom-left",
@@ -111,7 +121,7 @@ new Chariot.chariot({
           }
         }
       },
-      // #4 nothing special
+      // This step is skipped entirely because of the last step
       {
         selectors: {
           topRight: ".top-right"
@@ -127,11 +137,13 @@ new Chariot.chariot({
           }
         }
       }
+      */
     ],
     // shouldOverlay: false,
     complete: function(){
 
-    }
+    },
+    compatibilityMode: true
   }
 });
 </script>

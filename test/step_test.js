@@ -25,6 +25,9 @@ describe('Step', () => {
     cta: 'Next',
     before: () => {
       return 'before';
+    },
+    after: () => {
+      return 'after';
     }
   };
 
@@ -41,13 +44,11 @@ describe('Step', () => {
       expect(step.selectors).to.equal(stepConfiguration.selectors);
     });
 
-    it('reads before', () => {
+    it('reads before and after', () => {
       expect(step.before).to.be.a('Function');
       expect(step.before()).to.equal(stepConfiguration.before());
-    });
-
-    it('reads cta', () => {
-      expect(step.cta).to.equal(stepConfiguration.cta);
+      expect(step.after).to.be.a('Function');
+      expect(step.after()).to.equal(stepConfiguration.after());
     });
 
     it('reads tutorial', () => {
@@ -68,20 +69,20 @@ describe('Step', () => {
 
     it('tearsDown with no cloned elements', () => {
       clone = { remove: () => ({}) };
-      step.clonedElements = null;
+      step._clonedElements = null;
       expect(step.tearDown.bind(step)).not.to.throw(Error);
     });
 
     it('tearsDown with no cloned elements', () => {
       clone = { remove: () => ({}) };
-      step.clonedElements = [];
+      step._clonedElements = [];
       expect(step.tearDown.bind(step)).not.to.throw(Error);
     });
 
     it('tearsDown all clone elements', () => {
       clone = { remove: () => ({}) };
       sinon.spy(clone, 'remove');
-      step.clonedElements = [clone];
+      step._clonedElements = [clone];
       step.tearDown();
       expect(clone.remove.calledOnce).to.be.true;
     });

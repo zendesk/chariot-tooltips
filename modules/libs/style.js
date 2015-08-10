@@ -22,6 +22,10 @@ class Style {
     return offset;
   }
 
+  static clearCache() {
+    classNameToComputedStyles = {};
+  }
+
   static calculateTop($tooltip, $anchor, yOffset, position, arrowOffset) {
     let offset = 0;
     switch (position) {
@@ -49,8 +53,11 @@ class Style {
         match(new RegExp('chariot_computed_styles[^\s]*')) :
         null;
 
-    return match ? classNameToComputedStyles[match[0]] :
-      this._cacheStyleFor($selector);
+    if (match && classNameToComputedStyles[match[0]]) {
+      return classNameToComputedStyles[match[0]];
+    } else {
+      return this._cacheStyleFor($selector);
+    }
   }
 
   static cloneStyles($element, $clone) {
@@ -105,6 +112,5 @@ class Style {
     classNameToComputedStyles[className] = computedStyles;
     return computedStyles;
   }
-
 }
 export default Style;

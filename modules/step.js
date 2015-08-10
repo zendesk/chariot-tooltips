@@ -9,18 +9,19 @@ let DOM_QUERY_DELAY = 100;
 let Promise = require('es6-promise').Promise;
 
 class Step {
-  constructor(config = {}, tutorial) {
+  constructor(config = {}, tutorial, overlay) {
     if (config.before && typeof config.before !== 'function') {
       throw "before must be a function";
     }
-    this.selectors = config.selectors;
     this.tutorial = tutorial;
-    this.text = config.text;
+    this.overlay = overlay;
+    this.selectors = config.selectors;
     this.before = config.before;
     this.after = config.after;
+    this._resizeTimeout = null;
+    this._selectedElements = {};
+    this._clonedElements = {};
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
-    this.cta = config.cta || 'Next';
-    this.clonedElements = {};
   }
 
   render() {
@@ -33,7 +34,12 @@ class Step {
     }).then(() => {
       return this._waitForElements();
     }).then(() => {
-      this._cloneElements(this.selectors);
+      if (this.tutorial.compatibilityMode && Object.keys(this.selectors).length === 1) {
+        this._transparentOverlayStrategy();
+      } else {
+        this._clonedElementStrategy();
+      }
+
       this._renderTooltip();
     }).catch(error => {
       console.log(error);
@@ -46,14 +52,15 @@ class Step {
   }
 
   getClonedElement(name) {
-    return this.clonedElements[name];
+    return this._clonedElements[name];
   }
 
   tearDown() {
-    for (let elementName in this.clonedElements) {
-      this.clonedElements[elementName].remove();
+    for (let elementName in this._clonedElements) {
+      this._clonedElements[elementName].remove();
     }
-    this.clonedElements = {};
+    this._clonedElements = {};
+    this._selectedElements = {};
     this.tooltip.tearDown();
   }
 
@@ -65,6 +72,20 @@ class Step {
   }
 
   // PRIVATE
+
+  _transparentOverlayStrategy() {
+    // Only use an overlay
+    let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
+    let $element =  this._selectedElements[selectors[0]];
+    this.overlay.focusOnElement($element);
+  }
+
+  _clonedElementStrategy() {
+    // Clone elements if multiple selectors
+    this.overlay.showBackgroundOverlay();
+    this._cloneElements(this.selectors);
+    this.overlay.showTransparentOverlay();
+  }
 
   _renderTooltip() {
     this.tooltip.render();
@@ -96,7 +117,11 @@ class Step {
         }, DOM_QUERY_DELAY);
       }
     } else {
+      this._selectedElements[selector] = element;
       resolve();
+
+      // TODO: fire event when element is ready. Tutorial will listen and call
+      // prepare() on all steps
     }
   }
 
@@ -108,7 +133,7 @@ class Step {
   }
 
   _cloneElements(selectors) {
-    if (this.tutorial.hasNoOverlay()) return;
+    if (this.overlay.isVisible()) return;
 
     setTimeout(() => {
       this.tutorial.prepare();
@@ -116,8 +141,33 @@ class Step {
     for (let selectorName in selectors) {
       let sel = selectors[selectorName];
       let clone = this._cloneElement(sel);
-      this.clonedElements[selectorName] = clone;
+      this._clonedElements[selectorName] = clone;
     }
+  }
+
+  _cloneElement(sel) {
+    let $element = this._selectedElements[sel];
+
+    if ($element.length == 0) { return null; }
+
+    let $clone = $element.clone();
+    $('body').append($clone);
+    this._applyComputedStyles($clone, $element);
+    this._positionClone($clone, $element);
+
+    $(window).resize(() => {
+      if (this._resizeTimeout) {
+        clearTimeout(this._resizeTimeout);
+      }
+      this._resizeTimeout = setTimeout(() => {
+        Style.clearCache();
+        this._applyComputedStyles($clone, $element);
+        this._positionClone($clone, $element);
+        this._resizeTimeout = null;
+      }, 50)
+    });
+
+    return $clone;
   }
 
   _applyComputedStyles($clone, $element) {
@@ -130,20 +180,6 @@ class Step {
     $element.children().toArray().forEach((child, index) => {
       this._applyComputedStyles($(clonedChildren[index]), $(child));
     });
-  }
-
-  _cloneElement(sel) {
-    let $element = $(sel);
-    if ($element.length == 0) {
-      console.log("Can't find selector to clone: " + sel);
-      return null;
-    }
-    let $clone = $element.clone();
-    $('body').append($clone);
-    this._applyComputedStyles($clone, $element);
-    this._positionClone($clone, $element);
-
-    return $clone;
   }
 
   _positionClone($clone, $element) {

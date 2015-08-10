@@ -14,10 +14,16 @@
  * @typedef TutorialConfiguration
  * @property {boolean} [shouldOverlay=true] - Setting to false will disable the
  * overlay that normally appears over the page and behind the tooltips.
+ * @property {string} [overlayColor='rgba(255,255,255,0.7)'] - Overlay CSS color
  * @property {StepConfiguration[]} steps - An array of step configurations (see below).
  * @property {Tutorial-completeCallback} [complete] - Callback that is called
  * once the tutorial has gone through all steps.
- *
+ * @property {boolean} [compatibilityMode=false] - Setting to true will use an
+ *  implementation that does not rely on cloning highlighted elements.
+ *  Note: This value is ignored if a step contains multiple selectors.
+ * @property {boolean} [animated=false] - (TODO) Enables spotlight-like
+ *  transitions between steps.  Setting to true will enable compatibilityMode.
+ *  Note: Animations will not occur for steps containing multiple selectors.
  */
 
 /**
@@ -39,7 +45,6 @@
  *  is rendered.
  * @property {Step-afterCallback} [after] - Callback called once after step is
  *  rendered.
- *
  */
 
 /**
@@ -118,7 +123,7 @@ var OnboardingConfig = {
           },
           attr: { 'id': 'know_your_customer' }
         },
-        before: function() {
+        before: () => {
           // any arbitrary code to run before showing this step (after the timeout between steps)
           // eg. populate an image outside of the #elem
         }
@@ -136,14 +141,15 @@ var OnboardingConfig = {
           cta: 'Done',
           arrowLength: 30
         },
-        before: function() {
+        before: () => {
           // any arbitrary code to run before showing this step (after the timeout between steps)
           // eg. populate an image outside of the #elem
         }
       }
     ],
-    complete: function() {
+    complete: () => {
     },
-    shouldOverlay: { opacity: 0.7, background: 'white' }
+    shouldOverlay: true,
+    compatibilityMode: true
   }
 };
