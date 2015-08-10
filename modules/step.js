@@ -22,6 +22,7 @@ class Step {
     this._selectedElements = {};
     this._clonedElements = {};
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
+    this._cloneClasses = [];
   }
 
   render() {
@@ -58,6 +59,11 @@ class Step {
   tearDown() {
     for (let elementName in this._clonedElements) {
       this._clonedElements[elementName].remove();
+    }
+    // Remove computed styles
+    for (let selectorName in this.selectors) {
+      let selector = this.selectors[selectorName]
+      Style.clearCachedStylesForElement($(selector));
     }
     this._clonedElements = {};
     this._selectedElements = {};
@@ -125,9 +131,9 @@ class Step {
     }
   }
 
-  _computeStyles($selector) {
-    Style.getComputedStylesFor($selector);
-    $selector.children().toArray().forEach(child => {
+  _computeStyles($element) {
+    Style.getComputedStylesFor($element[0]);
+    $element.children().toArray().forEach(child => {
       this._computeStyles($(child));
     });
   }
@@ -147,7 +153,6 @@ class Step {
 
   _cloneElement(sel) {
     let $element = this._selectedElements[sel];
-
     if ($element.length == 0) { return null; }
 
     let $clone = $element.clone();
@@ -160,7 +165,7 @@ class Step {
         clearTimeout(this._resizeTimeout);
       }
       this._resizeTimeout = setTimeout(() => {
-        Style.clearCache();
+        Style.clearCachedStylesForElement($element);
         this._applyComputedStyles($clone, $element);
         this._positionClone($clone, $element);
         this._resizeTimeout = null;

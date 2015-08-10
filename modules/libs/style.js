@@ -1,4 +1,5 @@
-let classNameToComputedStyles = {};
+import $ from 'jquery';
+
 const CHARIOT_COMPUTED_STYLE_CLASS_PREFIX = 'chariot_computed_styles';
 
 class Style {
@@ -22,10 +23,6 @@ class Style {
     return offset;
   }
 
-  static clearCache() {
-    classNameToComputedStyles = {};
-  }
-
   static calculateTop($tooltip, $anchor, yOffset, position, arrowOffset) {
     let offset = 0;
     switch (position) {
@@ -46,26 +43,20 @@ class Style {
     return offset;
   }
 
-  static getComputedStylesFor($selector) {
-    if ($selector.length == 0) return null;
-    let match = $selector.attr('class') ?
-        $selector.attr('class').
-        match(new RegExp('chariot_computed_styles[^\s]*')) :
-        null;
-
-    if (match && classNameToComputedStyles[match[0]]) {
-      return classNameToComputedStyles[match[0]];
+  static getComputedStylesFor(element) {
+    if (element._chariotComputedStyles) {
+      return element._chariotComputedStyles;
     } else {
-      return this._cacheStyleFor($selector);
+      return this._cacheStyleFor(element);
     }
   }
 
   static cloneStyles($element, $clone) {
     let start = new Date().getTime();
-    let cssText = this.getComputedStylesFor($element);
+    let cssText = this.getComputedStylesFor($element[0]);
     $clone[0].style.cssText = cssText;
 
-    // fixes IE border box boxing model
+    // Fixes IE border box boxing model
     if (navigator.userAgent.match(/msie|windows/i)) {
       this._ieBoxModelStyleFix('width', $clone, cssText);
       this._ieBoxModelStyleFix('height', $clone, cssText);
@@ -73,6 +64,14 @@ class Style {
     $clone.css('pointer-events', 'none');
     //this._clonePseudoStyle($element, $clone, 'before');
     //this._clonePseudoStyle($element, $clone, 'after');
+  }
+
+  static clearCachedStylesForElement($element) {
+    if (!$element || $element.length == 0) return;
+    $element[0]._chariotComputedStyles = null;
+    $element.children().toArray().forEach(child => {
+      this.clearCachedStylesForElement($(child));
+    });
   }
 
   static _ieBoxModelStyleFix(style, $ele, cssText) {
@@ -99,17 +98,19 @@ class Style {
     }
   }
 
-  static _cacheStyleFor($selector) {
-    let className = this._generateUniqueClassName(
-      CHARIOT_COMPUTED_STYLE_CLASS_PREFIX);
-    $selector.addClass(className);
-
-    // check for ie getComputedCSSText()
+  static _cacheStyleFor(element) {
+    // check for IE getComputedCSSText()
     let computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ?
-      $selector[0].getComputedCSSText() :
-      document.defaultView.getComputedStyle($selector[0]).cssText;
+      element.getComputedCSSText() :
+      document.defaultView.getComputedStyle(element).cssText;
 
-    classNameToComputedStyles[className] = computedStyles;
+    Object.defineProperty(element, '_chariotComputedStyles', {
+      value: computedStyles,
+      enumerable: false,
+      writable: true,
+      configurable: false
+    });
+
     return computedStyles;
   }
 }
