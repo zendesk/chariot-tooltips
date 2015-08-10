@@ -1,6 +1,6 @@
 {
   "name": "Chariot",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "dependencies": {
     "babel": {
       "version": "5.8.3",

@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.2 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.0 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -154,7 +154,7 @@ var Chariot = (function () {
 exports['default'] = Chariot;
 module.exports = exports['default'];
 
-},{"./libs/ie-shim":4,"./tutorial":8,"query-parse":15}],2:[function(require,module,exports){
+},{"./libs/ie-shim":4,"./tutorial":9,"query-parse":16}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -177,11 +177,8 @@ var _chariot = require('./chariot');
 
 var _chariot2 = _interopRequireDefault(_chariot);
 
-var _exports = {
-  chariot: _chariot2['default']
-};
-window.Chariot = _exports;
-module.exports = _exports;
+window.Chariot = _chariot2['default'];
+module.exports = _chariot2['default'];
 
 },{"./chariot":1}],4:[function(require,module,exports){
 // this shim is to fix IE & Firefox's problem where
@@ -216,9 +213,14 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var classNameToComputedStyles = {};
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 var CHARIOT_COMPUTED_STYLE_CLASS_PREFIX = 'chariot_computed_styles';
 
 var Style = (function () {
@@ -268,26 +270,39 @@ var Style = (function () {
     }
   }, {
     key: 'getComputedStylesFor',
-    value: function getComputedStylesFor($selector) {
-      if ($selector.length == 0) return null;
-      var match = $selector.attr('class') ? $selector.attr('class').match(new RegExp('chariot_computed_styles[^\s]*')) : null;
-
-      return match ? classNameToComputedStyles[match[0]] : this._cacheStyleFor($selector);
+    value: function getComputedStylesFor(element) {
+      if (element._chariotComputedStyles) {
+        return element._chariotComputedStyles;
+      } else {
+        return this._cacheStyleFor(element);
+      }
     }
   }, {
     key: 'cloneStyles',
     value: function cloneStyles($element, $clone) {
       var start = new Date().getTime();
-      var cssText = this.getComputedStylesFor($element);
+      var cssText = this.getComputedStylesFor($element[0]);
       $clone[0].style.cssText = cssText;
 
-      // fixes IE border box boxing model
+      // Fixes IE border box boxing model
       if (navigator.userAgent.match(/msie|windows/i)) {
         this._ieBoxModelStyleFix('width', $clone, cssText);
         this._ieBoxModelStyleFix('height', $clone, cssText);
       }
+      $clone.css('pointer-events', 'none');
       //this._clonePseudoStyle($element, $clone, 'before');
       //this._clonePseudoStyle($element, $clone, 'after');
+    }
+  }, {
+    key: 'clearCachedStylesForElement',
+    value: function clearCachedStylesForElement($element) {
+      var _this = this;
+
+      if (!$element || $element.length == 0) return;
+      $element[0]._chariotComputedStyles = null;
+      $element.children().toArray().forEach(function (child) {
+        _this.clearCachedStylesForElement((0, _jquery2['default'])(child));
+      });
     }
   }, {
     key: '_ieBoxModelStyleFix',
@@ -319,14 +334,17 @@ var Style = (function () {
     }
   }, {
     key: '_cacheStyleFor',
-    value: function _cacheStyleFor($selector) {
-      var className = this._generateUniqueClassName(CHARIOT_COMPUTED_STYLE_CLASS_PREFIX);
-      $selector.addClass(className);
+    value: function _cacheStyleFor(element) {
+      // check for IE getComputedCSSText()
+      var computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ? element.getComputedCSSText() : document.defaultView.getComputedStyle(element).cssText;
 
-      // check for ie getComputedCSSText()
-      var computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ? $selector[0].getComputedCSSText() : document.defaultView.getComputedStyle($selector[0]).cssText;
+      Object.defineProperty(element, '_chariotComputedStyles', {
+        value: computedStyles,
+        enumerable: false,
+        writable: true,
+        configurable: false
+      });
 
-      classNameToComputedStyles[className] = computedStyles;
       return computedStyles;
     }
   }]);
@@ -337,7 +355,146 @@ var Style = (function () {
 exports['default'] = Style;
 module.exports = exports['default'];
 
-},{}],6:[function(require,module,exports){
+},{"jquery":15}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _constants = require('./constants');
+
+var Overlay = (function () {
+  function Overlay(config) {
+    _classCallCheck(this, Overlay);
+
+    this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
+    this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
+  }
+
+  _createClass(Overlay, [{
+    key: 'isVisible',
+    value: function isVisible() {
+      return this.shouldOverlay === false;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      if (this.isVisible()) return;
+
+      var $overlay = this._createOverlay();
+      (0, _jquery2['default'])('body').append($overlay);
+      this.$overlay = $overlay;
+
+      var $transparentOverlay = this._createTransparentOverlay();
+      (0, _jquery2['default'])('body').append($transparentOverlay);
+      this.$transparentOverlay = $transparentOverlay;
+    }
+  }, {
+    key: 'showBackgroundOverlay',
+    value: function showBackgroundOverlay() {
+      // Remove the resize handler that might exist from focusOnElement
+      // (Note: take care to not call this after cloning elements, because they
+      //  have their own window resize handlers)
+      (0, _jquery2['default'])(window).unbind('resize');
+
+      this.$overlay.css({
+        background: this.overlayColor,
+        width: '100%',
+        height: '100%',
+        border: 'none'
+      });
+    }
+  }, {
+    key: 'showTransparentOverlay',
+    value: function showTransparentOverlay() {
+      this.$transparentOverlay.show();
+    }
+  }, {
+    key: 'focusOnElement',
+    value: function focusOnElement($element) {
+      var _this = this;
+
+      // Hide overlay from showTransparentOverlay
+      this.$transparentOverlay.hide();
+
+      this._resizeOverlayToElement($element);
+
+      (0, _jquery2['default'])(window).resize(function () {
+        _this._resizeOverlayToElement($element);
+      });
+    }
+  }, {
+    key: 'tearDown',
+    value: function tearDown() {
+      this.$overlay.remove();
+      if (this.$transparentOverlay) {
+        this.$transparentOverlay.remove();
+      }
+    }
+
+    //// PRIVATE
+
+  }, {
+    key: '_createOverlay',
+    value: function _createOverlay() {
+      var $overlay = (0, _jquery2['default'])("<div class='chariot-overlay'></div>");
+      $overlay.css({ 'z-index': _constants.OVERLAY_Z_INDEX });
+      return $overlay;
+    }
+  }, {
+    key: '_createTransparentOverlay',
+    value: function _createTransparentOverlay() {
+      var $transparentOverlay = (0, _jquery2['default'])("<div class='chariot-transparent-overlay'></div>");
+      $transparentOverlay.css({ 'z-index': _constants.CLONE_Z_INDEX + 1 });
+      return $transparentOverlay;
+    }
+  }, {
+    key: '_resizeOverlayToElement',
+    value: function _resizeOverlayToElement($element) {
+      // First position the overlay
+      var offset = $element.offset();
+
+      // Then resize it
+      var borderStyles = 'solid ' + this.overlayColor;
+      var docWidth = (0, _jquery2['default'])(window).outerWidth();
+      var docHeight = (0, _jquery2['default'])(window).outerHeight();
+
+      var width = $element.outerWidth();
+      var height = $element.outerHeight();
+      var leftWidth = offset.left;
+      var rightWidth = docWidth - (offset.left + width);
+      var topWidth = offset.top;
+      var bottomWidth = docHeight - (offset.top + height);
+
+      this.$overlay.css({
+        background: 'transparent',
+        width: width, height: height,
+        'border-left': leftWidth + 'px ' + borderStyles,
+        'border-top': topWidth + 'px ' + borderStyles,
+        'border-right': rightWidth + 'px ' + borderStyles,
+        'border-bottom': bottomWidth + 'px ' + borderStyles
+      });
+    }
+  }]);
+
+  return Overlay;
+})();
+
+exports['default'] = Overlay;
+module.exports = exports['default'];
+
+},{"./constants":2,"jquery":15}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -370,7 +527,7 @@ var DOM_QUERY_DELAY = 100;
 var Promise = require('es6-promise').Promise;
 
 var Step = (function () {
-  function Step(config, tutorial) {
+  function Step(config, tutorial, overlay) {
     if (config === undefined) config = {};
 
     _classCallCheck(this, Step);
@@ -378,14 +535,16 @@ var Step = (function () {
     if (config.before && typeof config.before !== 'function') {
       throw "before must be a function";
     }
-    this.selectors = config.selectors;
     this.tutorial = tutorial;
-    this.text = config.text;
+    this.overlay = overlay;
+    this.selectors = config.selectors;
     this.before = config.before;
     this.after = config.after;
+    this._resizeTimeout = null;
+    this._selectedElements = {};
+    this._clonedElements = {};
     this.tooltip = new _tooltip2['default'](config.tooltip, this, tutorial);
-    this.cta = config.cta || 'Next';
-    this.clonedElements = {};
+    this._cloneClasses = [];
   }
 
   _createClass(Step, [{
@@ -402,7 +561,12 @@ var Step = (function () {
       }).then(function () {
         return _this._waitForElements();
       }).then(function () {
-        _this._cloneElements(_this.selectors);
+        if (_this.tutorial.compatibilityMode && Object.keys(_this.selectors).length === 1) {
+          _this._transparentOverlayStrategy();
+        } else {
+          _this._clonedElementStrategy();
+        }
+
         _this._renderTooltip();
       })['catch'](function (error) {
         console.log(error);
@@ -417,15 +581,21 @@ var Step = (function () {
   }, {
     key: 'getClonedElement',
     value: function getClonedElement(name) {
-      return this.clonedElements[name];
+      return this._clonedElements[name];
     }
   }, {
     key: 'tearDown',
     value: function tearDown() {
-      for (var elementName in this.clonedElements) {
-        this.clonedElements[elementName].remove();
+      for (var elementName in this._clonedElements) {
+        this._clonedElements[elementName].remove();
       }
-      this.clonedElements = {};
+      // Remove computed styles
+      for (var selectorName in this.selectors) {
+        var selector = this.selectors[selectorName];
+        _libsStyle2['default'].clearCachedStylesForElement((0, _jquery2['default'])(selector));
+      }
+      this._clonedElements = {};
+      this._selectedElements = {};
       this.tooltip.tearDown();
     }
   }, {
@@ -440,6 +610,26 @@ var Step = (function () {
     // PRIVATE
 
   }, {
+    key: '_transparentOverlayStrategy',
+    value: function _transparentOverlayStrategy() {
+      var _this2 = this;
+
+      // Only use an overlay
+      var selectors = Object.keys(this.selectors).map(function (key) {
+        return _this2.selectors[key];
+      });
+      var $element = this._selectedElements[selectors[0]];
+      this.overlay.focusOnElement($element);
+    }
+  }, {
+    key: '_clonedElementStrategy',
+    value: function _clonedElementStrategy() {
+      // Clone elements if multiple selectors
+      this.overlay.showBackgroundOverlay();
+      this._cloneElements(this.selectors);
+      this.overlay.showTransparentOverlay();
+    }
+  }, {
     key: '_renderTooltip',
     value: function _renderTooltip() {
       this.tooltip.render();
@@ -448,13 +638,13 @@ var Step = (function () {
   }, {
     key: '_waitForElements',
     value: function _waitForElements() {
-      var _this2 = this;
+      var _this3 = this;
 
       var promises = [];
 
       var _loop = function (selectorName) {
         var promise = new Promise(function (resolve, reject) {
-          _this2._waitForElement(selectorName, 0, resolve, reject);
+          _this3._waitForElement(selectorName, 0, resolve, reject);
         });
         promises.push(promise);
       };
@@ -468,7 +658,7 @@ var Step = (function () {
   }, {
     key: '_waitForElement',
     value: function _waitForElement(selectorName, numAttempts, resolve, reject) {
-      var _this3 = this;
+      var _this4 = this;
 
       var selector = this.selectors[selectorName];
       var element = (0, _jquery2['default'])(selector);
@@ -478,43 +668,76 @@ var Step = (function () {
           reject('Selector not found: ' + selector);
         } else {
           window.setTimeout(function () {
-            _this3._waitForElement(selectorName, numAttempts, resolve, reject);
+            _this4._waitForElement(selectorName, numAttempts, resolve, reject);
           }, DOM_QUERY_DELAY);
         }
       } else {
+        this._selectedElements[selector] = element;
         resolve();
+
+        // TODO: fire event when element is ready. Tutorial will listen and call
+        // prepare() on all steps
       }
     }
   }, {
     key: '_computeStyles',
-    value: function _computeStyles($selector) {
-      var _this4 = this;
+    value: function _computeStyles($element) {
+      var _this5 = this;
 
-      _libsStyle2['default'].getComputedStylesFor($selector);
-      $selector.children().toArray().forEach(function (child) {
-        _this4._computeStyles((0, _jquery2['default'])(child));
+      _libsStyle2['default'].getComputedStylesFor($element[0]);
+      $element.children().toArray().forEach(function (child) {
+        _this5._computeStyles((0, _jquery2['default'])(child));
       });
     }
   }, {
     key: '_cloneElements',
     value: function _cloneElements(selectors) {
-      var _this5 = this;
+      var _this6 = this;
 
-      if (this.tutorial.hasNoOverlay()) return;
+      if (this.overlay.isVisible()) return;
 
       setTimeout(function () {
-        _this5.tutorial.prepare();
+        _this6.tutorial.prepare();
       }, 0);
       for (var selectorName in selectors) {
         var sel = selectors[selectorName];
         var clone = this._cloneElement(sel);
-        this.clonedElements[selectorName] = clone;
+        this._clonedElements[selectorName] = clone;
       }
+    }
+  }, {
+    key: '_cloneElement',
+    value: function _cloneElement(sel) {
+      var _this7 = this;
+
+      var $element = this._selectedElements[sel];
+      if ($element.length == 0) {
+        return null;
+      }
+
+      var $clone = $element.clone();
+      (0, _jquery2['default'])('body').append($clone);
+      this._applyComputedStyles($clone, $element);
+      this._positionClone($clone, $element);
+
+      (0, _jquery2['default'])(window).resize(function () {
+        if (_this7._resizeTimeout) {
+          clearTimeout(_this7._resizeTimeout);
+        }
+        _this7._resizeTimeout = setTimeout(function () {
+          _libsStyle2['default'].clearCachedStylesForElement($element);
+          _this7._applyComputedStyles($clone, $element);
+          _this7._positionClone($clone, $element);
+          _this7._resizeTimeout = null;
+        }, 50);
+      });
+
+      return $clone;
     }
   }, {
     key: '_applyComputedStyles',
     value: function _applyComputedStyles($clone, $element) {
-      var _this6 = this;
+      var _this8 = this;
 
       if (!$element.is(":visible")) {
         return;
@@ -523,23 +746,8 @@ var Step = (function () {
       _libsStyle2['default'].cloneStyles($element, $clone);
       var clonedChildren = $clone.children().toArray();
       $element.children().toArray().forEach(function (child, index) {
-        _this6._applyComputedStyles((0, _jquery2['default'])(clonedChildren[index]), (0, _jquery2['default'])(child));
+        _this8._applyComputedStyles((0, _jquery2['default'])(clonedChildren[index]), (0, _jquery2['default'])(child));
       });
-    }
-  }, {
-    key: '_cloneElement',
-    value: function _cloneElement(sel) {
-      var $element = (0, _jquery2['default'])(sel);
-      if ($element.length == 0) {
-        console.log("Can't find selector to clone: " + sel);
-        return null;
-      }
-      var $clone = $element.clone();
-      (0, _jquery2['default'])('body').append($clone);
-      this._applyComputedStyles($clone, $element);
-      this._positionClone($clone, $element);
-
-      return $clone;
     }
   }, {
     key: '_positionClone',
@@ -558,7 +766,7 @@ var Step = (function () {
 exports['default'] = Step;
 module.exports = exports['default'];
 
-},{"./constants":2,"./libs/style":5,"./tooltip":7,"es6-promise":13,"jquery":14}],7:[function(require,module,exports){
+},{"./constants":2,"./libs/style":5,"./tooltip":8,"es6-promise":14,"jquery":15}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -589,10 +797,10 @@ var Tooltip = (function () {
   function Tooltip(config, step, tutorial) {
     _classCallCheck(this, Tooltip);
 
+    this.config = config;
     this.step = step;
     this.tutorial = tutorial;
     this.position = config.position;
-    this.text = config.text;
     var arrowClass = 'chariot-tooltip';
 
     switch (this.position) {
@@ -620,11 +828,9 @@ var Tooltip = (function () {
     this.height = parseInt(config.height);
     this.anchorElement = config.anchorElement;
 
-    // TODO: Sanitize these user-inputted elements
+    this.text = config.text;
     this.iconUrl = config.iconUrl;
     this.title = config.title;
-    this.cta = config.cta;
-    this.subtext = config.subtext;
     this.attr = config.attr || {};
     this.arrowLength = config.arrowLength || DEFAULT_ARROW_LENGTH;
   }
@@ -632,14 +838,19 @@ var Tooltip = (function () {
   _createClass(Tooltip, [{
     key: '_createTooltipTemplate',
     value: function _createTooltipTemplate() {
-      var stepNum = this.currentStep();
+      var currentStep = this.tutorial.currentStep(this.step);
+      var totalSteps = this.tutorial.steps.length;
+      this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
+      this.subtext = this.config.subtext || function () {
+        return currentStep + ' of ' + totalSteps;
+      };
       var subtextMarkup = this._subtextMarkup();
       var buttonFloat = subtextMarkup == '' ? 'center' : 'right';
-      var template = '\n      <div class="chariot-tooltip chariot-step-' + stepNum + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
+      var template = '\n      <div class="chariot-tooltip chariot-step-' + currentStep + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
       var $template = (0, _jquery2['default'])(template);
 
       // Add default data attributes
-      this.attr['data-step-order'] = stepNum;
+      this.attr['data-step-order'] = currentStep;
       $template.attr(this.attr);
       return $template;
     }
@@ -810,7 +1021,7 @@ var Tooltip = (function () {
 exports['default'] = Tooltip;
 module.exports = exports['default'];
 
-},{"./constants":2,"./libs/style":5,"jquery":14}],8:[function(require,module,exports){
+},{"./constants":2,"./libs/style":5,"jquery":15}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -831,7 +1042,9 @@ var _step = require('./step');
 
 var _step2 = _interopRequireDefault(_step);
 
-var _constants = require('./constants');
+var _overlay = require('./overlay');
+
+var _overlay2 = _interopRequireDefault(_overlay);
 
 var Promise = require('es6-promise').Promise;
 
@@ -841,18 +1054,21 @@ var Tutorial = (function () {
 
     _classCallCheck(this, Tutorial);
 
-    this.prepared = false;
     this.chariot = chariot;
-    this.steps = [];
     if (typeof config.steps !== 'object') {
       throw new Error('steps must be an array');
       return;
     }
-    config.steps.forEach(function (step) {
-      _this.steps.push(new _step2['default'](step, _this));
-    });
+
     this.complete = typeof config.complete === 'function' ? config.complete : function () {};
-    this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
+    this.compatibilityMode = config.compatibilityMode || false;
+
+    this.steps = [];
+    this.overlay = new _overlay2['default'](config);
+    config.steps.forEach(function (step) {
+      _this.steps.push(new _step2['default'](step, _this, _this.overlay));
+    });
+    this._prepared = false;
   }
 
   _createClass(Tutorial, [{
@@ -862,7 +1078,7 @@ var Tutorial = (function () {
         throw new Error('steps should not be empty');
         return;
       }
-      this._renderOverlay();
+      this.overlay.render();
       this.steps[0].render();
     }
   }, {
@@ -870,10 +1086,10 @@ var Tutorial = (function () {
     value: function prepare() {
       var _this2 = this;
 
-      if (this.prepared) return;
+      if (this._prepared) return;
       this.steps.forEach(function (step) {
         step.prepare();
-        _this2.prepared = true;
+        _this2._prepared = true;
       });
     }
   }, {
@@ -902,27 +1118,11 @@ var Tutorial = (function () {
   }, {
     key: 'tearDown',
     value: function tearDown() {
-      this.prepared = false;
-      this.$overlay.remove();
-      // Ensure all steps are torn down
+      this._prepared = false;
+      this.overlay.tearDown();
       this.steps.forEach(function (step) {
         step.tearDown();
       });
-    }
-  }, {
-    key: 'hasNoOverlay',
-    value: function hasNoOverlay() {
-      return this.shouldOverlay === false;
-    }
-  }, {
-    key: '_renderOverlay',
-    value: function _renderOverlay() {
-      if (this.hasNoOverlay()) return;
-
-      var $overlay = (0, _jquery2['default'])("<div class='chariot-overlay'></div>");
-      $overlay.css({ 'z-index': _constants.OVERLAY_Z_INDEX });
-      (0, _jquery2['default'])('body').append($overlay);
-      this.$overlay = $overlay;
     }
   }, {
     key: '_end',
@@ -940,7 +1140,7 @@ var Tutorial = (function () {
 exports['default'] = Tutorial;
 module.exports = exports['default'];
 
-},{"./constants":2,"./step":6,"es6-promise":13,"jquery":14}],9:[function(require,module,exports){
+},{"./overlay":6,"./step":7,"es6-promise":14,"jquery":15}],10:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1032,7 +1232,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1118,7 +1318,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1205,13 +1405,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":10,"./encode":11}],13:[function(require,module,exports){
+},{"./decode":11,"./encode":12}],14:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -2187,7 +2387,7 @@ exports.encode = exports.stringify = require('./encode');
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":9}],14:[function(require,module,exports){
+},{"_process":10}],15:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.1.4
  * http://jquery.com/
@@ -11399,7 +11599,7 @@ return jQuery;
 
 }));
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var querystring = require('querystring');
 
 var qp = {
@@ -11425,4 +11625,4 @@ var qp = {
 
 //
 module.exports = qp;
-},{"querystring":12}]},{},[3]);
+},{"querystring":13}]},{},[3]);
