@@ -49,7 +49,7 @@ class Tooltip {
     let currentStep = this.tutorial.currentStep(this.step);
     let totalSteps = this.tutorial.steps.length;
     this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
-    this.subtext = this.config.subtext || () => `${currentStep} of ${totalSteps}`;
+    this.subtext = this.config.subtext || (() => `${currentStep} of ${totalSteps}`);
     let subtextMarkup = this._subtextMarkup();
     let buttonFloat = subtextMarkup == '' ? 'center' : 'right';
     let template = `
@@ -95,7 +95,6 @@ class Tooltip {
   }
 
   render() {
-
     let $tooltip = this.$tooltip = this._createTooltipTemplate();
     $('body').append($tooltip);
 
