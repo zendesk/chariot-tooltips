@@ -39,7 +39,7 @@ do, they fail to consider when parent containers already have the CSS
 
 First, initialize chariot.
 
-## `new Chariot.chariot(config)`
+## `new Chariot(config)`
 
 Once configured, to launch the tutorial, append the query parameter `tutorial`
 to your URL setting it to the name of a tutorial defined in your configuration.
@@ -54,7 +54,7 @@ Here's how to configure `chariot`:
 
 ## API
 
-### `Chariot.chariot(config)`
+### `Chariot(config)`
 
 Creates the chariot instance.
 
