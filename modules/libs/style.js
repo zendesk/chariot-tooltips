@@ -69,7 +69,6 @@ class Style {
   static clearCachedStylesForElement($element) {
     if (!$element || !$element.length) return;
     $element[0]._chariotComputedStyles = null;
-    // $.each($element.children(), (index, child) => {
     $element.children().each((index, child) => {
       this.clearCachedStylesForElement($(child));
     });
@@ -99,6 +98,12 @@ class Style {
     }
   }
 
+  /*
+    Known issues:
+  - FF bug does not correctly copy CSS margin values
+    (https://bugzilla.mozilla.org/show_bug.cgi?id=381328)
+  - IE9 does not implement getComputedCSSText()
+  */
   static _cacheStyleFor(element) {
     // check for IE getComputedCSSText()
     let computedStyles;

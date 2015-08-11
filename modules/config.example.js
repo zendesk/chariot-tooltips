@@ -62,10 +62,12 @@
  * provided, which can be configured
  *
  * @typedef TooltipConfiguration
- * @property {string} anchorElement - Contains either (1) a key from
- *  StepConfiguration.selectors above, or (2) a CSS selector.
  * @property {string} position - Relatively positions the tooltip to the anchor
  *   element. Possible values: 'top' | 'left' | 'bottom' | 'right'
+ * @property {string} [anchorElement] - Optional if the corresponding Step
+ *  contains only one selector. anchorElement can be either
+ *  (1) a key from StepConfiguration.selectors above, or
+ *  (2) a CSS selector
  * @property {number} [xOffset] - Value in pixels to offset the x-coordinate of
  *  the tooltip.
  * @property {number} [yOffset] - Value in pixels to offset the y-coordinate of

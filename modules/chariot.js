@@ -11,19 +11,11 @@ let initialState = true;
 
 class Chariot {
   constructor(config) {
+    this.config = config;
     this.tutorials = {};
-    this.readConfig(config);
-    this.listenForPushState();
+    this._readConfig(config);
+    this._listenForPushState();
     this.currentTutorial = null;
-  }
-
-  readConfig(config) {
-    if (!config || typeof config !== 'object') {
-      throw new Error("Config must contains a tutorials hash");
-    }
-    for (let tutorialName in config) {
-      this.tutorials[tutorialName] = new Tutorial(this, config[tutorialName]);
-    }
   }
 
   startTutorial(name) {
@@ -38,7 +30,22 @@ class Chariot {
     this.currentTutorial = null;
   }
 
-  listenForPushState() {
+  toString() {
+    return `[Chariot - config: ${this.config}, tutorials: {this.tutorials}]`;
+  }
+
+  //// PRIVATE
+
+  _readConfig(config) {
+    if (!config || typeof config !== 'object') {
+      throw new Error(`Config must contains a tutorials hash.\n${this}`);
+    }
+    for (let tutorialName in config) {
+      this.tutorials[tutorialName] = new Tutorial(this, config[tutorialName]);
+    }
+  }
+
+  _listenForPushState() {
     // override pushState to listen for url
     // sample url to listen for: agent/tickets/1?tutorial=ticketing
     let processGetParams = () => {

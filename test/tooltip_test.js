@@ -23,7 +23,7 @@ describe('Tooltip', () => {
       attr: {},
       arrowLength: 10
     },
-    step = new Object(),
+    step = { selectors: {} },
     tutorial = new Object({
       currentStep: function() { return 1; },
       steps: [step]
@@ -73,6 +73,24 @@ describe('Tooltip', () => {
     });
   });
 
+  context('render', () => {
+    it('sets css styles', () => {
+      let css = sinon.stub().returns();
+      let $markup = $('<div></div>');
+      sinon.stub(tooltip, '_createTooltipTemplate', () => { return $markup });
+      sinon.stub(tooltip, '_getAnchorElement', () => ({}));
+      sinon.stub(Style, "calculateTop", () => {return 0});
+      sinon.stub(Style, "calculateLeft", () => {return 0});
+
+      tooltip.render();
+
+      expect($markup.css('position')).to.equal('absolute');
+      expect($markup.css('top')).to.equal("0px");
+      expect($markup.css('left')).to.equal("0px");
+      expect(parseInt($markup.css('z-index'))).to.equal(parseInt(tooltip.z_index));
+    })
+  });
+
   context('tearDown', () => {
     it('tearDown with null DOM element', () => {
       tooltip.$tooltip = null;
@@ -90,7 +108,7 @@ describe('Tooltip', () => {
     });
   });
 
-  context('createTooltipTemplate', () => {
+  context('_createTooltipTemplate', () => {
     let template = null;
     beforeEach(() => {
       template = tooltip._createTooltipTemplate();
@@ -107,23 +125,5 @@ describe('Tooltip', () => {
       expect(templateHtml.includes(tooltip.iconUrl)).to.be.true;
       expect(templateHtml.includes(tooltip.subtext())).to.be.true;
     });
-  });
-
-  context('render', () => {
-    it('sets css styles', () => {
-      let css = sinon.stub().returns();
-      let $markup = $('<div></div>');
-      sinon.stub(tooltip, '_createTooltipTemplate', () => { return $markup });
-      sinon.stub(tooltip, '_getAnchorElement', () => ({}));
-      sinon.stub(Style, "calculateTop", () => {return 0});
-      sinon.stub(Style, "calculateLeft", () => {return 0});
-
-      tooltip.render();
-
-      expect($markup.css('position')).to.equal('absolute');
-      expect($markup.css('top')).to.equal("0px");
-      expect($markup.css('left')).to.equal("0px");
-      expect(parseInt($markup.css('z-index'))).to.equal(parseInt(tooltip.z_index));
-    })
   });
 });

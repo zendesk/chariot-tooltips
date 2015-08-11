@@ -7,7 +7,7 @@ class Tutorial {
   constructor(chariot, config) {
     this.chariot = chariot;
     if (typeof config.steps !== 'object') {
-      throw new Error('steps must be an array');
+      throw new Error(`steps must be an array.\n${this}`);
       return;
     }
 
@@ -24,7 +24,7 @@ class Tutorial {
 
   start() {
     if (this.steps.length === 0) {
-      throw new Error('steps should not be empty');
+      throw new Error(`steps should not be empty.\n${this}`);
       return;
     }
     this.overlay.render();
@@ -67,6 +67,14 @@ class Tutorial {
       step.tearDown();
     });
   }
+
+  toString() {
+    return `[Tutorial - compatibilityMode: {this.compatibilityMode}, ` +
+      `complete: {this.complete}, steps: ${this.steps}, overlay: ` +
+      `${this.overlay}]`;
+  }
+
+  //// PRIVATE
 
   _end() {
     // Note: Order matters. complete callback should be called after UI is torn down

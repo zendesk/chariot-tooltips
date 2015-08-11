@@ -36,8 +36,12 @@ class Tooltip {
 
     this.width = parseInt(config.width);
     this.height = parseInt(config.height);
-    this.anchorElement = config.anchorElement;
-
+    let selectorKeys = Object.keys(this.step.selectors);
+    if (selectorKeys.length > 1 && !config.anchorElement) {
+      throw new Error('anchorElement is not optional when more than one ' +
+        'selector exists:\n' + this);
+    }
+    this.anchorElement = config.anchorElement || selectorKeys[0];
     this.text = config.text;
     this.iconUrl = config.iconUrl;
     this.title = config.title;
@@ -45,53 +49,8 @@ class Tooltip {
     this.arrowLength = config.arrowLength || DEFAULT_ARROW_LENGTH;
   }
 
-  _createTooltipTemplate() {
-    let currentStep = this.tutorial.currentStep(this.step);
-    let totalSteps = this.tutorial.steps.length;
-    this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
-    this.subtext = this.config.subtext || (() => `${currentStep} of ${totalSteps}`);
-    let subtextMarkup = this._subtextMarkup();
-    let buttonFloat = subtextMarkup == '' ? 'center' : 'right';
-    let template = `
-      <div class="chariot-tooltip chariot-step-${currentStep}">
-        ${this._arrowMarkup()}
-        <div class="chariot-tooltip-content">${this._iconMarkup()}</div>
-        <h1 class="chariot-tooltip-header">${this.title}</h1>
-        <div class="chariot-tooltip-content"><p>${this.text}</p></div>
-        <div class="chariot-btn-row">
-          ${subtextMarkup}
-          <button class="btn btn-inverse ${buttonFloat}">${this.cta}</button>
-        </div>
-      </div>`;
-    let $template = $(template);
-
-    // Add default data attributes
-    this.attr['data-step-order'] = currentStep;
-    $template.attr(this.attr);
-    return $template;
-  }
-
   currentStep() {
     return this.tutorial.currentStep(this.step);
-  }
-
-  _iconMarkup() {
-    if (!this.iconUrl) return '';
-    return `<div class='chariot-tooltip-icon'>
-       <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
-     </div>`;
-  }
-
-  _subtextMarkup() {
-    if (!this.subtext) return '';
-    return `<span class='chariot-tooltip-subtext'>
-      ${this.subtext(this.currentStep(), this.tutorial.steps.length)}
-    </span>`;
-  }
-
-  _arrowMarkup() {
-    if (this.arrowLength === 0) return '';
-    return `<div class="chariot-tooltip-arrow ${this.arrowClass}"></div>`;
   }
 
   render() {
@@ -114,6 +73,59 @@ class Tooltip {
     this.$tooltip = null;
     this.$tooltipArrow.remove();
     this.$tooltipArrow = null;
+  }
+
+  toString() {
+    return `[Tooltip - currentStep: ${this.currentStep()}, Step: ${this.step},` +
+      ` text: ${this.text}]`;
+  }
+
+  //// PRIVATE
+
+  _createTooltipTemplate() {
+    let currentStep = this.tutorial.currentStep(this.step);
+    let totalSteps = this.tutorial.steps.length;
+    this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
+    this.subtext = this.config.subtext ||
+      (() => `${currentStep} of ${totalSteps}`);
+    let subtextMarkup = this._subtextMarkup();
+    let buttonFloat = subtextMarkup == '' ? 'center' : 'right';
+    let template = `
+      <div class="chariot-tooltip chariot-step-${currentStep}">
+        ${this._arrowMarkup()}
+        <div class="chariot-tooltip-content">${this._iconMarkup()}</div>
+        <h1 class="chariot-tooltip-header">${this.title}</h1>
+        <div class="chariot-tooltip-content"><p>${this.text}</p></div>
+        <div class="chariot-btn-row">
+          ${subtextMarkup}
+          <button class="btn btn-inverse ${buttonFloat}">${this.cta}</button>
+        </div>
+      </div>`;
+    let $template = $(template);
+
+    // Add default data attributes
+    this.attr['data-step-order'] = currentStep;
+    $template.attr(this.attr);
+    return $template;
+  }
+
+  _iconMarkup() {
+    if (!this.iconUrl) return '';
+    return `<div class='chariot-tooltip-icon'>
+       <img class='chariot-tooltip-icon-img' src="${this.iconUrl}"/>
+     </div>`;
+  }
+
+  _subtextMarkup() {
+    if (!this.subtext) return '';
+    return `<span class='chariot-tooltip-subtext'>
+      ${this.subtext(this.currentStep(), this.tutorial.steps.length)}
+    </span>`;
+  }
+
+  _arrowMarkup() {
+    if (this.arrowLength === 0) return '';
+    return `<div class="chariot-tooltip-arrow ${this.arrowClass}"></div>`;
   }
 
   _styleTooltip($tooltip, $tooltipArrow) {
@@ -148,7 +160,8 @@ class Tooltip {
 
   /*
     Positions the arrow to point at the center of the anchor element.
-    If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
+    If a tooltip is offset via xOffset / yOffset, the arrow will continue to
+    point to center.
   */
   _positionArrow($tooltip, $tooltipArrow) {
     if (this.arrowLength === 0) return;
