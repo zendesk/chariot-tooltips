@@ -2,7 +2,7 @@
   "name": "Chariot",
   "main": "dist/chariot.js",
   "description": "A JavaScript library for creating beautiful in product tutorials",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository": "https://github.com/zendesk/chariot",
   "devDependencies": {
     "babel": "^5.6.14",
