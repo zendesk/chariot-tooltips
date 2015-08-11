@@ -69,7 +69,7 @@ class Style {
   static clearCachedStylesForElement($element) {
     if (!$element || $element.length == 0) return;
     $element[0]._chariotComputedStyles = null;
-    $element.children().toArray().forEach(child => {
+    $element.children().each(child => {
       this.clearCachedStylesForElement($(child));
     });
   }
@@ -100,9 +100,12 @@ class Style {
 
   static _cacheStyleFor(element) {
     // check for IE getComputedCSSText()
-    let computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ?
-      element.getComputedCSSText() :
-      document.defaultView.getComputedStyle(element).cssText;
+    let computedStyles;
+    if (navigator.userAgent.match(/msie|windows|firefox/i)) {
+      computedStyles = element.getComputedCSSText();
+    } else {
+      computedStyles = document.defaultView.getComputedStyle(element).cssText;
+    }
 
     Object.defineProperty(element, '_chariotComputedStyles', {
       value: computedStyles,
