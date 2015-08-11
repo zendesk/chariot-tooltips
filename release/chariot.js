@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.1 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.2 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -298,9 +298,10 @@ var Style = (function () {
     value: function clearCachedStylesForElement($element) {
       var _this = this;
 
-      if (!$element || $element.length == 0) return;
+      if (!$element || !$element.length) return;
       $element[0]._chariotComputedStyles = null;
-      $element.children().each(function (child) {
+      // $.each($element.children(), (index, child) => {
+      $element.children().each(function (index, child) {
         _this.clearCachedStylesForElement((0, _jquery2['default'])(child));
       });
     }
