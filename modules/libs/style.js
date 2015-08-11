@@ -69,7 +69,8 @@ class Style {
   static clearCachedStylesForElement($element) {
     if (!$element || !$element.length) return;
     $element[0]._chariotComputedStyles = null;
-    $.each($element.children(), (index, child) => {
+    // $.each($element.children(), (index, child) => {
+    $element.children().each((index, child) => {
       this.clearCachedStylesForElement($(child));
     });
   }
