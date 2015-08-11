@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.0 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.1 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -300,7 +300,7 @@ var Style = (function () {
 
       if (!$element || $element.length == 0) return;
       $element[0]._chariotComputedStyles = null;
-      $element.children().toArray().forEach(function (child) {
+      $element.children().each(function (child) {
         _this.clearCachedStylesForElement((0, _jquery2['default'])(child));
       });
     }
@@ -336,7 +336,12 @@ var Style = (function () {
     key: '_cacheStyleFor',
     value: function _cacheStyleFor(element) {
       // check for IE getComputedCSSText()
-      var computedStyles = navigator.userAgent.match(/msie|windows|firefox/i) ? element.getComputedCSSText() : document.defaultView.getComputedStyle(element).cssText;
+      var computedStyles = undefined;
+      if (navigator.userAgent.match(/msie|windows|firefox/i)) {
+        computedStyles = element.getComputedCSSText();
+      } else {
+        computedStyles = document.defaultView.getComputedStyle(element).cssText;
+      }
 
       Object.defineProperty(element, '_chariotComputedStyles', {
         value: computedStyles,
