@@ -11,7 +11,7 @@ let Promise = require('es6-promise').Promise;
 class Step {
   constructor(config = {}, tutorial, overlay) {
     if (config.before && typeof config.before !== 'function') {
-      throw "before must be a function";
+      throw new Error(`before must be a function. config: ${config}`);
     }
     this.tutorial = tutorial;
     this.overlay = overlay;
@@ -77,7 +77,12 @@ class Step {
     }
   }
 
-  // PRIVATE
+  toString() {
+    return `[Step - currentStep: ${this.tutorial.currentStep(this.step)}, ` +
+      `selectors: ${JSON.stringify(this.selectors)}]`;
+  }
+
+  //// PRIVATE
 
   _transparentOverlayStrategy() {
     // Only use an overlay

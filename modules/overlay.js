@@ -60,6 +60,11 @@ class Overlay {
     }
   }
 
+  toString() {
+    return `[Overlay - shouldOverlay: {this.shouldOverlay}, ` +
+      `overlayColor: {this.overlayColor}]`;
+  }
+
   //// PRIVATE
 
   _createOverlay() {
