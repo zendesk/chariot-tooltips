@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.3 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.4 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -51,23 +51,14 @@ var Chariot = (function () {
   function Chariot(config) {
     _classCallCheck(this, Chariot);
 
+    this.config = config;
     this.tutorials = {};
-    this.readConfig(config);
-    this.listenForPushState();
+    this._readConfig(config);
+    this._listenForPushState();
     this.currentTutorial = null;
   }
 
   _createClass(Chariot, [{
-    key: 'readConfig',
-    value: function readConfig(config) {
-      if (!config || typeof config !== 'object') {
-        throw new Error("Config must contains a tutorials hash");
-      }
-      for (var tutorialName in config) {
-        this.tutorials[tutorialName] = new _tutorial2['default'](this, config[tutorialName]);
-      }
-    }
-  }, {
     key: 'startTutorial',
     value: function startTutorial(name) {
       if (this.currentTutorial) {
@@ -82,8 +73,26 @@ var Chariot = (function () {
       this.currentTutorial = null;
     }
   }, {
-    key: 'listenForPushState',
-    value: function listenForPushState() {
+    key: 'toString',
+    value: function toString() {
+      return '[Chariot - config: ' + this.config + ', tutorials: {this.tutorials}]';
+    }
+
+    //// PRIVATE
+
+  }, {
+    key: '_readConfig',
+    value: function _readConfig(config) {
+      if (!config || typeof config !== 'object') {
+        throw new Error('Config must contains a tutorials hash.\n' + this);
+      }
+      for (var tutorialName in config) {
+        this.tutorials[tutorialName] = new _tutorial2['default'](this, config[tutorialName]);
+      }
+    }
+  }, {
+    key: '_listenForPushState',
+    value: function _listenForPushState() {
       var _this = this,
           _arguments = arguments;
 
@@ -300,7 +309,6 @@ var Style = (function () {
 
       if (!$element || !$element.length) return;
       $element[0]._chariotComputedStyles = null;
-      // $.each($element.children(), (index, child) => {
       $element.children().each(function (index, child) {
         _this.clearCachedStylesForElement((0, _jquery2['default'])(child));
       });
@@ -333,6 +341,13 @@ var Style = (function () {
         document.styleSheets[0].insertRule('.' + className + '::' + pseudoClass + ' {\n        ' + pseudoStyle.cssText + '; content: ' + pseudoStyle.content + '; }', 0);
       }
     }
+
+    /*
+      Known issues:
+    - FF bug does not correctly copy CSS margin values
+      (https://bugzilla.mozilla.org/show_bug.cgi?id=381328)
+    - IE9 does not implement getComputedCSSText()
+    */
   }, {
     key: '_cacheStyleFor',
     value: function _cacheStyleFor(element) {
@@ -448,6 +463,11 @@ var Overlay = (function () {
         this.$transparentOverlay.remove();
       }
     }
+  }, {
+    key: 'toString',
+    value: function toString() {
+      return '[Overlay - shouldOverlay: {this.shouldOverlay}, ' + 'overlayColor: {this.overlayColor}]';
+    }
 
     //// PRIVATE
 
@@ -539,7 +559,7 @@ var Step = (function () {
     _classCallCheck(this, Step);
 
     if (config.before && typeof config.before !== 'function') {
-      throw "before must be a function";
+      throw new Error('before must be a function. config: ' + config);
     }
     this.tutorial = tutorial;
     this.overlay = overlay;
@@ -612,8 +632,13 @@ var Step = (function () {
         this._computeStyles((0, _jquery2['default'])(selector));
       }
     }
+  }, {
+    key: 'toString',
+    value: function toString() {
+      return '[Step - currentStep: ' + this.tutorial.currentStep(this.step) + ', ' + ('selectors: ' + JSON.stringify(this.selectors) + ']');
+    }
 
-    // PRIVATE
+    //// PRIVATE
 
   }, {
     key: '_transparentOverlayStrategy',
@@ -832,8 +857,11 @@ var Tooltip = (function () {
 
     this.width = parseInt(config.width);
     this.height = parseInt(config.height);
-    this.anchorElement = config.anchorElement;
-
+    var selectorKeys = Object.keys(this.step.selectors);
+    if (selectorKeys.length > 1 && !config.anchorElement) {
+      throw new Error('anchorElement is not optional when more than one ' + 'selector exists:\n' + this);
+    }
+    this.anchorElement = config.anchorElement || selectorKeys[0];
     this.text = config.text;
     this.iconUrl = config.iconUrl;
     this.title = config.title;
@@ -842,46 +870,9 @@ var Tooltip = (function () {
   }
 
   _createClass(Tooltip, [{
-    key: '_createTooltipTemplate',
-    value: function _createTooltipTemplate() {
-      var currentStep = this.tutorial.currentStep(this.step);
-      var totalSteps = this.tutorial.steps.length;
-      this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
-      this.subtext = this.config.subtext || function () {
-        return currentStep + ' of ' + totalSteps;
-      };
-      var subtextMarkup = this._subtextMarkup();
-      var buttonFloat = subtextMarkup == '' ? 'center' : 'right';
-      var template = '\n      <div class="chariot-tooltip chariot-step-' + currentStep + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
-      var $template = (0, _jquery2['default'])(template);
-
-      // Add default data attributes
-      this.attr['data-step-order'] = currentStep;
-      $template.attr(this.attr);
-      return $template;
-    }
-  }, {
     key: 'currentStep',
     value: function currentStep() {
       return this.tutorial.currentStep(this.step);
-    }
-  }, {
-    key: '_iconMarkup',
-    value: function _iconMarkup() {
-      if (!this.iconUrl) return '';
-      return '<div class=\'chariot-tooltip-icon\'>\n       <img class=\'chariot-tooltip-icon-img\' src="' + this.iconUrl + '"/>\n     </div>';
-    }
-  }, {
-    key: '_subtextMarkup',
-    value: function _subtextMarkup() {
-      if (!this.subtext) return '';
-      return '<span class=\'chariot-tooltip-subtext\'>\n      ' + this.subtext(this.currentStep(), this.tutorial.steps.length) + '\n    </span>';
-    }
-  }, {
-    key: '_arrowMarkup',
-    value: function _arrowMarkup() {
-      if (this.arrowLength === 0) return '';
-      return '<div class="chariot-tooltip-arrow ' + this.arrowClass + '"></div>';
     }
   }, {
     key: 'render',
@@ -908,6 +899,51 @@ var Tooltip = (function () {
       this.$tooltip = null;
       this.$tooltipArrow.remove();
       this.$tooltipArrow = null;
+    }
+  }, {
+    key: 'toString',
+    value: function toString() {
+      return '[Tooltip - currentStep: ' + this.currentStep() + ', Step: ' + this.step + ',' + (' text: ' + this.text + ']');
+    }
+
+    //// PRIVATE
+
+  }, {
+    key: '_createTooltipTemplate',
+    value: function _createTooltipTemplate() {
+      var currentStep = this.tutorial.currentStep(this.step);
+      var totalSteps = this.tutorial.steps.length;
+      this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
+      this.subtext = this.config.subtext || function () {
+        return currentStep + ' of ' + totalSteps;
+      };
+      var subtextMarkup = this._subtextMarkup();
+      var buttonFloat = subtextMarkup == '' ? 'center' : 'right';
+      var template = '\n      <div class="chariot-tooltip chariot-step-' + currentStep + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
+      var $template = (0, _jquery2['default'])(template);
+
+      // Add default data attributes
+      this.attr['data-step-order'] = currentStep;
+      $template.attr(this.attr);
+      return $template;
+    }
+  }, {
+    key: '_iconMarkup',
+    value: function _iconMarkup() {
+      if (!this.iconUrl) return '';
+      return '<div class=\'chariot-tooltip-icon\'>\n       <img class=\'chariot-tooltip-icon-img\' src="' + this.iconUrl + '"/>\n     </div>';
+    }
+  }, {
+    key: '_subtextMarkup',
+    value: function _subtextMarkup() {
+      if (!this.subtext) return '';
+      return '<span class=\'chariot-tooltip-subtext\'>\n      ' + this.subtext(this.currentStep(), this.tutorial.steps.length) + '\n    </span>';
+    }
+  }, {
+    key: '_arrowMarkup',
+    value: function _arrowMarkup() {
+      if (this.arrowLength === 0) return '';
+      return '<div class="chariot-tooltip-arrow ' + this.arrowClass + '"></div>';
     }
   }, {
     key: '_styleTooltip',
@@ -938,7 +974,8 @@ var Tooltip = (function () {
 
     /*
       Positions the arrow to point at the center of the anchor element.
-      If a tooltip is offset via xOffset / yOffset, the arrow will continue to point to center.
+      If a tooltip is offset via xOffset / yOffset, the arrow will continue to
+      point to center.
     */
   }, {
     key: '_positionArrow',
@@ -1062,7 +1099,7 @@ var Tutorial = (function () {
 
     this.chariot = chariot;
     if (typeof config.steps !== 'object') {
-      throw new Error('steps must be an array');
+      throw new Error('steps must be an array.\n' + this);
       return;
     }
 
@@ -1081,7 +1118,7 @@ var Tutorial = (function () {
     key: 'start',
     value: function start() {
       if (this.steps.length === 0) {
-        throw new Error('steps should not be empty');
+        throw new Error('steps should not be empty.\n' + this);
         return;
       }
       this.overlay.render();
@@ -1130,6 +1167,14 @@ var Tutorial = (function () {
         step.tearDown();
       });
     }
+  }, {
+    key: 'toString',
+    value: function toString() {
+      return '[Tutorial - compatibilityMode: {this.compatibilityMode}, ' + ('complete: {this.complete}, steps: ' + this.steps + ', overlay: ') + (this.overlay + ']');
+    }
+
+    //// PRIVATE
+
   }, {
     key: '_end',
     value: function _end() {
