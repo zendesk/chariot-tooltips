@@ -9,6 +9,7 @@ var babel = require('babel/register');
 var mocha = require('gulp-mocha');
 var testem = require('gulp-testem');
 var sass = require('gulp-sass');
+var autoprefixer = require('gulp-autoprefixer');
 var minifyCss = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var clean = require('gulp-clean');
@@ -49,6 +50,10 @@ gulp.task('sass', function() {
   return gulp.src('./stylesheets/chariot.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(rename(projectName + '.css'))
+    .pipe(autoprefixer({
+        browsers: ['last 2 versions'],
+        cascade: false
+    }))
     .pipe(gulp.dest('./dist/stylesheets'))
     .pipe(connect.reload())
 });

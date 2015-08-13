@@ -19,10 +19,13 @@ class Step {
     this.before = config.before;
     this.after = config.after;
     this._resizeTimeout = null;
-    this._selectedElements = {};
-    this._clonedElements = {};
+
+    this._elementMap = new Map();
+    for (let selectorName in this.selectors) {
+      this._elementMap[selectorName] = {};
+    }
+
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
-    this._cloneClasses = [];
   }
 
   render() {
@@ -35,13 +38,16 @@ class Step {
     }).then(() => {
       return this._waitForElements();
     }).then(() => {
-      if (this.tutorial.compatibilityMode && Object.keys(this.selectors).length === 1) {
+      if (this.tutorial.compatibilityMode &&
+          Object.keys(this.selectors).length === 1) {
         this._transparentOverlayStrategy();
       } else {
         this._clonedElementStrategy();
       }
 
       this._renderTooltip();
+      // Resize the overlay in case the tooltip extended the width/height of DOM
+      this.overlay.resize();
     }).catch(error => {
       console.log(error);
       this.tutorial.tearDown();
@@ -52,21 +58,24 @@ class Step {
     this.tutorial.next(this);
   }
 
-  getClonedElement(name) {
-    return this._clonedElements[name];
+  getClonedElement(selectorName) {
+    return this._elementMap[selectorName].clone;
   }
 
   tearDown() {
-    for (let elementName in this._clonedElements) {
-      this._clonedElements[elementName].remove();
-    }
-    // Remove computed styles
+    let $window = $(window);
     for (let selectorName in this.selectors) {
       let selector = this.selectors[selectorName]
+      // Remove computed styles
       Style.clearCachedStylesForElement($(selector));
+      // Remove resize handlers
+      let elementInfo = this._elementMap[selectorName];
+      $window.off('resize', elementInfo.resizeHandler);
+      if (elementInfo.clone) {
+        // Remove cloned elements
+        elementInfo.clone.remove();
+      }
     }
-    this._clonedElements = {};
-    this._selectedElements = {};
     this.tooltip.tearDown();
   }
 
@@ -86,8 +95,10 @@ class Step {
 
   _transparentOverlayStrategy() {
     // Only use an overlay
-    let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
-    let $element =  this._selectedElements[selectors[0]];
+    // let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
+    // let $element =  this._selectedElements[selectors[0]];
+    let selectorName = Object.keys(this.selectors)[0];
+    let $element =  this._elementMap[selectorName].element;
     this.overlay.focusOnElement($element);
   }
 
@@ -128,7 +139,7 @@ class Step {
         }, DOM_QUERY_DELAY);
       }
     } else {
-      this._selectedElements[selector] = element;
+      this._elementMap[selectorName].element = element;
       resolve();
 
       // TODO: fire event when element is ready. Tutorial will listen and call
@@ -150,14 +161,13 @@ class Step {
       this.tutorial.prepare();
     }, 0);
     for (let selectorName in selectors) {
-      let sel = selectors[selectorName];
-      let clone = this._cloneElement(sel);
-      this._clonedElements[selectorName] = clone;
+      let clone = this._cloneElement(selectorName);
+      this._elementMap[selectorName].clone = clone;
     }
   }
 
-  _cloneElement(sel) {
-    let $element = this._selectedElements[sel];
+  _cloneElement(selectorName) {
+    let $element = this._elementMap[selectorName].element;
     if ($element.length == 0) { return null; }
 
     let $clone = $element.clone();
@@ -165,7 +175,7 @@ class Step {
     this._applyComputedStyles($clone, $element);
     this._positionClone($clone, $element);
 
-    $(window).resize(() => {
+    let resizeHandler = () => {
       if (this._resizeTimeout) {
         clearTimeout(this._resizeTimeout);
       }
@@ -173,9 +183,13 @@ class Step {
         Style.clearCachedStylesForElement($element);
         this._applyComputedStyles($clone, $element);
         this._positionClone($clone, $element);
+        this.tooltip.reposition();
         this._resizeTimeout = null;
       }, 50)
-    });
+    };
+
+    $(window).on('resize', resizeHandler);
+    this._elementMap[selectorName].resizeHandler = resizeHandler;
 
     return $clone;
   }
