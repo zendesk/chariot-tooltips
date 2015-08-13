@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import debounce from 'lodash.debounce';
 import Tooltip from './tooltip';
 import { CLONE_Z_INDEX } from './constants';
 import Style from './libs/style';
@@ -48,6 +49,23 @@ class Step {
       this._renderTooltip();
       // Resize the overlay in case the tooltip extended the width/height of DOM
       this.overlay.resize();
+
+      // Setup resize handler
+      this._resizeHandler = debounce(() => {
+        for (let selectorName in this.selectors) {
+          let elementInfo = this._elementMap[selectorName];
+          if (elementInfo.clone) {
+            let $element = elementInfo.element;
+            let $clone = elementInfo.clone;
+            Style.clearCachedStylesForElement($element);
+            this._applyComputedStyles($clone, $element);
+            this._positionClone($clone, $element);
+          }
+        }
+        this.tooltip.reposition();
+        this.overlay.resize();
+      }, 50);
+      $(window).on('resize', this._resizeHandler);
     }).catch(error => {
       console.log(error);
       this.tutorial.tearDown();
@@ -68,15 +86,15 @@ class Step {
       let selector = this.selectors[selectorName]
       // Remove computed styles
       Style.clearCachedStylesForElement($(selector));
-      // Remove resize handlers
       let elementInfo = this._elementMap[selectorName];
-      $window.off('resize', elementInfo.resizeHandler);
       if (elementInfo.clone) {
         // Remove cloned elements
         elementInfo.clone.remove();
       }
     }
     this.tooltip.tearDown();
+
+    $window.off('resize', this._resizeHandler);
   }
 
   prepare() {
@@ -95,8 +113,6 @@ class Step {
 
   _transparentOverlayStrategy() {
     // Only use an overlay
-    // let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
-    // let $element =  this._selectedElements[selectors[0]];
     let selectorName = Object.keys(this.selectors)[0];
     let $element =  this._elementMap[selectorName].element;
     this.overlay.focusOnElement($element);
@@ -174,22 +190,6 @@ class Step {
     $('body').append($clone);
     this._applyComputedStyles($clone, $element);
     this._positionClone($clone, $element);
-
-    let resizeHandler = () => {
-      if (this._resizeTimeout) {
-        clearTimeout(this._resizeTimeout);
-      }
-      this._resizeTimeout = setTimeout(() => {
-        Style.clearCachedStylesForElement($element);
-        this._applyComputedStyles($clone, $element);
-        this._positionClone($clone, $element);
-        this.tooltip.reposition();
-        this._resizeTimeout = null;
-      }, 50)
-    };
-
-    $(window).on('resize', resizeHandler);
-    this._elementMap[selectorName].resizeHandler = resizeHandler;
 
     return $clone;
   }

@@ -74,23 +74,6 @@ describe('Step', () => {
       expect(Style.clearCachedStylesForElement.calledTwice).to.be.true;
     });
 
-    xit('removes resized handlers', () => {
-      let $window = $(window)
-      sinon.spy($window, 'off');
-
-      for (let selectorName in stepConfiguration.selectors) {
-        let resizeHandler = sinon.stub();
-        step._elementMap[selectorName].resizeHandler = resizeHandler;
-      }
-
-      step.tearDown();
-
-      for (let selectorName in stepConfiguration.selectors) {
-        let resizeHandler = step._elementMap[selectorName].resizeHandler;
-        expect($window.off.calledWith('resize', resizeHandler)).to.be.true;
-      }
-    });
-
     it('removes all clone elements', () => {
       for (let selectorName in stepConfiguration.selectors) {
         let clone = { remove: () => {} };
