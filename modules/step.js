@@ -20,8 +20,6 @@ class Step {
     this.after = config.after;
     this._resizeTimeout = null;
 
-    // this._selectedElements = {};
-    this._clonedElements = {};
     this._elementMap = new Map();
     for (let selectorName in this.selectors) {
       this._elementMap[selectorName] = {};
@@ -60,24 +58,22 @@ class Step {
     this.tutorial.next(this);
   }
 
-  getClonedElement(name) {
-    return this._clonedElements[name];
+  getClonedElement(selectorName) {
+    return this._elementMap[selectorName].clone;
   }
 
   tearDown() {
     let $window = $(window);
-    for (let elementName in this._clonedElements) {
-      this._clonedElements[elementName].remove();
-    }
     // Remove computed styles
     for (let selectorName in this.selectors) {
       let selector = this.selectors[selectorName]
       Style.clearCachedStylesForElement($(selector));
-      $window.off('resize', this._elementMap[selectorName].resizeHandler);
+      let elementInfo = this._elementMap[selectorName];
+      $window.off('resize', elementInfo.resizeHandler);
+      if (elementInfo.clone) {
+        elementInfo.clone.remove();
+      }
     }
-    this._clonedElements = {};
-    // this._selectedElements = {};
-    // this._elementMap = null;
     this.tooltip.tearDown();
   }
 
@@ -141,7 +137,6 @@ class Step {
         }, DOM_QUERY_DELAY);
       }
     } else {
-      // this._selectedElements[selector] = element;
       this._elementMap[selectorName].element = element;
       resolve();
 
@@ -164,15 +159,11 @@ class Step {
       this.tutorial.prepare();
     }, 0);
     for (let selectorName in selectors) {
-      // let sel = selectors[selectorName];
-      // let clone = this._cloneElement(sel);
       let clone = this._cloneElement(selectorName);
-      this._clonedElements[selectorName] = clone;
+      this._elementMap[selectorName].clone = clone;
     }
   }
 
-  // _cloneElement(sel) {
-    // let $element = this._selectedElements[sel];
   _cloneElement(selectorName) {
     let $element = this._elementMap[selectorName].element;
     if ($element.length == 0) { return null; }
@@ -181,21 +172,6 @@ class Step {
     $('body').append($clone);
     this._applyComputedStyles($clone, $element);
     this._positionClone($clone, $element);
-
-/*
-    $(window).resize(() => {
-      if (this._resizeTimeout) {
-        clearTimeout(this._resizeTimeout);
-      }
-      this._resizeTimeout = setTimeout(() => {
-        Style.clearCachedStylesForElement($element);
-        this._applyComputedStyles($clone, $element);
-        this._positionClone($clone, $element);
-        this.tooltip.reposition();
-        this._resizeTimeout = null;
-      }, 50)
-    });
-*/
 
     let resizeHandler = () => {
       if (this._resizeTimeout) {
