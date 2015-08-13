@@ -26,7 +26,6 @@ class Step {
     }
 
     this.tooltip = new Tooltip(config.tooltip, this, tutorial);
-    this._cloneClasses = [];
   }
 
   render() {
@@ -39,7 +38,8 @@ class Step {
     }).then(() => {
       return this._waitForElements();
     }).then(() => {
-      if (this.tutorial.compatibilityMode && Object.keys(this.selectors).length === 1) {
+      if (this.tutorial.compatibilityMode &&
+          Object.keys(this.selectors).length === 1) {
         this._transparentOverlayStrategy();
       } else {
         this._clonedElementStrategy();
@@ -64,13 +64,15 @@ class Step {
 
   tearDown() {
     let $window = $(window);
-    // Remove computed styles
     for (let selectorName in this.selectors) {
       let selector = this.selectors[selectorName]
+      // Remove computed styles
       Style.clearCachedStylesForElement($(selector));
+      // Remove resize handlers
       let elementInfo = this._elementMap[selectorName];
       $window.off('resize', elementInfo.resizeHandler);
       if (elementInfo.clone) {
+        // Remove cloned elements
         elementInfo.clone.remove();
       }
     }

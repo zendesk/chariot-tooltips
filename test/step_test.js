@@ -2,6 +2,8 @@ var assert = require("assert");
 require('./test_helper');
 import Step from '../modules/step';
 import Tutorial from '../modules/tutorial';
+import Style from '../modules/libs/style';
+import $ from 'jquery';
 import chai from 'chai';
 import sinon from 'sinon';
 let expect = chai.expect;
@@ -58,8 +60,7 @@ describe('Step', () => {
 
   context('tearDown', () => {
     let step = null,
-      tutorial = null,
-      clone = null;
+      tutorial = null;
 
     before(() => {
       tutorial = new Tutorial('test', { steps: [] });
@@ -67,24 +68,44 @@ describe('Step', () => {
       sinon.stub(step.tooltip, ('tearDown'));
     });
 
-    it('tearsDown with no cloned elements', () => {
-      clone = { remove: () => ({}) };
-      step._clonedElements = null;
-      expect(step.tearDown.bind(step)).not.to.throw(Error);
-    });
-
-    it('tearsDown with no cloned elements', () => {
-      clone = { remove: () => ({}) };
-      step._clonedElements = [];
-      expect(step.tearDown.bind(step)).not.to.throw(Error);
-    });
-
-    it('tearsDown all clone elements', () => {
-      clone = { remove: () => ({}) };
-      sinon.spy(clone, 'remove');
-      step._clonedElements = [clone];
+    it('clears cached styles', () => {
+      sinon.stub(Style, 'clearCachedStylesForElement');
       step.tearDown();
-      expect(clone.remove.calledOnce).to.be.true;
+      expect(Style.clearCachedStylesForElement.calledTwice).to.be.true;
+    });
+
+    xit('removes resized handlers', () => {
+      let $window = $(window)
+      sinon.spy($window, 'off');
+
+      for (let selectorName in stepConfiguration.selectors) {
+        let resizeHandler = sinon.stub();
+        step._elementMap[selectorName].resizeHandler = resizeHandler;
+      }
+
+      step.tearDown();
+
+      for (let selectorName in stepConfiguration.selectors) {
+        let resizeHandler = step._elementMap[selectorName].resizeHandler;
+        expect($window.off.calledWith('resize', resizeHandler)).to.be.true;
+      }
+    });
+
+    it('removes all clone elements', () => {
+      for (let selectorName in stepConfiguration.selectors) {
+        let clone = { remove: () => {} };
+        sinon.spy(clone, 'remove');
+        step._elementMap[selectorName].clone = clone;
+      }
+
+      step.tearDown();
+      for (let selectorName in stepConfiguration.selectors) {
+        expect(step._elementMap[selectorName].clone.remove.calledOnce).to.be.true;
+      }
+    });
+
+    it('tears down tooltip', () => {
+      expect(step.tooltip.tearDown.called).to.be.true;
     });
   });
 });
