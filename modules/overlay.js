@@ -5,6 +5,7 @@ class Overlay {
   constructor(config) {
     this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
     this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
+    this._resizeHandler = null;
   }
 
   isVisible() {
@@ -23,41 +24,50 @@ class Overlay {
     this.$transparentOverlay = $transparentOverlay;
   }
 
+  // Following 2 methods are part of clone element stragey
+
   showBackgroundOverlay() {
     // Remove the resize handler that might exist from focusOnElement
     // (Note: take care to not call this after cloning elements, because they
     //  have their own window resize handlers)
-    $(window).unbind('resize');
+    let $window = $(window);
+    $window.off('resize', this._resizeOverlayToElement);
 
     this.$overlay.css({
       background: this.overlayColor,
-      width: '100%',
-      height: '100%',
       border: 'none'
     });
+
+    this._resizeOverlayToFullScreen();
+    this._resizeHandler = this._resizeOverlayToFullScreen.bind(this);
+    $window.on('resize', this._resizeHandler);
   }
 
   showTransparentOverlay() {
     this.$transparentOverlay.show();
   }
 
+  // One transparent overlay strategy
   focusOnElement($element) {
     // Hide overlay from showTransparentOverlay
     this.$transparentOverlay.hide();
+    $(window).off('resize', this._resizeOverlayToFullScreen);
 
     this._resizeOverlayToElement($element);
-
-    $(window).resize(() => {
-      this._resizeOverlayToElement($element);
-    });
+    this._resizeHandler = this._resizeOverlayToElement.bind(this, $element);
+    $(window).on('resize', this._resizeHandler);
   }
 
+  resize() {
+    this._resizeHandler();
+  }
 
   tearDown() {
     this.$overlay.remove();
     if (this.$transparentOverlay) {
       this.$transparentOverlay.remove();
     }
+    $(window).off('resize', this._resizeOverlayToFullScreen);
   }
 
   toString() {
@@ -74,9 +84,22 @@ class Overlay {
   }
 
   _createTransparentOverlay() {
+    let body = $('body')[0];
     let $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
-    $transparentOverlay.css({ 'z-index': CLONE_Z_INDEX + 1 });
+    $transparentOverlay.css({
+      'z-index': CLONE_Z_INDEX + 1,
+      width: body.scrollWidth + 'px',
+      height: body.scrollHeight + 'px'
+    });
     return $transparentOverlay;
+  }
+
+  _resizeOverlayToFullScreen() {
+    let body = $('body')[0];
+    this.$overlay.css({
+      width: body.scrollWidth + 'px',
+      height: body.scrollHeight + 'px'
+    });
   }
 
   _resizeOverlayToElement($element) {
@@ -85,11 +108,13 @@ class Overlay {
 
     // Then resize it
     let borderStyles = `solid ${this.overlayColor}`;
-    let docWidth = $(window).outerWidth();
-    let docHeight = $(window).outerHeight();
+    let body = $('body')[0];
+    let docWidth = body.scrollWidth;
+    let docHeight = body.scrollHeight;
 
     let width = $element.outerWidth();
     let height = $element.outerHeight();
+
     let leftWidth = offset.left;
     let rightWidth = docWidth - (offset.left + width);
     let topWidth = offset.top;

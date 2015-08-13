@@ -59,7 +59,7 @@ class Tooltip {
 
     let $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
 
-    this._styleTooltip($tooltip, $tooltipArrow);
+    this._position($tooltip, $tooltipArrow);
 
     // Add event handlers
     $('.chariot-btn-row button').click(() => {
@@ -73,6 +73,10 @@ class Tooltip {
     this.$tooltip = null;
     this.$tooltipArrow.remove();
     this.$tooltipArrow = null;
+  }
+
+  reposition() {
+    this._position(this.$tooltip, this.$tooltipArrow);
   }
 
   toString() {
@@ -128,7 +132,7 @@ class Tooltip {
     return `<div class="chariot-tooltip-arrow ${this.arrowClass}"></div>`;
   }
 
-  _styleTooltip($tooltip, $tooltipArrow) {
+  _position($tooltip, $tooltipArrow) {
     this._positionTooltip($tooltip);
     this._positionArrow($tooltip, $tooltipArrow);
   }
