@@ -31,7 +31,6 @@ class Overlay {
     // (Note: take care to not call this after cloning elements, because they
     //  have their own window resize handlers)
     let $window = $(window);
-    $window.off('resize', this._resizeOverlayToElement);
 
     this.$overlay.css({
       background: this.overlayColor,
@@ -40,7 +39,6 @@ class Overlay {
 
     this._resizeOverlayToFullScreen();
     this._resizeHandler = this._resizeOverlayToFullScreen.bind(this);
-    $window.on('resize', this._resizeHandler);
   }
 
   showTransparentOverlay() {
@@ -51,11 +49,9 @@ class Overlay {
   focusOnElement($element) {
     // Hide overlay from showTransparentOverlay
     this.$transparentOverlay.hide();
-    $(window).off('resize', this._resizeOverlayToFullScreen);
 
     this._resizeOverlayToElement($element);
     this._resizeHandler = this._resizeOverlayToElement.bind(this, $element);
-    $(window).on('resize', this._resizeHandler);
   }
 
   resize() {
@@ -67,7 +63,6 @@ class Overlay {
     if (this.$transparentOverlay) {
       this.$transparentOverlay.remove();
     }
-    $(window).off('resize', this._resizeOverlayToFullScreen);
   }
 
   toString() {
