@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.4 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.5 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -401,6 +401,7 @@ var Overlay = (function () {
 
     this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
     this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
+    this._resizeHandler = null;
   }
 
   _createClass(Overlay, [{
@@ -421,39 +422,49 @@ var Overlay = (function () {
       (0, _jquery2['default'])('body').append($transparentOverlay);
       this.$transparentOverlay = $transparentOverlay;
     }
+
+    // Following 2 methods are part of clone element stragey
+
   }, {
     key: 'showBackgroundOverlay',
     value: function showBackgroundOverlay() {
       // Remove the resize handler that might exist from focusOnElement
       // (Note: take care to not call this after cloning elements, because they
       //  have their own window resize handlers)
-      (0, _jquery2['default'])(window).unbind('resize');
+      var $window = (0, _jquery2['default'])(window);
+      $window.off('resize', this._resizeOverlayToElement);
 
       this.$overlay.css({
         background: this.overlayColor,
-        width: '100%',
-        height: '100%',
         border: 'none'
       });
+
+      this._resizeOverlayToFullScreen();
+      this._resizeHandler = this._resizeOverlayToFullScreen.bind(this);
+      $window.on('resize', this._resizeHandler);
     }
   }, {
     key: 'showTransparentOverlay',
     value: function showTransparentOverlay() {
       this.$transparentOverlay.show();
     }
+
+    // One transparent overlay strategy
   }, {
     key: 'focusOnElement',
     value: function focusOnElement($element) {
-      var _this = this;
-
       // Hide overlay from showTransparentOverlay
       this.$transparentOverlay.hide();
+      (0, _jquery2['default'])(window).off('resize', this._resizeOverlayToFullScreen);
 
       this._resizeOverlayToElement($element);
-
-      (0, _jquery2['default'])(window).resize(function () {
-        _this._resizeOverlayToElement($element);
-      });
+      this._resizeHandler = this._resizeOverlayToElement.bind(this, $element);
+      (0, _jquery2['default'])(window).on('resize', this._resizeHandler);
+    }
+  }, {
+    key: 'resize',
+    value: function resize() {
+      this._resizeHandler();
     }
   }, {
     key: 'tearDown',
@@ -462,6 +473,7 @@ var Overlay = (function () {
       if (this.$transparentOverlay) {
         this.$transparentOverlay.remove();
       }
+      (0, _jquery2['default'])(window).off('resize', this._resizeOverlayToFullScreen);
     }
   }, {
     key: 'toString',
@@ -481,9 +493,23 @@ var Overlay = (function () {
   }, {
     key: '_createTransparentOverlay',
     value: function _createTransparentOverlay() {
+      var body = (0, _jquery2['default'])('body')[0];
       var $transparentOverlay = (0, _jquery2['default'])("<div class='chariot-transparent-overlay'></div>");
-      $transparentOverlay.css({ 'z-index': _constants.CLONE_Z_INDEX + 1 });
+      $transparentOverlay.css({
+        'z-index': _constants.CLONE_Z_INDEX + 1,
+        width: body.scrollWidth + 'px',
+        height: body.scrollHeight + 'px'
+      });
       return $transparentOverlay;
+    }
+  }, {
+    key: '_resizeOverlayToFullScreen',
+    value: function _resizeOverlayToFullScreen() {
+      var body = (0, _jquery2['default'])('body')[0];
+      this.$overlay.css({
+        width: body.scrollWidth + 'px',
+        height: body.scrollHeight + 'px'
+      });
     }
   }, {
     key: '_resizeOverlayToElement',
@@ -493,11 +519,13 @@ var Overlay = (function () {
 
       // Then resize it
       var borderStyles = 'solid ' + this.overlayColor;
-      var docWidth = (0, _jquery2['default'])(window).outerWidth();
-      var docHeight = (0, _jquery2['default'])(window).outerHeight();
+      var body = (0, _jquery2['default'])('body')[0];
+      var docWidth = body.scrollWidth;
+      var docHeight = body.scrollHeight;
 
       var width = $element.outerWidth();
       var height = $element.outerHeight();
+
       var leftWidth = offset.left;
       var rightWidth = docWidth - (offset.left + width);
       var topWidth = offset.top;
@@ -567,10 +595,13 @@ var Step = (function () {
     this.before = config.before;
     this.after = config.after;
     this._resizeTimeout = null;
-    this._selectedElements = {};
-    this._clonedElements = {};
+
+    this._elementMap = new Map();
+    for (var selectorName in this.selectors) {
+      this._elementMap[selectorName] = {};
+    }
+
     this.tooltip = new _tooltip2['default'](config.tooltip, this, tutorial);
-    this._cloneClasses = [];
   }
 
   _createClass(Step, [{
@@ -594,6 +625,8 @@ var Step = (function () {
         }
 
         _this._renderTooltip();
+        // Resize the overlay in case the tooltip extended the width/height of DOM
+        _this.overlay.resize();
       })['catch'](function (error) {
         console.log(error);
         _this.tutorial.tearDown();
@@ -606,22 +639,25 @@ var Step = (function () {
     }
   }, {
     key: 'getClonedElement',
-    value: function getClonedElement(name) {
-      return this._clonedElements[name];
+    value: function getClonedElement(selectorName) {
+      return this._elementMap[selectorName].clone;
     }
   }, {
     key: 'tearDown',
     value: function tearDown() {
-      for (var elementName in this._clonedElements) {
-        this._clonedElements[elementName].remove();
-      }
-      // Remove computed styles
+      var $window = (0, _jquery2['default'])(window);
       for (var selectorName in this.selectors) {
         var selector = this.selectors[selectorName];
+        // Remove computed styles
         _libsStyle2['default'].clearCachedStylesForElement((0, _jquery2['default'])(selector));
+        // Remove resize handlers
+        var elementInfo = this._elementMap[selectorName];
+        $window.off('resize', elementInfo.resizeHandler);
+        if (elementInfo.clone) {
+          // Remove cloned elements
+          elementInfo.clone.remove();
+        }
       }
-      this._clonedElements = {};
-      this._selectedElements = {};
       this.tooltip.tearDown();
     }
   }, {
@@ -643,13 +679,11 @@ var Step = (function () {
   }, {
     key: '_transparentOverlayStrategy',
     value: function _transparentOverlayStrategy() {
-      var _this2 = this;
-
       // Only use an overlay
-      var selectors = Object.keys(this.selectors).map(function (key) {
-        return _this2.selectors[key];
-      });
-      var $element = this._selectedElements[selectors[0]];
+      // let selectors = Object.keys(this.selectors).map(key => this.selectors[key]);
+      // let $element =  this._selectedElements[selectors[0]];
+      var selectorName = Object.keys(this.selectors)[0];
+      var $element = this._elementMap[selectorName].element;
       this.overlay.focusOnElement($element);
     }
   }, {
@@ -669,13 +703,13 @@ var Step = (function () {
   }, {
     key: '_waitForElements',
     value: function _waitForElements() {
-      var _this3 = this;
+      var _this2 = this;
 
       var promises = [];
 
       var _loop = function (selectorName) {
         var promise = new Promise(function (resolve, reject) {
-          _this3._waitForElement(selectorName, 0, resolve, reject);
+          _this2._waitForElement(selectorName, 0, resolve, reject);
         });
         promises.push(promise);
       };
@@ -689,7 +723,7 @@ var Step = (function () {
   }, {
     key: '_waitForElement',
     value: function _waitForElement(selectorName, numAttempts, resolve, reject) {
-      var _this4 = this;
+      var _this3 = this;
 
       var selector = this.selectors[selectorName];
       var element = (0, _jquery2['default'])(selector);
@@ -699,11 +733,11 @@ var Step = (function () {
           reject('Selector not found: ' + selector);
         } else {
           window.setTimeout(function () {
-            _this4._waitForElement(selectorName, numAttempts, resolve, reject);
+            _this3._waitForElement(selectorName, numAttempts, resolve, reject);
           }, DOM_QUERY_DELAY);
         }
       } else {
-        this._selectedElements[selector] = element;
+        this._elementMap[selectorName].element = element;
         resolve();
 
         // TODO: fire event when element is ready. Tutorial will listen and call
@@ -713,35 +747,34 @@ var Step = (function () {
   }, {
     key: '_computeStyles',
     value: function _computeStyles($element) {
-      var _this5 = this;
+      var _this4 = this;
 
       _libsStyle2['default'].getComputedStylesFor($element[0]);
       $element.children().toArray().forEach(function (child) {
-        _this5._computeStyles((0, _jquery2['default'])(child));
+        _this4._computeStyles((0, _jquery2['default'])(child));
       });
     }
   }, {
     key: '_cloneElements',
     value: function _cloneElements(selectors) {
-      var _this6 = this;
+      var _this5 = this;
 
       if (this.overlay.isVisible()) return;
 
       setTimeout(function () {
-        _this6.tutorial.prepare();
+        _this5.tutorial.prepare();
       }, 0);
       for (var selectorName in selectors) {
-        var sel = selectors[selectorName];
-        var clone = this._cloneElement(sel);
-        this._clonedElements[selectorName] = clone;
+        var clone = this._cloneElement(selectorName);
+        this._elementMap[selectorName].clone = clone;
       }
     }
   }, {
     key: '_cloneElement',
-    value: function _cloneElement(sel) {
-      var _this7 = this;
+    value: function _cloneElement(selectorName) {
+      var _this6 = this;
 
-      var $element = this._selectedElements[sel];
+      var $element = this._elementMap[selectorName].element;
       if ($element.length == 0) {
         return null;
       }
@@ -751,24 +784,28 @@ var Step = (function () {
       this._applyComputedStyles($clone, $element);
       this._positionClone($clone, $element);
 
-      (0, _jquery2['default'])(window).resize(function () {
-        if (_this7._resizeTimeout) {
-          clearTimeout(_this7._resizeTimeout);
+      var resizeHandler = function resizeHandler() {
+        if (_this6._resizeTimeout) {
+          clearTimeout(_this6._resizeTimeout);
         }
-        _this7._resizeTimeout = setTimeout(function () {
+        _this6._resizeTimeout = setTimeout(function () {
           _libsStyle2['default'].clearCachedStylesForElement($element);
-          _this7._applyComputedStyles($clone, $element);
-          _this7._positionClone($clone, $element);
-          _this7._resizeTimeout = null;
+          _this6._applyComputedStyles($clone, $element);
+          _this6._positionClone($clone, $element);
+          _this6.tooltip.reposition();
+          _this6._resizeTimeout = null;
         }, 50);
-      });
+      };
+
+      (0, _jquery2['default'])(window).on('resize', resizeHandler);
+      this._elementMap[selectorName].resizeHandler = resizeHandler;
 
       return $clone;
     }
   }, {
     key: '_applyComputedStyles',
     value: function _applyComputedStyles($clone, $element) {
-      var _this8 = this;
+      var _this7 = this;
 
       if (!$element.is(":visible")) {
         return;
@@ -777,7 +814,7 @@ var Step = (function () {
       _libsStyle2['default'].cloneStyles($element, $clone);
       var clonedChildren = $clone.children().toArray();
       $element.children().toArray().forEach(function (child, index) {
-        _this8._applyComputedStyles((0, _jquery2['default'])(clonedChildren[index]), (0, _jquery2['default'])(child));
+        _this7._applyComputedStyles((0, _jquery2['default'])(clonedChildren[index]), (0, _jquery2['default'])(child));
       });
     }
   }, {
@@ -884,7 +921,7 @@ var Tooltip = (function () {
 
       var $tooltipArrow = this.$tooltipArrow = (0, _jquery2['default'])('.chariot-tooltip-arrow');
 
-      this._styleTooltip($tooltip, $tooltipArrow);
+      this._position($tooltip, $tooltipArrow);
 
       // Add event handlers
       (0, _jquery2['default'])('.chariot-btn-row button').click(function () {
@@ -899,6 +936,11 @@ var Tooltip = (function () {
       this.$tooltip = null;
       this.$tooltipArrow.remove();
       this.$tooltipArrow = null;
+    }
+  }, {
+    key: 'reposition',
+    value: function reposition() {
+      this._position(this.$tooltip, this.$tooltipArrow);
     }
   }, {
     key: 'toString',
@@ -946,8 +988,8 @@ var Tooltip = (function () {
       return '<div class="chariot-tooltip-arrow ' + this.arrowClass + '"></div>';
     }
   }, {
-    key: '_styleTooltip',
-    value: function _styleTooltip($tooltip, $tooltipArrow) {
+    key: '_position',
+    value: function _position($tooltip, $tooltipArrow) {
       this._positionTooltip($tooltip);
       this._positionArrow($tooltip, $tooltipArrow);
     }
