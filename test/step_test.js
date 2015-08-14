@@ -9,7 +9,7 @@ import sinon from 'sinon';
 let expect = chai.expect;
 
 
-describe('Step', () => {
+describe('Step', function() {
   let stepConfiguration = {
     name: 'Internal or Public?',
     selectors: {
@@ -33,49 +33,49 @@ describe('Step', () => {
     }
   };
 
-  context('constructor', () => {
+  context('constructor', function() {
     let step = null,
       tutorial = null;
 
-    before(() => {
+    before(function() {
       tutorial = new Tutorial('test', { steps: [] });
       step = new Step(stepConfiguration, tutorial);
     });
 
-    it('reads selectors', () => {
+    it('reads selectors', function() {
       expect(step.selectors).to.equal(stepConfiguration.selectors);
     });
 
-    it('reads before and after', () => {
+    it('reads before and after', function() {
       expect(step.before).to.be.a('Function');
       expect(step.before()).to.equal(stepConfiguration.before());
       expect(step.after).to.be.a('Function');
       expect(step.after()).to.equal(stepConfiguration.after());
     });
 
-    it('reads tutorial', () => {
+    it('reads tutorial', function() {
       expect(step.tutorial).to.equal(tutorial);
     });
   });
 
-  context('getClonedElement', () => {
+  context('getClonedElement', function() {
     let step = null;
 
-    before(() => {
+    before(function() {
       step = new Step(stepConfiguration);
     });
 
-    it('returns null for invalid selectorName', () => {
+    it('returns null for invalid selectorName', function() {
       let result = step.getClonedElement('random');
-      expect(result).to.equal(null);
+      expect(result).to.equal(undefined);
     });
 
-    it('returns undefined for selectorName that has not been cloned', () => {
+    it('returns undefined for selectorName that has not been cloned', function() {
       let result = step.getClonedElement('assignee');
       expect(result).to.equal(undefined);
     });
 
-    it('returns clone for selectorName', () => {
+    it('returns clone for selectorName', function() {
       let selectorName = 'assignee';
       let clone = 'clone';
       step._elementMap[selectorName].clone = clone;
@@ -84,23 +84,23 @@ describe('Step', () => {
     });
   });
 
-  context('tearDown', () => {
+  context('tearDown', function() {
     let step = null,
       tutorial = null;
 
-    before(() => {
+    before(function() {
       tutorial = new Tutorial('test', { steps: [] });
       step = new Step(stepConfiguration, tutorial);
       sinon.stub(step.tooltip, ('tearDown'));
     });
 
-    it('clears cached styles', () => {
+    it('clears cached styles', function() {
       sinon.stub(Style, 'clearCachedStylesForElement');
       step.tearDown();
       expect(Style.clearCachedStylesForElement.calledTwice).to.be.true;
     });
 
-    it('removes all clone elements', () => {
+    it('removes all clone elements', function() {
       for (let selectorName in stepConfiguration.selectors) {
         let clone = { remove: () => {} };
         sinon.spy(clone, 'remove');
@@ -113,7 +113,7 @@ describe('Step', () => {
       }
     });
 
-    it('tears down tooltip', () => {
+    it('tears down tooltip', function() {
       expect(step.tooltip.tearDown.called).to.be.true;
     });
   });

@@ -7,7 +7,7 @@ import $ from 'jquery';
 
 let expect = chai.expect;
 
-describe('Tooltip', () => {
+describe('Tooltip', function() {
   let configuration = {
       position: 'right', // 'top' | 'left' | 'bottom' | 'right'
       text: 'Some text',
@@ -19,18 +19,18 @@ describe('Tooltip', () => {
       iconUrl: '/assets/whatever',
       title: 'Title',
       cta: 'Next',
-      subtext: function() {return 'foobar';},
+      subtext: () => 'foobar',
       attr: {},
       arrowLength: 10
     },
     step = { selectors: {} },
     tutorial = new Object({
-      currentStep: function() { return 1; },
+      currentStep: () => 1,
       steps: [step]
     }),
     tooltip = null;
 
-  beforeEach(() => {
+  beforeEach(function() {
     tooltip = new Tooltip(configuration, step, tutorial);
   });
 
@@ -73,30 +73,32 @@ describe('Tooltip', () => {
     });
   });
 
-  context('render', () => {
-    it('sets css styles', () => {
+  context('render', function() {
+    it('sets css styles', function() {
       let css = sinon.stub().returns();
       let $markup = $('<div></div>');
-      sinon.stub(tooltip, '_createTooltipTemplate', () => { return $markup });
-      sinon.stub(tooltip, '_getAnchorElement', () => ({}));
-      sinon.stub(Style, "calculateTop", () => {return 0});
-      sinon.stub(Style, "calculateLeft", () => {return 0});
+      sinon.stub(tooltip, '_createTooltipTemplate').returns($markup);
+      sinon.stub(tooltip, '_getAnchorElement').returns({});
+      sinon.stub(Style, "calculateTop").returns(0);
+      sinon.stub(Style, "calculateLeft").returns(0);
 
       tooltip.render();
 
       expect($markup.css('position')).to.equal('absolute');
       expect($markup.css('top')).to.equal("0px");
       expect($markup.css('left')).to.equal("0px");
-      expect(parseInt($markup.css('z-index'))).to.equal(parseInt(tooltip.z_index));
+      expect(parseInt($markup.css('z-index'))).to.equal(
+        parseInt(tooltip.z_index));
     })
   });
 
-  context('tearDown', () => {
-    it('tearDown with null DOM element', () => {
+  context('tearDown', function() {
+    it('tearDown with null DOM element', function() {
       tooltip.$tooltip = null;
       expect(tooltip.tearDown.bind(tooltip)).not.to.throw(Error);
     });
-    it('tearDown removes element', () => {
+
+    it('tearDown removes element', function() {
       let $tooltip = { remove: () => ({}) }
       tooltip.$tooltip = $tooltip;
       sinon.spy($tooltip, 'remove');
@@ -108,22 +110,27 @@ describe('Tooltip', () => {
     });
   });
 
-  context('_createTooltipTemplate', () => {
+  context('_createTooltipTemplate', function() {
     let template = null;
-    beforeEach(() => {
+
+    beforeEach(function() {
       template = tooltip._createTooltipTemplate();
     });
 
-    it('uses elements from config to create markup', () => {
+    it('uses elements from config to create markup', function() {
       let templateHtml = template.html();
       expect(tooltip.cta).to.equal(configuration.cta);
       expect(tooltip.subtext).to.equal(configuration.subtext);
-      expect(template.attr('class').includes('step-1')).to.be.true;
       expect(templateHtml.includes(tooltip.title)).to.be.true;
       expect(templateHtml.includes(tooltip.text)).to.be.true;
       expect(templateHtml.includes(tooltip.cta)).to.be.true;
       expect(templateHtml.includes(tooltip.iconUrl)).to.be.true;
       expect(templateHtml.includes(tooltip.subtext())).to.be.true;
+    });
+
+    it('includes step number in CSS class and data attribute', function() {
+      expect(template.attr('class').includes('chariot-step')).to.be.true;
+      expect(template.attr('data-step-order').includes(1)).to.be.true;
     });
   });
 });

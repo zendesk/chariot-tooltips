@@ -78,7 +78,7 @@ class Step {
 
   getClonedElement(selectorName) {
     let elementInfo = this._elementMap[selectorName];
-    if (!elementInfo) return null;
+    if (!elementInfo) return;
     return elementInfo.clone;
   }
 
