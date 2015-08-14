@@ -58,6 +58,32 @@ describe('Step', () => {
     });
   });
 
+  context('getClonedElement', () => {
+    let step = null;
+
+    before(() => {
+      step = new Step(stepConfiguration);
+    });
+
+    it('returns null for invalid selectorName', () => {
+      let result = step.getClonedElement('random');
+      expect(result).to.equal(null);
+    });
+
+    it('returns undefined for selectorName that has not been cloned', () => {
+      let result = step.getClonedElement('assignee');
+      expect(result).to.equal(undefined);
+    });
+
+    it('returns clone for selectorName', () => {
+      let selectorName = 'assignee';
+      let clone = 'clone';
+      step._elementMap[selectorName].clone = clone;
+      let result = step.getClonedElement(selectorName);
+      expect(result).to.equal(clone);
+    });
+  });
+
   context('tearDown', () => {
     let step = null,
       tutorial = null;

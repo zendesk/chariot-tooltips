@@ -77,7 +77,9 @@ class Step {
   }
 
   getClonedElement(selectorName) {
-    return this._elementMap[selectorName].clone;
+    let elementInfo = this._elementMap[selectorName];
+    if (!elementInfo) return null;
+    return elementInfo.clone;
   }
 
   tearDown() {
