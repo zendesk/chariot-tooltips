@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.7 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.8 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -656,7 +656,9 @@ var Step = (function () {
   }, {
     key: 'getClonedElement',
     value: function getClonedElement(selectorName) {
-      return this._elementMap[selectorName].clone;
+      var elementInfo = this._elementMap[selectorName];
+      if (!elementInfo) return;
+      return elementInfo.clone;
     }
   }, {
     key: 'tearDown',
