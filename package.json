@@ -34,6 +34,7 @@
     "jscs": "^2.0.0",
     "jsdoc": "^3.3.2",
     "mocha": "^2.2.5",
+    "npm-shrinkwrap": "^5.4.0",
     "phantomjs": "^1.9.17",
     "run-sequence": "^1.1.1",
     "sinon": "^1.15.4",
@@ -48,6 +49,7 @@
   "scripts": {
     "jscs-fix": "node_modules/.bin/jscs modules/** test/** -x",
     "jscs": "node_modules/.bin/jscs modules/** test/**",
-    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci"
+    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci",
+    "shrinkwrap": "npm-shrinkwrap --dev --keep-nested"
   }
 }
