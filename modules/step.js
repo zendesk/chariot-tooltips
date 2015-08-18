@@ -21,7 +21,7 @@ class Step {
     this.after = config.after;
     this._resizeTimeout = null;
 
-    this._elementMap = new Map();
+    this._elementMap = {};
     for (let selectorName in this.selectors) {
       this._elementMap[selectorName] = {};
     }
