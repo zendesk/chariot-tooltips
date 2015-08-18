@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.8 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.9 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -595,7 +595,7 @@ var Step = (function () {
     this.after = config.after;
     this._resizeTimeout = null;
 
-    this._elementMap = new Map();
+    this._elementMap = {};
     for (var selectorName in this.selectors) {
       this._elementMap[selectorName] = {};
     }
