@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.9 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.10 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -77,8 +77,10 @@
     height: 15px;
     position: absolute;
     -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
     transform: rotate(45deg);
     -webkit-transform-origin: 50% 50% 0;
+    -ms-transform-origin: 50% 50% 0;
     transform-origin: 50% 50% 0; }
   .chariot-tooltip-arrow-left {
     border-left: 1px solid #ddd;
@@ -100,7 +102,9 @@
 .chariot-overlay {
   position: absolute;
   top: 0;
-  left: 0; }
+  left: 0;
+  width: 100%;
+  height: 100%; }
 
 .chariot-transparent-overlay {
   position: absolute;

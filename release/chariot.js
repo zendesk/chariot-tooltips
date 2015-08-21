@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.9 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.10 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -414,16 +414,18 @@ var Overlay = (function () {
     value: function render() {
       if (this.isVisible()) return;
 
+      this.$document = (0, _jquery2['default'])(document);
+      var $body = (0, _jquery2['default'])('body');
       var $overlay = this._createOverlay();
-      (0, _jquery2['default'])('body').append($overlay);
+      $body.append($overlay);
       this.$overlay = $overlay;
 
       var $transparentOverlay = this._createTransparentOverlay();
-      (0, _jquery2['default'])('body').append($transparentOverlay);
+      $body.append($transparentOverlay);
       this.$transparentOverlay = $transparentOverlay;
     }
 
-    // Following 2 methods are part of clone element stragey
+    // Following 2 methods are part of clone element strategy
 
   }, {
     key: 'showBackgroundOverlay',
@@ -488,24 +490,24 @@ var Overlay = (function () {
   }, {
     key: '_createTransparentOverlay',
     value: function _createTransparentOverlay() {
-      var body = (0, _jquery2['default'])('body')[0];
       var $transparentOverlay = (0, _jquery2['default'])("<div class='chariot-transparent-overlay'></div>");
       $transparentOverlay.css({
-        'z-index': _constants.CLONE_Z_INDEX + 1,
-        width: body.scrollWidth + 'px',
-        height: body.scrollHeight + 'px'
+        'z-index': _constants.CLONE_Z_INDEX + 1
       });
       return $transparentOverlay;
     }
+
+    // Used for clone element strategy
   }, {
     key: '_resizeOverlayToFullScreen',
     value: function _resizeOverlayToFullScreen() {
-      var body = (0, _jquery2['default'])('body')[0];
       this.$overlay.css({
-        width: body.scrollWidth + 'px',
-        height: body.scrollHeight + 'px'
+        width: '100%',
+        height: '100%'
       });
     }
+
+    // Used for transparent overlay strategy
   }, {
     key: '_resizeOverlayToElement',
     value: function _resizeOverlayToElement($element) {
@@ -514,9 +516,9 @@ var Overlay = (function () {
 
       // Then resize it
       var borderStyles = 'solid ' + this.overlayColor;
-      var body = (0, _jquery2['default'])('body')[0];
-      var docWidth = body.scrollWidth;
-      var docHeight = body.scrollHeight;
+      var $document = this.$document;
+      var docWidth = $document.outerWidth();
+      var docHeight = $document.outerHeight();
 
       var width = $element.outerWidth();
       var height = $element.outerHeight();
