@@ -51,7 +51,7 @@ gulp.task('sass', function() {
     .pipe(sass().on('error', sass.logError))
     .pipe(rename(projectName + '.css'))
     .pipe(autoprefixer({
-        browsers: ['last 2 versions'],
+        browsers: ['last 3 versions'],
         cascade: false
     }))
     .pipe(gulp.dest('./dist/stylesheets'))

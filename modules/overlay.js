@@ -15,16 +15,18 @@ class Overlay {
   render() {
     if (this.isVisible()) return;
 
+    this.$document = $(document);
+    let $body = $('body');
     let $overlay = this._createOverlay();
-    $('body').append($overlay);
+    $body.append($overlay);
     this.$overlay = $overlay;
 
     let $transparentOverlay = this._createTransparentOverlay();
-    $('body').append($transparentOverlay);
+    $body.append($transparentOverlay);
     this.$transparentOverlay = $transparentOverlay;
   }
 
-  // Following 2 methods are part of clone element stragey
+  // Following 2 methods are part of clone element strategy
 
   showBackgroundOverlay() {
     // Remove the resize handler that might exist from focusOnElement
@@ -79,33 +81,31 @@ class Overlay {
   }
 
   _createTransparentOverlay() {
-    let body = $('body')[0];
     let $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
     $transparentOverlay.css({
-      'z-index': CLONE_Z_INDEX + 1,
-      width: body.scrollWidth + 'px',
-      height: body.scrollHeight + 'px'
+      'z-index': CLONE_Z_INDEX + 1
     });
     return $transparentOverlay;
   }
 
+  // Used for clone element strategy
   _resizeOverlayToFullScreen() {
-    let body = $('body')[0];
     this.$overlay.css({
-      width: body.scrollWidth + 'px',
-      height: body.scrollHeight + 'px'
+      width: '100%',
+      height: '100%'
     });
   }
 
+  // Used for transparent overlay strategy
   _resizeOverlayToElement($element) {
     // First position the overlay
     let offset = $element.offset();
 
     // Then resize it
     let borderStyles = `solid ${this.overlayColor}`;
-    let body = $('body')[0];
-    let docWidth = body.scrollWidth;
-    let docHeight = body.scrollHeight;
+    let $document = this.$document;
+    let docWidth = $document.outerWidth();
+    let docHeight = $document.outerHeight();
 
     let width = $element.outerWidth();
     let height = $element.outerHeight();
