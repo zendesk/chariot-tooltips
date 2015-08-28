@@ -3,7 +3,6 @@ require('./test_helper');
 import Step from '../modules/step';
 import Tutorial from '../modules/tutorial';
 import Style from '../modules/libs/style';
-import $ from 'jquery';
 import chai from 'chai';
 import sinon from 'sinon';
 let expect = chai.expect;

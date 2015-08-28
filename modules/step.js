@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import debounce from 'lodash.debounce';
 import Tooltip from './tooltip';
 import { CLONE_Z_INDEX } from './constants';

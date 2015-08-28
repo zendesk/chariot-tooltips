@@ -54,6 +54,7 @@
 
 /**
  * Callback called once after step is rendered.
+ * Specifically, this is called immediately after the tooltip is rendered.
  * @callback Step-afterCallback
  */
 

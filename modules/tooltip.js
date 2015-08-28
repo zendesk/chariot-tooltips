@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { TOOLTIP_Z_INDEX } from './constants';
 import Style from './libs/style';
 
