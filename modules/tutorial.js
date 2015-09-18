@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Step from './step';
 import Overlay from './overlay';
 let Promise = require('es6-promise').Promise;

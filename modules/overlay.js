@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { OVERLAY_Z_INDEX, CLONE_Z_INDEX } from './constants';
 
 class Overlay {

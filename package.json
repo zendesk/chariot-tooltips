@@ -33,6 +33,7 @@
     "gulp-util": "^3.0.6",
     "jscs": "^2.0.0",
     "jsdoc": "^3.3.2",
+    "jquery": "^2.1.4",
     "mocha": "^2.2.5",
     "npm-shrinkwrap": "^5.4.0",
     "phantomjs": "^1.9.17",
@@ -42,7 +43,6 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "jquery": "^2.1.4",
     "lodash.debounce": "^3.1.1",
     "query-parse": "^0.1.1"
   },

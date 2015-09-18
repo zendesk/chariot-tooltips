@@ -3,7 +3,6 @@ import Tooltip from '../modules/tooltip';
 import chai from 'chai';
 import sinon from 'sinon';
 import Style from '../modules/libs/style';
-import $ from 'jquery';
 
 let expect = chai.expect;
 

@@ -1,5 +1,3 @@
-import $ from 'jquery';
-
 const CHARIOT_COMPUTED_STYLE_CLASS_PREFIX = 'chariot_computed_styles';
 
 class Style {
