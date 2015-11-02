@@ -10,7 +10,7 @@ class Tutorial {
       return;
     }
 
-    this.complete = typeof config.complete === 'function' ? config.complete : ()=> {};
+    this.onComplete = typeof config.onComplete === 'function' ? config.onComplete : ()=> {};
     this.compatibilityMode = config.compatibilityMode || false;
 
     this.steps = [];
@@ -69,17 +69,17 @@ class Tutorial {
 
   toString() {
     return `[Tutorial - compatibilityMode: {this.compatibilityMode}, ` +
-      `complete: {this.complete}, steps: ${this.steps}, overlay: ` +
+      `onComplete: {this.onComplete}, steps: ${this.steps}, overlay: ` +
       `${this.overlay}]`;
   }
 
   //// PRIVATE
 
   _end() {
-    // Note: Order matters. complete callback should be called after UI is torn down
+    // Note: Order matters. onComplete callback should be called after UI is torn down
     this.tearDown();
     this.chariot.endTutorial();
-    this.complete();
+    this.onComplete();
   }
 }
 

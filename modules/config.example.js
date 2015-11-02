@@ -8,7 +8,7 @@
  */
 
 /** The tutorial configuration is where the steps of a tutorial are specified,
- * and also allows customization of the overlay style. A complete callback is
+ * and also allows customization of the overlay style. A onComplete callback is
  * available for end of tutorial cleanup.
  *
  * @typedef TutorialConfiguration
@@ -16,7 +16,7 @@
  * overlay that normally appears over the page and behind the tooltips.
  * @property {string} [overlayColor='rgba(255,255,255,0.7)'] - Overlay CSS color
  * @property {StepConfiguration[]} steps - An array of step configurations (see below).
- * @property {Tutorial-completeCallback} [complete] - Callback that is called
+ * @property {Tutorial-onCompleteCallback} [onComplete] - Callback that is called
  * once the tutorial has gone through all steps.
  * @property {boolean} [compatibilityMode=false] - Setting to true will use an
  *  implementation that does not rely on cloning highlighted elements.
@@ -28,7 +28,7 @@
 
 /**
  * Callback is called after the tutorial has finished all steps.
- * @callback Tutorial-completeCallback
+ * @callback Tutorial-onCompleteCallback
  */
 
 /** The step configuration is where you specify which elements of the page will
@@ -150,7 +150,7 @@ var OnboardingConfig = {
         }
       }
     ],
-    complete: () => {
+    onComplete: () => {
     },
     shouldOverlay: true,
     compatibilityMode: true

@@ -38,18 +38,12 @@
     background: pink;
   }
 </style>
-<script>
-
-function click() {
-	history.pushState({}, "page 2", "index.html?tutorial=ticketing");
-}
-
-</script>
 
 </head>
 
 <body>
-<a href='javascript:click()'>Add history</a>
+  <div><a href="#" class="add-history-link">1. Add history</a></div>
+  <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
 <div class='outer'>
   <div class="inner top-left"><button>Top Left</button></div>
   <div class="inner top-right"><button>Top Right</button></div>
@@ -58,7 +52,7 @@ function click() {
 
 <script>
 
-new Chariot({
+var chariot = new Chariot({
   ticketing: {
     steps: [
       // Step #1 illustrates the basic content of a tooltip
@@ -141,11 +135,24 @@ new Chariot({
       */
     ],
     // shouldOverlay: false,
-    complete: function(){
-
+    onComplete: function() {
+      console.log('onComplete called from configuration');
     },
     compatibilityMode: true
   }
+});
+
+
+$(function() {
+  $('.add-history-link').click(function() {
+    history.pushState({}, "page 2", "index.html?tutorial=ticketing");
+  });
+
+  $('.start-tutorial-link').click(function() {
+    chariot.startTutorial('ticketing', function() {
+      console.log('onComplete called from argument to Chariot.startTutorial()');
+    });
+  });
 });
 </script>
 </body>

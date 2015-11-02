@@ -104,7 +104,6 @@ gulp.task("compile-test", function() {
 
 gulp.task('js-doc', shell.task([
   './node_modules/.bin/jsdoc modules/* --destination docs/'
-//  './node_modules/.bin/jsdoc modules/config.example.js --destination docs/'
 ]));
 
 gulp.task('style', function () {
@@ -165,6 +164,7 @@ gulp.task('git-tag', function(cb){
 gulp.task('build-release',function(cb){
   return runSequence(
     'style-fix',
+    'js-doc',
     ['clean'],
     ['js-minify', 'css-minify'],
     'prepend-version',
