@@ -18,12 +18,22 @@ class Chariot {
     this.currentTutorial = null;
   }
 
-  startTutorial(name) {
+  /**
+   * @param {string} name - Name of the tutorial to start
+   * @param {function} [onComplete] - Callback that is called
+   * once the tutorial has gone through all steps.
+   * Note: Overrides TutorialConfiguration.onComplete
+   */
+  startTutorial(name, onComplete) {
     if (this.currentTutorial) {
       return;
     }
     this.currentTutorial = this.tutorials[name];
     this.currentTutorial.start();
+    if (onComplete) {
+      debugger;
+      this.currentTutorial.onComplete = onComplete;
+    }
   }
 
   endTutorial() {
