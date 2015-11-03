@@ -39,36 +39,36 @@ do, they fail to consider when parent containers already have the CSS
 
 1. First, initialize chariot with tutorial configurations.
 
-```js
-var config = {
-  example: {
-    steps: [
-      {
-        selectors: { header: "header" },
-        tooltip: {
-          position: 'bottom',
-          title: 'Chariot in action',
-          text: 'Chariot highlights element(s), like the header here, ' +
-            "over a semi-transparent overlay, "
-            "and creates a tooltip, like the one you're reading now.<br/>",
-          iconUrl: '/images/chariot.svg'
-        },
-      }
-    }]
-  }
-};
-var chariot = new Chariot(config);
-```
+	```js
+	var config = {
+	  example: {
+	    steps: [
+	      {
+	        selectors: { header: "header" },
+	        tooltip: {
+	          position: 'bottom',
+	          title: 'Chariot in action',
+	          text: 'Chariot highlights element(s), like the header here, ' +
+	            "over a semi-transparent overlay, "
+	            "and creates a tooltip, like the one you're reading now.<br/>",
+	          iconUrl: '/images/chariot.svg'
+	        },
+	      }
+	    }]
+	  }
+	};
+	var chariot = new Chariot(config);
+	```
 
 2. Launch a tutorial.
 
-Once configured, append the query parameter `tutorial` to your URL, setting
+	1. Once configured, navigate to the current URL with an appended query parameter `tutorial`, setting
 the value to the name of a tutorial defined in your configuration.
 
-`http://www.example.com?tutorial=example`
+	`http://www.example.com?tutorial=example`
 
-or, start a tutorial programmatically:
-`chariot.startTutorial('example');`
+	2. or, start a tutorial programmatically:
+	`chariot.startTutorial('example');`
 
 The above example should display a chariot tooltip like this:
 
