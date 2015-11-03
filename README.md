@@ -18,7 +18,7 @@ background overlay to bring focus to the elements you care about.
 Visit the [live demo](chariot.zendesk.com).
 
 Or run the project locally, and navigate to
-[http://localhost:8080/example/index.html](http://localhost:8080/example/index.html).
+[http://localhost:8080/example/index.html](http://localhost:8080/example/index.html) (refer to [Development](#development)).
 
 # Motivation
 We believe that tooltips are better at drawing focus to highlighted elements
