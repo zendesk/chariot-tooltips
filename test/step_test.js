@@ -1,8 +1,8 @@
 var assert = require("assert");
 require('./test_helper');
-import Step from '../modules/step';
-import Tutorial from '../modules/tutorial';
-import Style from '../modules/libs/style';
+import Step from '../lib/step';
+import Tutorial from '../lib/tutorial';
+import Style from '../lib/style';
 import chai from 'chai';
 import sinon from 'sinon';
 let expect = chai.expect;

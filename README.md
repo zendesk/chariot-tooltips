@@ -15,7 +15,10 @@ background overlay to bring focus to the elements you care about.
 
 # Demo
 
-Refer to [Development](#development) section below.
+Visit the [live demo](chariot.zendesk.com).
+
+Or run the project locally, and navigate to
+[http://localhost:8080/example/index.html](http://localhost:8080/example/index.html).
 
 # Motivation
 We believe that tooltips are better at drawing focus to highlighted elements
@@ -36,6 +39,8 @@ do, they fail to consider when parent containers already have the CSS
 - Browser support includes every sane browser and IE9+.
 
 # Usage
+
+chariot.js works in global, CommonJS and AMD contexts.
 
 1. First, initialize chariot with tutorial configurations.
 
@@ -80,39 +85,55 @@ the value to the name of a tutorial defined in your configuration.
 	2. or, start a tutorial programmatically:
 	`chariot.startTutorial('example');`
 
-The above example should display a chariot tooltip like this:
-
+The above example (taken from the demo) should display a chariot tooltip like this:
+![example image](example/chariot_screenshot.png)
 
 
 ## Configuration
 
-Here's how to configure `chariot`:
+Here's an example on how to configure Chariot:
 
-[example](https://github.com/zendesk/chariot/blob/master/example/config.example.js)
+[Example configuration](example/config.example.js)
 
 ## API
 
-### `Chariot(config)`
+If you're already running the project locally, you can view the JSDoc-formatted
+documentation at
+[http://localhost:8080/docs/global.html](http://localhost:8080/docs/global.html).
 
-Creates the chariot instance.
 
+#### new Chariot(config)
 
-# Setup
-Install packages
+Creates the chariot instance with a required configuration of tutorials.
+Read the [example configuration](example/config.example.js) for more information.
+
+#### chariot.startTutorial(name, onComplete)
+
+Starts the tutorial with the given name, as specified in configuration.
+An optional onComplete callback can be provided,
+called once the tutorial has gone through all steps.
+Note that Chariot can be started via the `tutorial` URL query parameter as well.
+
+#### chariot.endTutorial()
+
+Ends the current tutorial.
+
+# Development
+Install node packages.
 
 	npm install
 
-Install the gulp cli
+Install the gulp cli.
 
 	npm install -g gulp
 
-
-# Development
-To run a simple server to test out the script. Run:
+To run a simple server:
 
 	gulp connect
 
-This will start a simple server that serves `index.html`, and loads `chariot.js` onto the page. The task will also watch your changes and reloads the page as the files are updated.
+This will start a simple server that serves `index.html` at
+http://localhost:8080/example/index.html, and loads `chariot.js` onto the page.
+The task will also watch your changes and reloads the page as the files are updated.
 
 Run the following style-checker before pushing your branch.
 
@@ -156,13 +177,15 @@ When you have merge in all your changes from your branch. Run the following **IN
 This gulp task will
 
 1. Bump version in package.json, npm-shrinkwrap.json, bower.json
+1. Auto-generate documentation with js-doc
 1. Package release into the ```release/``` folder
 1. Commit the version bump changes in package.json npm-shrinkwrap bower.json
 1. Push the bump changes
 1. Tag with the new version
 
-After releasing, update the relevant files in your project which uses ChariotJS. Update version in bower/npm, or copy release/chariot.[min.]js, release/chariot.[min.]css into your project's ```vendor/``` folder
-
+After releasing, update the relevant files in your project which uses ChariotJS.
+Update version in bower/npm, or copy release/chariot.[min.]js,
+release/chariot.[min.]css into your project's ```vendor/``` folder.
 
 # Implementation
 

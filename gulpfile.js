@@ -32,7 +32,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 
 gulp.task('js', function() {
   return browserify({
-    entries: './modules/index.js',
+    entries: './lib/index.js',
     // debug: true
   })
     .transform(babelify)
@@ -43,7 +43,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('js:watch', function() {
-  return gulp.watch('modules/**/*.js', ['js']);
+  return gulp.watch('lib/**/*.js', ['js']);
 });
 
 gulp.task('sass', function() {
@@ -103,16 +103,16 @@ gulp.task("compile-test", function() {
 //################ BUILD ####################
 
 gulp.task('js-doc', shell.task([
-  './node_modules/.bin/jsdoc modules/* --destination docs/'
+  './node_modules/.bin/jsdoc lib/* --destination docs/'
 ]));
 
 gulp.task('style', function () {
-  return gulp.src(['modules/**', 'test/**'])
+  return gulp.src(['lib/**', 'test/**'])
     .pipe(jscs());
 });
 
 gulp.task('style-fix', function () {
-  return gulp.src(['modules/**', 'test/**'], { base: './' })
+  return gulp.src(['lib/**', 'test/**'], { base: './' })
     .pipe(jscs({
       configPath: '.jscsrc',
       fix: true
