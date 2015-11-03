@@ -43,17 +43,27 @@ do, they fail to consider when parent containers already have the CSS
 	var config = {
 	  example: {
 	    steps: [
-	      {
-	        selectors: { header: "header" },
-	        tooltip: {
-	          position: 'bottom',
-	          title: 'Chariot in action',
-	          text: 'Chariot highlights element(s), like the header here, ' +
-	            "over a semi-transparent overlay, "
-	            "and creates a tooltip, like the one you're reading now.<br/>",
-	          iconUrl: '/images/chariot.svg'
-	        },
-	      }
+	    	{
+	        	selectors: { header: "header" },
+		        tooltip: {
+		          position: 'bottom',
+		          title: 'Chariot in action',
+		          text: 'Chariot highlights element(s), like the header here, ' +
+		            "over a semi-transparent overlay, "
+		            "and creates a tooltip, like the one you're reading now.<br/>",
+		          iconUrl: '/images/chariot.svg'
+		        },
+      	    	}, {
+		        selectors: { code: "div#example1" },
+		        tooltip: {
+		          position: 'right',
+		          title: 'Easy to configure',
+		          text: 'This is all the code required to create this two step' +
+		            'tutorial.<br/>' +
+		            'Notice how the URL changed? This tutorial is named example ' +
+		            'in the configuration.<br/>This is how chariot is launched.',
+		        }
+    		}
 	    }]
 	  }
 	};
