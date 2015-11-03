@@ -1,6 +1,6 @@
 require('./test_helper');
 var assert = require("assert");
-import Tutorial from '../modules/tutorial'
+import Tutorial from '../lib/tutorial'
 
 describe('Tutorial', function() {
   it('reads config', function() {
