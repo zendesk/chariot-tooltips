@@ -29,7 +29,7 @@ do, they fail to consider when parent containers already have the CSS
 
 # Features
 
-- Tutorial kicked off by query parameter
+- Tutorial kicked off by query parameter in the URL or programmatically
 - Overlay hides background and clones your key elements over it
 - `z-index` is taken care of
 - Programmatic API and configurable callbacks
@@ -37,20 +37,48 @@ do, they fail to consider when parent containers already have the CSS
 
 # Usage
 
-First, initialize chariot.
+1. First, initialize chariot with tutorial configurations.
 
-## `new Chariot(config)`
+```js
+var config = {
+  example: {
+    steps: [
+      {
+        selectors: { header: "header" },
+        tooltip: {
+          position: 'bottom',
+          title: 'Chariot in action',
+          text: 'Chariot highlights element(s), like the header here, ' +
+            "over a semi-transparent overlay, "
+            "and creates a tooltip, like the one you're reading now.<br/>",
+          iconUrl: '/images/chariot.svg'
+        },
+      }
+    }]
+  }
+};
+var chariot = new Chariot(config);
+```
 
-Once configured, to launch the tutorial, append the query parameter `tutorial`
-to your URL setting it to the name of a tutorial defined in your configuration.
+2. Launch a tutorial.
 
-`http://www.example.com?tutorial=tutorialName`
+Once configured, append the query parameter `tutorial` to your URL, setting
+the value to the name of a tutorial defined in your configuration.
+
+`http://www.example.com?tutorial=example`
+
+or, start a tutorial programmatically:
+`chariot.startTutorial('example');`
+
+The above example should display a chariot tooltip like this:
+
+
 
 ## Configuration
 
 Here's how to configure `chariot`:
 
-[example](https://github.com/zendesk/chariot/blob/master/modules/config.example.js)
+[example](https://github.com/zendesk/chariot/blob/master/example/config.example.js)
 
 ## API
 
