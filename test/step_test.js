@@ -1,8 +1,8 @@
 var assert = require("assert");
 require('./test_helper');
-import Step from '../modules/step';
-import Tutorial from '../modules/tutorial';
-import Style from '../modules/libs/style';
+import Step from '../lib/step';
+import Tutorial from '../lib/tutorial';
+import Style from '../lib/style';
 import chai from 'chai';
 import sinon from 'sinon';
 let expect = chai.expect;
@@ -23,33 +23,22 @@ describe('Step', function() {
       anchorElement: "assignee",
       iconUrl: '/assets/whatever'
     },
-    cta: 'Next',
-    before: () => {
-      return 'before';
-    },
-    after: () => {
-      return 'after';
-    }
+    cta: 'Next'
   };
 
   context('constructor', function() {
-    let step = null,
-      tutorial = null;
+    let chariot = {},
+      step = null,
+      tutorial = null,
+      overlay = null;
 
     before(function() {
-      tutorial = new Tutorial('test', { steps: [] });
-      step = new Step(stepConfiguration, tutorial);
+      tutorial = new Tutorial({ steps: [] }, 'tutorialName');
+      step = new Step(stepConfiguration, 0, tutorial, overlay);
     });
 
     it('reads selectors', function() {
       expect(step.selectors).to.equal(stepConfiguration.selectors);
-    });
-
-    it('reads before and after', function() {
-      expect(step.before).to.be.a('Function');
-      expect(step.before()).to.equal(stepConfiguration.before());
-      expect(step.after).to.be.a('Function');
-      expect(step.after()).to.equal(stepConfiguration.after());
     });
 
     it('reads tutorial', function() {
@@ -58,10 +47,12 @@ describe('Step', function() {
   });
 
   context('getClonedElement', function() {
-    let step = null;
+    let step = null,
+      tutorial = {},
+      overlay = null;
 
     before(function() {
-      step = new Step(stepConfiguration);
+      step = new Step(stepConfiguration, 0, tutorial, overlay);
     });
 
     it('returns null for invalid selectorName', function() {
@@ -84,12 +75,14 @@ describe('Step', function() {
   });
 
   context('tearDown', function() {
-    let step = null,
-      tutorial = null;
+    let chariot = {},
+      step = null,
+      tutorial = null,
+      overlay = null;
 
     before(function() {
-      tutorial = new Tutorial('test', { steps: [] });
-      step = new Step(stepConfiguration, tutorial);
+      tutorial = new Tutorial({ steps: [] }, 'tutorialName');
+      step = new Step(stepConfiguration, 0, tutorial, overlay);
       sinon.stub(step.tooltip, ('tearDown'));
     });
 
