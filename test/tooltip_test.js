@@ -1,8 +1,8 @@
 require('./test_helper');
-import Tooltip from '../modules/tooltip';
+import Tooltip from '../lib/tooltip';
 import chai from 'chai';
 import sinon from 'sinon';
-import Style from '../modules/libs/style';
+import Style from '../lib/style';
 
 let expect = chai.expect;
 

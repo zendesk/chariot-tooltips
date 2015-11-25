@@ -1,8 +1,8 @@
 <html>
 <head>
-<script type="text/javascript" src="./node_modules/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="./dist/javascripts/chariot.js"></script>
-<link rel="stylesheet" type="text/css" href="./dist/stylesheets/chariot.css">
+<script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="/dist/javascripts/chariot.js"></script>
+<link rel="stylesheet" type="text/css" href="/dist/stylesheets/chariot.css">
 
 <style>
   body {
@@ -38,18 +38,12 @@
     background: pink;
   }
 </style>
-<script>
-
-function click() {
-	history.pushState({}, "page 2", "index.html?tutorial=ticketing");
-}
-
-</script>
 
 </head>
 
 <body>
-<a href='javascript:click()'>Add history</a>
+  <div><a href="#" class="add-history-link">1. Add history</a></div>
+  <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
 <div class='outer'>
   <div class="inner top-left"><button>Top Left</button></div>
   <div class="inner top-right"><button>Top Right</button></div>
@@ -58,7 +52,9 @@ function click() {
 
 <script>
 
-new Chariot({
+var delegate = this;
+
+var chariot = new Chariot({
   ticketing: {
     steps: [
       // Step #1 illustrates the basic content of a tooltip
@@ -141,11 +137,83 @@ new Chariot({
       */
     ],
     // shouldOverlay: false,
-    complete: function(){
-
+    onComplete: function() {
+      console.log('onComplete called from configuration');
     },
     compatibilityMode: true
   }
+}, delegate);
+
+function sleepFor(sleepDuration){
+  var now = new Date().getTime();
+  while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
+}
+
+function willBeginTutorial(tutorial) {
+  console.log("delegate - willBeginTutorial\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("willBeginTutorial promise resolved");
+  });
+}
+function willBeginStep(step, stepIndex, tutorial) {
+  console.log("delegate - willBeginStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("willBeginStep promise resolved");
+  });
+}
+function willShowOverlay(overlay, stepIndex, tutorial) {
+  console.log("delegate - willShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("willShowOverlay promise resolved");
+  });
+}
+function didShowOverlay(overlay, stepIndex, tutorial) {
+  console.log("delegate - didShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("didShowOverlay promise resolved");
+  });
+}
+function willRenderTooltip(tooltip, stepIndex, tutorial) {
+  console.log("delegate - willRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("willRenderTooltip promise resolved");
+  });
+}
+function didRenderTooltip(tooltip, stepIndex, tutorial) {
+  console.log("delegate - didRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("didRenderTooltip promise resolved");
+  });
+}
+function didFinishStep(step, stepIndex, tutorial) {
+  console.log("delegate - didFinishStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("didFinishStep promise resolved");
+  });
+}
+function didFinishTutorial(tutorial) {
+  console.log("delegate - didFinishTutorial\n  tutorial:" + tutorial);
+  return Promise.resolve().then(() => {
+    sleepFor(1000);
+    console.log("didFinishTutorial promise resolved");
+  });
+}
+
+$(function() {
+  $('.add-history-link').click(function() {
+    history.pushState({}, "page 2", "index.html?tutorial=ticketing");
+  });
+
+  $('.start-tutorial-link').click(function() {
+    chariot.startTutorial('ticketing');
+  });
 });
 </script>
 </body>

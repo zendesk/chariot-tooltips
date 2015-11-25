@@ -1,5 +1,5 @@
 {
-    "excludeFiles": ["node_modules/**", "modules/config.example.js", "package.json" , "dist/**"],
+    "excludeFiles": ["node_modules/**", "example/config.example.js", "package.json" , "dist/**"],
     "esnext": true,
     "additionalRules": [ "lib/jscs-rules/*.js" ],
     "disallowSpacesInsideArrayBrackets": "all",
