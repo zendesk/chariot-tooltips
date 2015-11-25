@@ -37,6 +37,6 @@ var OnboardingConfig = {
       }
     ],
     shouldOverlay: true,
-    compatibilityMode: true
+    useTransparentOverlayStrategy: true
   }
 };
