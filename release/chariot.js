@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.12 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.13 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -75,6 +75,7 @@ var Chariot = (function () {
    * Called once after a tutorial is finished.
    * @callback didFinishTutorial tutorial
    * @param {Tutorial} tutorial - The Tutorial object
+   * @param {boolean} forced - Indicates whether tutorial was forced to end
    *
    * Called once before each step begins.
    * Return a promise here if you have async callbacks you want resolved before
@@ -174,7 +175,7 @@ var Chariot = (function () {
     key: 'endTutorial',
     value: function endTutorial() {
       var tutorial = this.currentTutorial();
-      tutorial.end();
+      tutorial.end(true);
     }
 
     /**
@@ -189,6 +190,14 @@ var Chariot = (function () {
         if (tutorial.isActive()) return tutorial;
       }
     }
+
+    /**
+     * Static method for creating a Tutorial object without needing to instantiate
+     * chariot with a large configuration and named tutorials.
+     * @param {TutorialConfiguration} config - The tutorial configuration
+     * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
+     *  lifecycle callbacks
+     */
   }, {
     key: 'toString',
     value: function toString() {
@@ -272,6 +281,11 @@ var Chariot = (function () {
       if (!navigator.userAgent.match(/msie 9/i)) {
         processGetParams();
       }
+    }
+  }], [{
+    key: 'createTutorial',
+    value: function createTutorial(config, delegate) {
+      return new _tutorial2['default'](config, '', delegate);
     }
   }]);
 
@@ -571,9 +585,12 @@ var Step = (function () {
   /**
    * @constructor
    * @param {StepConfiguration} config - The configuration for this step
+   * @param {integer} index - The index of this step within the current tutorial
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
    * @param {Overlay} overlay - The Overlay object displayed along with this
    *  Step
+   * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
+   *  lifecycle callbacks
    */
 
   function Step(config, index, tutorial, overlay, delegate) {
@@ -1399,9 +1416,10 @@ var Tutorial = (function () {
 
   /**
    * @constructor
-   * @param {Chariot} chariot - Reference to the parent Chariot object
    * @param {TutorialConfiguration} config - The configuration for this tutorial
-   * @param {string} name - Name of the tutorial
+   * @param {string} [name] - Name of the tutorial
+   * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
+   *  lifecycle callbacks
    */
 
   function Tutorial(config, name, delegate) {
@@ -1426,7 +1444,8 @@ var Tutorial = (function () {
   }
 
   /**
-   * return {boolean} Whether this tutorial is currently active
+   * Indicates if this tutorial is currently active.
+   * return {boolean}
    */
 
   _createClass(Tutorial, [{
@@ -1434,6 +1453,11 @@ var Tutorial = (function () {
     value: function isActive() {
       return this._isActive;
     }
+
+    /**
+     * Starts the tutorial and marks itself as inactive.
+     * @returns {undefined}
+     */
   }, {
     key: 'start',
     value: function start() {
@@ -1498,22 +1522,38 @@ var Tutorial = (function () {
         step.tearDown();
       });
     }
+
+    /**
+     * Retrieves the Step object at index.
+     * @returns {Step} step
+     */
   }, {
     key: 'getStep',
     value: function getStep(index) {
       return this.steps[index];
     }
+
+    /**
+     * Ends the tutorial by tearing down all the steps (and associated tooltips,
+     * overlays).
+     * Also marks itself as inactive.
+     * @param {boolean} [forced=false] - Indicates whether tutorial was forced to
+     *  end
+     * @returns {undefined}
+     */
   }, {
     key: 'end',
     value: function end() {
       var _this4 = this;
+
+      var forced = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
 
       // Note: Order matters.
       this.tearDown();
 
       return Promise.resolve().then(function () {
         if (_this4.delegate.didFinishTutorial) {
-          return _this4.delegate.didFinishTutorial(_this4);
+          return _this4.delegate.didFinishTutorial(_this4, forced);
         }
       }).then(function () {
         _this4._isActive = false;
