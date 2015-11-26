@@ -47,4 +47,11 @@ describe('Chariot', function() {
       assert.equal(chariot.currentTutorial(), tutorial);
     });
   });
+
+  describe('#createTutorial', function() {
+    it('returns a tutorial with a valid config', function() {
+      let tutorial = Chariot.createTutorial(config[tutorialName], delegate);
+      expect(tutorial).to.not.equal(null);
+    });
+  });
 });

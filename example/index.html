@@ -37,6 +37,9 @@
   .bottom-left {
     background: pink;
   }
+  a {
+    color: white;
+  }
 </style>
 
 </head>
@@ -44,6 +47,7 @@
 <body>
   <div><a href="#" class="add-history-link">1. Add history</a></div>
   <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
+  <div><a href="#" class="create-tutorial-link">3. Create tutorial without chariot instance</a></div>
 <div class='outer'>
   <div class="inner top-left"><button>Top Left</button></div>
   <div class="inner top-right"><button>Top Right</button></div>
@@ -198,8 +202,8 @@ function didFinishStep(step, stepIndex, tutorial) {
     console.log("didFinishStep promise resolved");
   });
 }
-function didFinishTutorial(tutorial) {
-  console.log("delegate - didFinishTutorial\n  tutorial:" + tutorial);
+function didFinishTutorial(tutorial, forced) {
+  console.log("delegate - didFinishTutorial\n  tutorial:" + tutorial + " forced:" + forced);
   return Promise.resolve().then(() => {
     sleepFor(1000);
     console.log("didFinishTutorial promise resolved");
@@ -213,6 +217,24 @@ $(function() {
 
   $('.start-tutorial-link').click(function() {
     chariot.startTutorial('ticketing');
+  });
+
+  $('.create-tutorial-link').click(function() {
+    var tutorial = Chariot.createTutorial({
+      steps: [
+        {
+          selectors: {
+            link: ".create-tutorial-link",
+          },
+          tooltip: {
+            position: 'right',
+            title: 'Launch tutorials ad-hoc without a massive up-front configuration',
+            text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
+          },
+        }
+      ]
+    }, delegate);
+    tutorial.start();
   });
 });
 </script>
