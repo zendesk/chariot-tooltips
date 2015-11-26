@@ -4,14 +4,14 @@ require('es6-shim');
 let configFixture = {
   tutorialName: {
     steps: [
-    {
-      selectors: {
-        assignee: "test"
-      },
-      tooltip: {
-        position: 'left'
+      {
+        selectors: {
+          assignee: "test"
+        },
+        tooltip: {
+          position: 'left'
+        }
       }
-    }
     ]
   }
 };
