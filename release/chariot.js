@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.13 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.14 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -416,8 +416,13 @@ var Overlay = (function () {
       return this.useTransparentOverlayStrategy;
     }
 
-    // Following 2 methods are part of clone element strategy
+    // The following 2 methods are part of the "clone element" strategy
 
+    /**
+     * Shows a background overlay to obscure the main interface, and acts as the
+     * background for the cloned elements involved in the tutorial.
+     * This method is involved in the "clone element" strategy.
+     */
   }, {
     key: 'showBackgroundOverlay',
     value: function showBackgroundOverlay() {
@@ -434,13 +439,22 @@ var Overlay = (function () {
       this._resizeOverlayToFullScreen();
       this._resizeHandler = this._resizeOverlayToFullScreen.bind(this);
     }
+
+    /**
+     * Shows a transparent overlay to prevent user from interacting with cloned
+     * elements.
+     */
   }, {
     key: 'showTransparentOverlay',
     value: function showTransparentOverlay() {
       this.$transparentOverlay.show();
     }
 
-    // One transparent overlay strategy
+    /**
+     * Focuses on an element by resizing a transparent overlay to match its
+     * dimensions and changes the borders to be colored to obscure the main UI.
+     * This method is involved in the "transparent overlay" strategy.
+     */
   }, {
     key: 'focusOnElement',
     value: function focusOnElement($element) {
@@ -626,18 +640,21 @@ var Step = (function () {
           return _this.delegate.willBeginStep(_this, _this.index, _this.tutorial);
         }
       }).then(function () {
-        return _this._waitForElements();
-      }).then(function () {
         if (_this.delegate.willShowOverlay) {
           return _this.delegate.willShowOverlay(_this.overlay, _this.index, _this.tutorial);
         }
       }).then(function () {
+        // Show a temporary background overlay while we wait for elements
+        _this.overlay.showBackgroundOverlay();
+        return _this._waitForElements();
+      }).then(function () {
         // Render the overlay
         if (_this.overlay.isTransparentOverlayStrategy() && Object.keys(_this.selectors).length === 1) {
-          _this._transparentOverlayStrategy();
+          _this._singleTransparentOverlayStrategy();
         } else {
           _this._clonedElementStrategy();
         }
+      }).then(function () {
         if (_this.delegate.didShowOverlay) {
           return _this.delegate.didShowOverlay(_this.overlay, _this.index, _this.tutorial);
         }
@@ -737,8 +754,8 @@ var Step = (function () {
     //// PRIVATE
 
   }, {
-    key: '_transparentOverlayStrategy',
-    value: function _transparentOverlayStrategy() {
+    key: '_singleTransparentOverlayStrategy',
+    value: function _singleTransparentOverlayStrategy() {
       // Only use an overlay
       var selectorName = Object.keys(this.selectors)[0];
       var $element = this._elementMap[selectorName].element;
@@ -748,7 +765,6 @@ var Step = (function () {
     key: '_clonedElementStrategy',
     value: function _clonedElementStrategy() {
       // Clone elements if multiple selectors
-      this.overlay.showBackgroundOverlay();
       this._cloneElements(this.selectors);
       this.overlay.showTransparentOverlay();
     }
