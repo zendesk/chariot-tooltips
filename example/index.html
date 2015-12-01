@@ -148,66 +148,44 @@ var chariot = new Chariot({
   }
 }, delegate);
 
-function sleepFor(sleepDuration){
-  var now = new Date().getTime();
-  while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
+function sleepFor(sleepDuration, message) {
+  return new Promise(resolve => {
+    setTimeout(resolve, sleepDuration);
+    console.log(message);
+  });
 }
 
 function willBeginTutorial(tutorial) {
   console.log("delegate - willBeginTutorial\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("willBeginTutorial promise resolved");
-  });
+  return sleepFor(1000, "willBeginTutorial promise resolved");
 }
 function willBeginStep(step, stepIndex, tutorial) {
   console.log("delegate - willBeginStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("willBeginStep promise resolved");
-  });
+  return sleepFor(1000, "willBeginStep promise resolved");
 }
 function willShowOverlay(overlay, stepIndex, tutorial) {
   console.log("delegate - willShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("willShowOverlay promise resolved");
-  });
+  return sleepFor(1000, "willShowOverlay promise resolved");
 }
 function didShowOverlay(overlay, stepIndex, tutorial) {
   console.log("delegate - didShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("didShowOverlay promise resolved");
-  });
+  return sleepFor(1000, "didShowOverlay promise resolved");
 }
 function willRenderTooltip(tooltip, stepIndex, tutorial) {
   console.log("delegate - willRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("willRenderTooltip promise resolved");
-  });
+  return sleepFor(1000, "willRenderTooltip promise resolved");
 }
 function didRenderTooltip(tooltip, stepIndex, tutorial) {
   console.log("delegate - didRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("didRenderTooltip promise resolved");
-  });
+  return sleepFor(1000, "didRenderTooltip promise resolved");
 }
 function didFinishStep(step, stepIndex, tutorial) {
   console.log("delegate - didFinishStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("didFinishStep promise resolved");
-  });
+  return sleepFor(1000, "didFinishStep promise resolved");
 }
 function didFinishTutorial(tutorial, forced) {
   console.log("delegate - didFinishTutorial\n  tutorial:" + tutorial + " forced:" + forced);
-  return Promise.resolve().then(() => {
-    sleepFor(1000);
-    console.log("didFinishTutorial promise resolved");
-  });
+  return sleepFor(1000, "didFinishTutorial promise resolved");
 }
 
 $(function() {
