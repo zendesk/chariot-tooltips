@@ -40,7 +40,7 @@
 
     
 
-    <h4 class="name" id="Tutorial"><span class="type-signature"></span>new Tutorial<span class="signature">(chariot, config, name)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Tutorial"><span class="type-signature"></span>new Tutorial<span class="signature">(config, name<span class="signature-attributes">opt</span>, delegate<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -67,6 +67,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -75,29 +77,6 @@
     </thead>
 
     <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>chariot</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Chariot.html">Chariot</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Reference to the parent Chariot object</td>
-        </tr>
-
     
 
         <tr>
@@ -114,6 +93,14 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -138,10 +125,54 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">Name of the tutorial</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>delegate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">ChariotDelegate</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An optional delegate that responds to
+ lifecycle callbacks</td>
         </tr>
 
     
@@ -182,7 +213,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line50">line 50</a>
+        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -231,14 +262,186 @@
 
     
 
-    <h4 class="name" id="isActive"><span class="type-signature"></span>isActive<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="end"><span class="type-signature"></span>end<span class="signature">(forced<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
 
     
 
 
 
 <div class="description">
-    return {boolean} Whether this tutorial is currently active
+    Ends the tutorial by tearing down all the steps (and associated tooltips,
+overlays).
+Also marks itself as inactive.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>forced</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Indicates whether tutorial was forced to
+ end</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line151">line 151</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getStep"><span class="type-signature"></span>getStep<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Step.html">Step</a>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Retrieves the Step object at index.
 </div>
 
 
@@ -282,7 +485,112 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line70">line 70</a>
+        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line139">line 139</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    step
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Step.html">Step</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="isActive"><span class="type-signature"></span>isActive<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Indicates if this tutorial is currently active.
+return {boolean}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -309,6 +617,106 @@
 
 
         
+            
+
+    
+
+    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">()</span><span class="type-signature"> &rarr; {undefined}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Starts the tutorial and marks itself as inactive.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line80">line 80</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">undefined</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -330,7 +738,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Nov 24 2015 17:59:25 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Dec 01 2015 13:44:17 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
