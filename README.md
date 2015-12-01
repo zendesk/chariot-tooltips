@@ -132,7 +132,8 @@ To run a simple server:
 	gulp connect
 
 This will start a simple server that serves `index.html` at
-http://localhost:8080/example/index.html, and loads `chariot.js` onto the page.
+[http://localhost:8080/example/index.html](http://localhost:8080/example/index.html),
+ and loads `chariot.js` onto the page.
 The task will also watch your changes and reloads the page as the files are updated.
 
 Run the following style-checker before pushing your branch.
