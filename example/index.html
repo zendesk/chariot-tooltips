@@ -73,7 +73,10 @@ var chariot = new Chariot({
           // anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
           attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
-          arrowLength: 20
+          arrowLength: 20,
+          xOffsetTooltip: 110,
+          // offsetArrow: 110
+          offsetArrow: 110
         },
       },
       // Step #2 illustrates the ability to highlight select two selectors
@@ -86,7 +89,7 @@ var chariot = new Chariot({
           position: 'top',
           title: 'Tooltip #2',
           text: 'Two selectors being highlighted.',
-          // xOffset: -50,
+          // xOffsetTooltip: -50,
           anchorElement: "topRight",
         }
       },
@@ -100,8 +103,10 @@ var chariot = new Chariot({
           title: 'Tooltip #3',
           text: 'Placeholder text.',
           // anchorElement: "bottomLeft",
-          yOffset: 50,
-          xOffset: 20,
+          yOffsetTooltip: 50,
+          xOffsetTooltip: 20,
+          offsetArrow: 50
+
         }
       },
       /*

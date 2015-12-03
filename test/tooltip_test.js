@@ -10,8 +10,9 @@ describe('Tooltip', function() {
   let configuration = {
       position: 'right', // 'top' | 'left' | 'bottom' | 'right'
       text: 'Some text',
-      xOffset: '10',
-      yOffset: '10',
+      xOffsetTooltip: '10',
+      yOffsetTooltip: '10',
+      offsetArrow: '5',
       anchorElement: "assignee",
       width: '10',
       height: '10',
@@ -46,15 +47,18 @@ describe('Tooltip', function() {
     it('reads text', function() {
       expect(tooltip.text).to.equal(configuration.text);
     });
-    it('reads xOffset', function() {
-      expect(tooltip.xOffset).to.equal(parseInt(configuration.xOffset));
-    })
-    it('reads xOffset', function() {
-      expect(tooltip.yOffset).to.equal(parseInt(configuration.yOffset));
-    })
+    it('reads xOffsetTooltip', function() {
+      expect(tooltip.xOffsetTooltip).to.equal(parseInt(configuration.xOffsetTooltip));
+    });
+    it('reads xOffsetTooltip', function() {
+      expect(tooltip.yOffsetTooltip).to.equal(parseInt(configuration.yOffsetTooltip));
+    });
+    it('reads offsetArrow', function() {
+      expect(tooltip.offsetArrow).to.equal(parseInt(configuration.offsetArrow));
+    });
     it('reads width', function() {
       expect(tooltip.width).to.equal(parseInt(configuration.width));
-    })
+    });
     it('reads height', function() {
       expect(tooltip.height).to.equal(parseInt(configuration.height));
     });
@@ -88,7 +92,7 @@ describe('Tooltip', function() {
       expect($markup.css('left')).to.equal("0px");
       expect(parseInt($markup.css('z-index'))).to.equal(
         parseInt(tooltip.z_index));
-    })
+    });
   });
 
   context('tearDown', function() {
@@ -98,10 +102,10 @@ describe('Tooltip', function() {
     });
 
     it('tearDown removes element', function() {
-      let $tooltip = { remove: () => ({}) }
+      let $tooltip = { remove: () => ({}) };
       tooltip.$tooltip = $tooltip;
       sinon.spy($tooltip, 'remove');
-      let $tooltipArrow = { remove: () => ({}) }
+      let $tooltipArrow = { remove: () => ({}) };
       tooltip.$tooltipArrow = $tooltipArrow;
       sinon.spy($tooltipArrow, 'remove');
       tooltip.tearDown();
