@@ -18,8 +18,8 @@ describe('Step', function() {
     tooltip: {
       position: 'right', // 'top' | 'left' | 'bottom' | 'right'
       text: 'Some text',
-      xOffset: '10',
-      yOffset: '10',
+      xOffsetTooltip: '10',
+      yOffsetTooltip: '10',
       anchorElement: "assignee",
       iconUrl: '/assets/whatever'
     },

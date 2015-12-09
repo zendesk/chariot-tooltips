@@ -28,7 +28,9 @@
 
 <header>
     
-        <h2></h2>
+        <h2>
+        
+        </h2>
         
     
 </header>
@@ -268,7 +270,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -293,7 +295,7 @@ Called once after a tutorial is finished.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -343,7 +345,7 @@ continuing.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Step.html">Step</a></span>
+<span class="param-type">Step</span>
 
 
             
@@ -389,7 +391,7 @@ continuing.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -412,7 +414,7 @@ continuing.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Step.html">Step</a></span>
+<span class="param-type">Step</span>
 
 
             
@@ -458,7 +460,7 @@ continuing.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -483,7 +485,7 @@ Called once before each overlay is shown.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Overlay.html">Overlay</a></span>
+<span class="param-type">Overlay</span>
 
 
             
@@ -529,7 +531,7 @@ Called once before each overlay is shown.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -554,7 +556,7 @@ Called once after each overlay is shown.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Overlay.html">Overlay</a></span>
+<span class="param-type">Overlay</span>
 
 
             
@@ -600,7 +602,7 @@ Called once after each overlay is shown.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -625,7 +627,7 @@ Called once before each tooltip is rendered.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tooltip.html">Tooltip</a></span>
+<span class="param-type">Tooltip</span>
 
 
             
@@ -671,7 +673,7 @@ Called once before each tooltip is rendered.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -696,7 +698,7 @@ Called once after each tooltip is rendered.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tooltip.html">Tooltip</a></span>
+<span class="param-type">Tooltip</span>
 
 
             
@@ -742,7 +744,7 @@ Called once after each tooltip is rendered.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+<span class="param-type">Tutorial</span>
 
 
             
@@ -1190,7 +1192,7 @@ be cloned and placed over the overlay.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line37">line 37</a>
+        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -1366,7 +1368,7 @@ be cloned and placed over the overlay.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line45">line 45</a>
+        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line48">line 48</a>
     </li></ul></dd>
     
 
@@ -1525,7 +1527,7 @@ provided, which can be configured
 
         <tr>
             
-                <td class="name"><code>xOffset</code></td>
+                <td class="name"><code>xOffsetTooltip</code></td>
             
 
             <td class="type">
@@ -1557,7 +1559,7 @@ provided, which can be configured
 
         <tr>
             
-                <td class="name"><code>yOffset</code></td>
+                <td class="name"><code>yOffsetTooltip</code></td>
             
 
             <td class="type">
@@ -1583,6 +1585,39 @@ provided, which can be configured
 
             <td class="description last">Value in pixels to offset the y-coordinate of
  the tooltip.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>offsetArrow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value in pixels to offset the arrow.
+If the position is top or bootom, this still offset the x coord. If
+left or right it will offset the y coord. If undefined or 0, arrow is centered.</td>
         </tr>
 
     
@@ -2243,13 +2278,13 @@ once the tutorial has gone through all steps.</td>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Chariot.html">Chariot</a></li><li><a href="Overlay.html">Overlay</a></li><li><a href="Step.html">Step</a></li><li><a href="Tooltip.html">Tooltip</a></li><li><a href="Tutorial.html">Tutorial</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Dec 01 2015 13:44:17 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Dec 08 2015 16:09:53 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
