@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.14 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.15 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -909,18 +909,18 @@ var Style = (function () {
 
   _createClass(Style, null, [{
     key: 'calculateLeft',
-    value: function calculateLeft($tooltip, $anchor, xOffset, position, arrowOffset) {
+    value: function calculateLeft($tooltip, $anchor, xOffsetTooltip, position, arrowOffset) {
       var offset = 0;
       switch (position) {
         case 'left':
-          offset = $anchor.offset().left - $tooltip.outerWidth() + xOffset - arrowOffset;
+          offset = $anchor.offset().left - $tooltip.outerWidth() + xOffsetTooltip - arrowOffset;
           break;
         case 'right':
-          offset = $anchor.offset().left + $anchor.outerWidth() + xOffset + arrowOffset;
+          offset = $anchor.offset().left + $anchor.outerWidth() + xOffsetTooltip + arrowOffset;
           break;
         case 'top':
         case 'bottom':
-          offset = $anchor.offset().left + $anchor.outerWidth() / 2 - $tooltip.outerWidth() / 2 + xOffset;
+          offset = $anchor.offset().left + $anchor.outerWidth() / 2 - $tooltip.outerWidth() / 2 + xOffsetTooltip;
           break;
         default:
           break;
@@ -929,18 +929,18 @@ var Style = (function () {
     }
   }, {
     key: 'calculateTop',
-    value: function calculateTop($tooltip, $anchor, yOffset, position, arrowOffset) {
+    value: function calculateTop($tooltip, $anchor, yOffsetTooltip, position, arrowOffset) {
       var offset = 0;
       switch (position) {
         case 'top':
-          offset = $anchor.offset().top - $tooltip.outerHeight() + yOffset - arrowOffset;
+          offset = $anchor.offset().top - $tooltip.outerHeight() + yOffsetTooltip - arrowOffset;
           break;
         case 'bottom':
-          offset = $anchor.offset().top + $anchor.outerHeight() + yOffset + arrowOffset;
+          offset = $anchor.offset().top + $anchor.outerHeight() + yOffsetTooltip + arrowOffset;
           break;
         case 'left':
         case 'right':
-          offset = $anchor.offset().top + $anchor.outerHeight() / 2 - $tooltip.outerHeight() / 2 + yOffset;
+          offset = $anchor.offset().top + $anchor.outerHeight() / 2 - $tooltip.outerHeight() / 2 + yOffsetTooltip;
           break;
         default:
           break;
@@ -988,7 +988,7 @@ var Style = (function () {
     value: function _ieBoxModelStyleFix(style, $ele, cssText) {
       var match = cssText.match(new RegExp('; ' + style + ': ([^;]*)'));
       var value = match && match.length > 1 ? parseInt(match[1]) : 0;
-      if (value != 0 && !isNaN(value)) {
+      if (value !== 0 && !isNaN(value)) {
         $ele[style](value);
       }
     }
@@ -1063,9 +1063,10 @@ var _constants = require('./constants');
 
 var _style = require('./style');
 
+// distance between arrow tip and edge of tooltip, not including border
+
 var _style2 = _interopRequireDefault(_style);
 
-// distance between arrow tip and edge of tooltip, not including border
 var DEFAULT_ARROW_LENGTH = 11;
 
 /** The tooltip configuration allows you to specify which anchor element will
@@ -1079,10 +1080,13 @@ var DEFAULT_ARROW_LENGTH = 11;
  *  contains only one selector. anchorElement can be either
  *  (1) a key from StepConfiguration.selectors above, or
  *  (2) a CSS selector
- * @property {number} [xOffset] - Value in pixels to offset the x-coordinate of
+ * @property {number} [xOffsetTooltip] - Value in pixels to offset the x-coordinate of
  *  the tooltip.
- * @property {number} [yOffset] - Value in pixels to offset the y-coordinate of
+ * @property {number} [yOffsetTooltip] - Value in pixels to offset the y-coordinate of
  *  the tooltip.
+ * @property {number} [offsetArrow] - Value in pixels to offset the arrow.
+ * If the position is top or bootom, this still offset the x coord. If
+ * left or right it will offset the y coord. If undefined or 0, arrow is centered.
  * @property {Tooltip-renderCallback} [render] - (TODO) Renders a custom template,
  *  thereby ignoring all other properties below.
  * @property {string} [iconUrl] - Path to an image displayed above the title.
@@ -1148,8 +1152,10 @@ var Tooltip = (function () {
         break;
     }
 
-    this.xOffset = config.xOffset ? parseInt(config.xOffset) : 0;
-    this.yOffset = config.yOffset ? parseInt(config.yOffset) : 0;
+    this.xOffsetTooltip = config.xOffsetTooltip ? parseInt(config.xOffsetTooltip) : 0;
+    this.yOffsetTooltip = config.yOffsetTooltip ? parseInt(config.yOffsetTooltip) : 0;
+
+    this.offsetArrow = config.offsetArrow ? parseInt(config.offsetArrow) : 0;
 
     this.arrowClass = arrowClass;
     this.z_index = _constants.TOOLTIP_Z_INDEX;
@@ -1222,7 +1228,7 @@ var Tooltip = (function () {
         return currentStep + ' of ' + totalSteps;
       };
       var subtextMarkup = this._subtextMarkup();
-      var buttonFloat = subtextMarkup == '' ? 'center' : 'right';
+      var buttonFloat = subtextMarkup === '' ? 'center' : 'right';
       var template = '\n      <div class="chariot-tooltip chariot-step-' + currentStep + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
       var $template = $(template);
 
@@ -1265,8 +1271,8 @@ var Tooltip = (function () {
       this.borderRightWidth = parseInt($tooltip.css('border-right-width')) || 0;
       this.borderBottomWidth = parseInt($tooltip.css('border-bottom-width')) || 0;
       this.borderTopWidth = parseInt($tooltip.css('border-top-width')) || 0;
-      var top = _style2['default'].calculateTop($tooltip, $anchorElement, this.yOffset, this.position, this.arrowLength + this.borderTopWidth + this.borderBottomWidth);
-      var left = _style2['default'].calculateLeft($tooltip, $anchorElement, this.xOffset, this.position, this.arrowLength + this.borderLeftWidth + this.borderRightWidth);
+      var top = _style2['default'].calculateTop($tooltip, $anchorElement, this.yOffsetTooltip, this.position, this.arrowLength + this.borderTopWidth + this.borderBottomWidth);
+      var left = _style2['default'].calculateLeft($tooltip, $anchorElement, this.xOffsetTooltip, this.position, this.arrowLength + this.borderLeftWidth + this.borderRightWidth);
       var tooltipStyles = {
         top: top,
         left: left,
@@ -1278,8 +1284,8 @@ var Tooltip = (function () {
 
     /*
       Positions the arrow to point at the center of the anchor element.
-      If a tooltip is offset via xOffset / yOffset, the arrow will continue to
-      point to center.
+      If a tooltip is offset via xOffsetTooltip / yOffsetTooltip, the arrow will continue to
+      point to center. You can change this via the offsetArrow property.
     */
   }, {
     key: '_positionArrow',
@@ -1307,28 +1313,28 @@ var Tooltip = (function () {
 
       switch (this.arrowClass) {
         case 'chariot-tooltip-arrow-left':
-          top = ($tooltip.outerHeight() - arrowDiagonal) / 2 - this.yOffset;
+          top = ($tooltip.outerHeight() - arrowDiagonal) / 2 - this.yOffsetTooltip + this.offsetArrow;
           min = borderRadius;
           max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
           arrowStyles.top = Math.max(Math.min(top, max), min);
           arrowStyles.left = -(arrowEdge / 2 + this.borderLeftWidth);
           break;
         case 'chariot-tooltip-arrow-right':
-          top = ($tooltip.outerHeight() - arrowDiagonal) / 2 - this.yOffset;
+          top = ($tooltip.outerHeight() - arrowDiagonal) / 2 - this.yOffsetTooltip + this.offsetArrow;
           min = borderRadius;
           max = $tooltip.outerHeight() - arrowDiagonal - borderRadius;
           arrowStyles.top = Math.max(Math.min(top, max), min);
           arrowStyles.right = -(arrowEdge / 2 + this.borderRightWidth);
           break;
         case 'chariot-tooltip-arrow-bottom':
-          left = ($tooltip.outerWidth() - arrowDiagonal) / 2 - this.xOffset;
+          left = ($tooltip.outerWidth() - arrowDiagonal) / 2 - this.xOffsetTooltip + this.offsetArrow;
           min = borderRadius;
           max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
           arrowStyles.left = Math.max(Math.min(left, max), min);
           arrowStyles.bottom = -(arrowEdge / 2 + this.borderBottomWidth);
           break;
         case 'chariot-tooltip-arrow-top':
-          left = ($tooltip.outerWidth() - arrowDiagonal) / 2 - this.xOffset;
+          left = ($tooltip.outerWidth() - arrowDiagonal) / 2 - this.xOffsetTooltip + this.offsetArrow;
           min = borderRadius;
           max = $tooltip.outerWidth() - arrowDiagonal - borderRadius;
           arrowStyles.left = Math.max(Math.min(left, max), min);
