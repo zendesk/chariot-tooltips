@@ -1,5 +1,6 @@
 var OnboardingConfig = {
   ticketing: {
+    zIndex: 1000,
     steps: [
       {
         selectors: {
