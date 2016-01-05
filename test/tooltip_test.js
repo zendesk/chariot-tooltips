@@ -3,7 +3,7 @@ import Tooltip from '../lib/tooltip';
 import chai from 'chai';
 import sinon from 'sinon';
 import Style from '../lib/style';
-
+import Constants from '../lib/constants';
 let expect = chai.expect;
 
 describe('Tooltip', function() {
@@ -84,14 +84,13 @@ describe('Tooltip', function() {
       sinon.stub(tooltip, '_getAnchorElement').returns({});
       sinon.stub(Style, "calculateTop").returns(0);
       sinon.stub(Style, "calculateLeft").returns(0);
-
       tooltip.render();
 
       expect($markup.css('position')).to.equal('absolute');
       expect($markup.css('top')).to.equal("0px");
       expect($markup.css('left')).to.equal("0px");
       expect(parseInt($markup.css('z-index'))).to.equal(
-        parseInt(tooltip.z_index));
+        parseInt(Constants.TOOLTIP_Z_INDEX));
     });
   });
 
