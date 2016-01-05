@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.15 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v1.0.16 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -117,6 +117,23 @@ var Chariot = (function () {
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
    *
+   * These delegate methods are called during browser navigation events.
+   * Routing libraries might use one or more of these methods to implement
+   * routing for single page applications. The default handler for these events
+   * force quits the current tutorial. If you choose to override any of these
+   * methods, you will be responsibile for calling tutorial.end()
+   *
+   * Called when handling browser popState events.
+   * @callback handlePopState
+   *
+   * Called when handling browser pushState events.
+   * @callback handlePushState
+   *
+   * Called when handling browser replaceState events.
+   * @callback handleReplaceState
+   *
+   * Called when handling browser hashChange events.
+   * @callback handleHashChange
    */
 
   /**
@@ -295,19 +312,44 @@ var Chariot = (function () {
 exports['default'] = Chariot;
 module.exports = exports['default'];
 
-},{"./ie-shim":3,"./tutorial":9,"query-parse":17}],2:[function(require,module,exports){
+},{"./ie-shim":3,"./tutorial":10,"query-parse":18}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var OVERLAY_Z_INDEX = 20;
-var CLONE_Z_INDEX = OVERLAY_Z_INDEX + 1;
-var TOOLTIP_Z_INDEX = CLONE_Z_INDEX + 1;
 
-exports.OVERLAY_Z_INDEX = OVERLAY_Z_INDEX;
-exports.CLONE_Z_INDEX = CLONE_Z_INDEX;
-exports.TOOLTIP_Z_INDEX = TOOLTIP_Z_INDEX;
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Constant = (function () {
+  function Constant() {
+    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    _classCallCheck(this, Constant);
+
+    this.OVERLAY_Z_INDEX = options.overlayZIndex || 20;
+    this.CLONE_Z_INDEX = this.OVERLAY_Z_INDEX + 1;
+    this.TOOLTIP_Z_INDEX = this.CLONE_Z_INDEX + 1;
+  }
+
+  _createClass(Constant, [{
+    key: "reload",
+    value: function reload() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+      this.OVERLAY_Z_INDEX = options.overlayZIndex || 20;
+      this.CLONE_Z_INDEX = this.OVERLAY_Z_INDEX + 1;
+      this.TOOLTIP_Z_INDEX = this.CLONE_Z_INDEX + 1;
+    }
+  }]);
+
+  return Constant;
+})();
+
+exports["default"] = new Constant();
+module.exports = exports["default"];
 
 },{}],3:[function(require,module,exports){
 // this shim is to fix IE & Firefox's problem where
@@ -360,6 +402,9 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 },{"./chariot":1}],5:[function(require,module,exports){
+/*global
+history
+*/
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -370,7 +415,125 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var NavigationHandler = (function () {
+  function NavigationHandler(currentTutorial, delegate) {
+    _classCallCheck(this, NavigationHandler);
+
+    this.tutorial = currentTutorial;
+    this.delegate = delegate;
+  }
+
+  _createClass(NavigationHandler, [{
+    key: 'setup',
+    value: function setup() {
+      // default handler for any browser navigation events
+      var handlerFn = function handlerFn() {
+        return currentTutorial.end(true);
+      };
+
+      // get custom eventHandler for each event
+      var hashChangeFn = this.delegate.handleHashChange || handlerFn;
+      var popStateFn = this.delegate.handlePopState || handlerFn;
+      var pushStateFn = this.delegate.handlePushState || handlerFn;
+      var replaceStateFn = this.delegate.handleReplaceState || handlerFn;
+
+      this._onHashChange(hashChangeFn);
+      this._onPopState(popStateFn);
+      this._onPushState(pushStateFn);
+      this._onReplaceState(replaceStateFn);
+    }
+  }, {
+    key: '_wrapFunction',
+    value: function _wrapFunction(origFn, fn) {
+      var _this = this,
+          _arguments = arguments;
+
+      // wrap the function with a tryInvoke call to call original function if one exists
+      return function () {
+        var retval = _this._tryInvokeWithArgs(origFn, _arguments);
+        fn.apply(_this, _arguments);
+        return retval;
+      };
+    }
+  }, {
+    key: '_tryInvokeWithArgs',
+    value: function _tryInvokeWithArgs(fn, args) {
+      var scope = arguments.length <= 2 || arguments[2] === undefined ? window : arguments[2];
+
+      var retval = null;
+      if (typeof fn === 'function') {
+        retval = fn.apply(scope, args);
+      }
+      return retval;
+    }
+  }, {
+    key: '_onHashChange',
+    value: function _onHashChange(fn) {
+      this.hashChangeListener = fn;
+      window.addEventListener('hashchange', fn);
+    }
+  }, {
+    key: '_onReplaceState',
+    value: function _onReplaceState(fn) {
+      this.origReplaceState = history.replaceState;
+      var wrappedFn = this._wrapFunction(this.origReplaceState, fn, history);
+      history.replaceState = wrappedFn;
+    }
+  }, {
+    key: '_onPopState',
+    value: function _onPopState(fn) {
+      this.origPopState = window.onpopstate;
+      var wrappedFn = this._wrapFunction(this.origPopState, fn);
+      window.onpopstate = wrappedFn;
+    }
+  }, {
+    key: '_onPushState',
+    value: function _onPushState(fn) {
+      this.origPushState = history.pushState;
+      var wrappedFn = this._wrapFunction(this.origPushState, fn, history);
+      history.pushState = wrappedFn;
+    }
+  }, {
+    key: 'tearDown',
+    value: function tearDown() {
+      window.onpopstate = this.origPopState;
+      this.origPopState = null;
+
+      history.replaceState = this.origReplaceState;
+      this.origReplaceState = null;
+
+      history.pushState = this.origPushState;
+      this.origPushState = null;
+
+      if (this.hashChangeListener) {
+        window.removeEventListener('hashchange', this.hashChangeListener);
+        this.hashChangeListener = null;
+      }
+    }
+  }]);
+
+  return NavigationHandler;
+})();
+
+exports['default'] = NavigationHandler;
+module.exports = exports['default'];
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
 
 var Overlay = (function () {
 
@@ -489,7 +652,7 @@ var Overlay = (function () {
     key: '_createOverlay',
     value: function _createOverlay() {
       var $overlay = $("<div class='chariot-overlay'></div>");
-      $overlay.css({ 'z-index': _constants.OVERLAY_Z_INDEX });
+      $overlay.css({ 'z-index': _constants2['default'].OVERLAY_Z_INDEX });
       return $overlay;
     }
   }, {
@@ -497,7 +660,7 @@ var Overlay = (function () {
     value: function _createTransparentOverlay() {
       var $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
       $transparentOverlay.css({
-        'z-index': _constants.CLONE_Z_INDEX + 1
+        'z-index': _constants2['default'].CLONE_Z_INDEX + 1
       });
       return $transparentOverlay;
     }
@@ -550,7 +713,7 @@ var Overlay = (function () {
 exports['default'] = Overlay;
 module.exports = exports['default'];
 
-},{"./constants":2}],6:[function(require,module,exports){
+},{"./constants":2}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -572,6 +735,8 @@ var _tooltip = require('./tooltip');
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
 var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
 
 var _style = require('./style');
 
@@ -876,7 +1041,7 @@ var Step = (function () {
     key: '_positionClone',
     value: function _positionClone($clone, $element) {
       $clone.css({
-        'z-index': _constants.CLONE_Z_INDEX,
+        'z-index': _constants2['default'].CLONE_Z_INDEX,
         position: 'absolute'
       });
       $clone.offset($element.offset());
@@ -889,7 +1054,7 @@ var Step = (function () {
 exports['default'] = Step;
 module.exports = exports['default'];
 
-},{"./constants":2,"./style":7,"./tooltip":8,"es6-promise":14,"lodash.debounce":15}],7:[function(require,module,exports){
+},{"./constants":2,"./style":8,"./tooltip":9,"es6-promise":15,"lodash.debounce":16}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1046,7 +1211,7 @@ var Style = (function () {
 exports['default'] = Style;
 module.exports = exports['default'];
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1060,6 +1225,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
 
 var _style = require('./style');
 
@@ -1158,7 +1325,6 @@ var Tooltip = (function () {
     this.offsetArrow = config.offsetArrow ? parseInt(config.offsetArrow) : 0;
 
     this.arrowClass = arrowClass;
-    this.z_index = _constants.TOOLTIP_Z_INDEX;
 
     this.width = parseInt(config.width);
     this.height = parseInt(config.height);
@@ -1276,7 +1442,7 @@ var Tooltip = (function () {
       var tooltipStyles = {
         top: top,
         left: left,
-        'z-index': this.z_index,
+        'z-index': _constants2['default'].TOOLTIP_Z_INDEX,
         position: 'absolute'
       };
       $tooltip.css(tooltipStyles);
@@ -1299,7 +1465,7 @@ var Tooltip = (function () {
 
       var arrowEdgeStyle = arrowEdge + 'px';
       var arrowStyles = {
-        'z-index': this.z_index + 1,
+        'z-index': _constants2['default'].TOOLTIP_Z_INDEX + 1,
         width: arrowEdgeStyle,
         height: arrowEdgeStyle
       };
@@ -1374,7 +1540,7 @@ var Tooltip = (function () {
 exports['default'] = Tooltip;
 module.exports = exports['default'];
 
-},{"./constants":2,"./style":7}],9:[function(require,module,exports){
+},{"./constants":2,"./style":8}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1394,6 +1560,14 @@ var _step2 = _interopRequireDefault(_step);
 var _overlay = require('./overlay');
 
 var _overlay2 = _interopRequireDefault(_overlay);
+
+var _navigation_handler = require('./navigation_handler');
+
+var _navigation_handler2 = _interopRequireDefault(_navigation_handler);
+
+var _constants = require('./constants');
+
+var _constants2 = _interopRequireDefault(_constants);
 
 var Promise = require('es6-promise').Promise;
 
@@ -1422,6 +1596,7 @@ var Tutorial = (function () {
    * StepConfiguration.selectors.
    *
    * @typedef TutorialConfiguration
+   * @property {integer} [zIndex=20] - Sets the base z-index value used by this tutorial
    * @property {boolean} [shouldOverlay=true] - Setting to false will disable the
    * overlay that normally appears over the page and behind the tooltips.
    * @property {string} [overlayColor='rgba(255,255,255,0.7)'] - Overlay CSS color
@@ -1454,6 +1629,7 @@ var Tutorial = (function () {
       return;
     }
     this.name = name;
+    this.zIndex = config.zIndex;
     this.delegate = delegate || {};
     this.useTransparentOverlayStrategy = config.useTransparentOverlayStrategy || false;
     this.steps = [];
@@ -1463,6 +1639,7 @@ var Tutorial = (function () {
     });
     this._prepared = false;
     this._isActive = false;
+    this.navigationHandler = new _navigation_handler2['default'](this, this.delegate);
   }
 
   /**
@@ -1485,20 +1662,28 @@ var Tutorial = (function () {
     value: function start() {
       var _this2 = this;
 
+      if (this.zIndex !== null) {
+        _constants2['default'].reload({ overlayZIndex: this.zIndex });
+      }
+      if (this.navigationHandler) {
+        this.navigationHandler.setup();
+      }
       if (this.steps.length === 0) {
         throw new Error('steps should not be empty.\n' + this);
         return;
       }
 
       this._isActive = true;
-
+      // render overlay first to avoid willBeingTutorial delay overlay showing up
+      this.overlay.render();
       Promise.resolve().then(function () {
         if (_this2.delegate.willBeginTutorial) {
           return _this2.delegate.willBeginTutorial(_this2);
         }
       }).then(function () {
-        _this2.overlay.render();
         _this2.steps[0].render();
+      })['catch'](function () {
+        _this2.tearDown();
       });
     }
   }, {
@@ -1524,7 +1709,6 @@ var Tutorial = (function () {
       currentStep.tearDown();
       if (index === this.steps.length - 1) {
         this.end();
-        this.tearDown();
       } else {
         this.steps[index + 1].render();
       }
@@ -1538,6 +1722,10 @@ var Tutorial = (function () {
   }, {
     key: 'tearDown',
     value: function tearDown() {
+      if (this.navigationHandler) {
+        this.navigationHandler.tearDown();
+        this.navigationHandler = null;
+      }
       this._prepared = false;
       this.overlay.tearDown();
       this.steps.forEach(function (step) {
@@ -1594,7 +1782,7 @@ var Tutorial = (function () {
 exports['default'] = Tutorial;
 module.exports = exports['default'];
 
-},{"./overlay":5,"./step":6,"es6-promise":14}],10:[function(require,module,exports){
+},{"./constants":2,"./navigation_handler":5,"./overlay":6,"./step":7,"es6-promise":15}],11:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1686,7 +1874,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1772,7 +1960,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1859,13 +2047,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":11,"./encode":12}],14:[function(require,module,exports){
+},{"./decode":12,"./encode":13}],15:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -2841,7 +3029,7 @@ exports.encode = exports.stringify = require('./encode');
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":10}],15:[function(require,module,exports){
+},{"_process":11}],16:[function(require,module,exports){
 /**
  * lodash 3.1.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -3077,7 +3265,7 @@ function isObject(value) {
 
 module.exports = debounce;
 
-},{"lodash._getnative":16}],16:[function(require,module,exports){
+},{"lodash._getnative":17}],17:[function(require,module,exports){
 /**
  * lodash 3.9.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -3216,7 +3404,7 @@ function isNative(value) {
 
 module.exports = getNative;
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var querystring = require('querystring');
 
 var qp = {
@@ -3242,4 +3430,4 @@ var qp = {
 
 //
 module.exports = qp;
-},{"querystring":13}]},{},[4]);
+},{"querystring":14}]},{},[4]);
