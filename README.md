@@ -15,7 +15,7 @@ background overlay to bring focus to the elements you care about.
 
 # Demo
 
-Visit the [live demo](chariot.zendesk.com).
+Visit the [live demo](http://chariot.zendesk.com).
 
 Or run the project locally, and navigate to
 [http://localhost:8080/example/index.html](http://localhost:8080/example/index.html) (refer to [Development](#development)).
