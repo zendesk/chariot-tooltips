@@ -5,7 +5,9 @@ var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var connect = require('gulp-connect');
 var run = require('gulp-run');
-var babel = require('babel/register');
+
+//var babel = require('babel/register');
+
 var mocha = require('gulp-mocha');
 var testem = require('gulp-testem');
 var sass = require('gulp-sass');
@@ -22,7 +24,18 @@ var prompt = require('gulp-prompt');
 var git = require('gulp-git');
 var fs = require('fs');
 var insert = require('gulp-insert');
+
+const babel = require('gulp-babel');
+const del = require('del');
+const exec = require('child_process').exec;
+
 var projectName = 'chariot';
+
+const paths = {
+  allSrcJs: 'lib/**/*.js',
+  distDir: 'dist',
+  releaseDir: 'release'
+};
 
 gulp.task("default", ['js', 'sass']);
 
@@ -222,8 +235,7 @@ gulp.task('css-minify', ['sass'], function(){
 })
 
 gulp.task('clean', function () {
-  return gulp.src(['dist/', 'release/'], {read: false})
-    .pipe(clean());
+  return del([paths.distDir, paths.releaseDir]);
 });
 
 var versionBumpType;
