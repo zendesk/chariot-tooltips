@@ -5,16 +5,13 @@ var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 var connect = require('gulp-connect');
 var run = require('gulp-run');
-
-//var babel = require('babel/register');
-
 var mocha = require('gulp-mocha');
 var testem = require('gulp-testem');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
-var minifyCss = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var clean = require('gulp-clean');
+var cleanCSS = require('gulp-clean-css');
 var runSequence = require('run-sequence');
 var rename = require('gulp-rename');
 var shell = require('gulp-shell');
@@ -56,7 +53,7 @@ gulp.task('js', function() {
 });
 
 gulp.task('js:watch', function() {
-  return gulp.watch('lib/**/*.js', ['js']);
+  return gulp.watch(paths.allSrcJs, ['js']);
 });
 
 gulp.task('sass', function() {
@@ -229,7 +226,7 @@ gulp.task('js-minify', ['js'], function(){
 })
 gulp.task('css-minify', ['sass'], function(){
   return gulp.src('./dist/stylesheets/**/*')
-    .pipe(minifyCss({compatibility: 'ie8'}))
+    .pipe(cleanCSS({compatibility: 'ie8'}))
     .pipe(rename(projectName + '.min.css'))
     .pipe(gulp.dest('./dist/stylesheets'));
 })
