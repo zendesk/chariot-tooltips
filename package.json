@@ -5,7 +5,7 @@
   "version": "1.0.16",
   "repository": "https://github.com/zendesk/chariot",
   "devDependencies": {
-    "babel": "^5.6.14",
+    "babel": "^6.5.2",
     "babelify": "^6.1.2",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
@@ -13,8 +13,9 @@
     "es6-promise": "^2.3.0",
     "es6-shim": "^0.32.2",
     "glob": "^5.0.13",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-autoprefixer": "^2.3.1",
+    "gulp-babel": "^6.1.2",
     "gulp-bump": "^0.3.1",
     "gulp-clean": "^0.3.1",
     "gulp-connect": "^2.2.0",
@@ -31,11 +32,10 @@
     "gulp-testem": "0.0.1",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
+    "jquery": "^2.1.4",
     "jscs": "^2.0.0",
     "jsdoc": "^3.3.2",
-    "jquery": "^2.1.4",
     "mocha": "^2.2.5",
-    "npm-shrinkwrap": "^5.4.0",
     "phantomjs": "^1.9.17",
     "run-sequence": "^1.1.1",
     "sinon": "^1.15.4",
@@ -49,7 +49,6 @@
   "scripts": {
     "jscs-fix": "node_modules/.bin/jscs lib/** test/** -x",
     "jscs": "node_modules/.bin/jscs lib/** test/**",
-    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci",
-    "shrinkwrap": "npm-shrinkwrap --dev --keep-nested"
+    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci"
   }
 }
