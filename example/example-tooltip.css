@@ -1,0 +1,66 @@
+.chariot-tooltip {
+  background-color: #fff;
+  padding: 30px;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 0 5px 0 rgba(31, 28, 28, 0.3);
+  border: 1px solid #ddd;
+  color: #999; }
+  .chariot-tooltip .chariot-tooltip-icon {
+    width: 52px;
+    height: 52px;
+    margin: auto; }
+    .chariot-tooltip .chariot-tooltip-icon img {
+      width: 52px;
+      height: 52px; }
+  .chariot-tooltip .chariot-tooltip-header {
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 500;
+    color: #555;
+    padding: 5px 0; }
+  .chariot-tooltip .chariot-tooltip-content {
+    padding: 5px 0; }
+    .chariot-tooltip .chariot-tooltip-content p {
+      font-size: 14px;
+      font-weight: 300;
+      color: #999;
+      padding-bottom: 15px; }
+  .chariot-tooltip .chariot-btn-row {
+    padding-top: 5px; }
+    .chariot-tooltip .chariot-btn-row .btn {
+      font-size: 13px;
+      font-weight: 400;
+      color: #fff;
+      background-color: #78A300;
+      border-radius: 3px;
+      height: 36px;
+      padding: 0 20px;
+      border: none; }
+      .chariot-tooltip .chariot-btn-row .btn:hover {
+        background-color: #78A300; }
+    .chariot-tooltip .chariot-btn-row .chariot-tooltip-subtext {
+      float: left;
+      color: #ddd;
+      font-size: 13px;
+      padding-top: 10px; }
+  .chariot-tooltip-arrow {
+    background: #fff; }
+  .chariot-tooltip-arrow-left {
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    box-shadow: -2px 2px 2px 0 rgba(31, 28, 28, 0.1); }
+  .chariot-tooltip-arrow-right {
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    box-shadow: 2px -2px 2px 0 rgba(31, 28, 28, 0.1); }
+  .chariot-tooltip-arrow-top {
+    border-left: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    box-shadow: -2px -2px 4px 0 rgba(31, 28, 28, 0.1); }
+  .chariot-tooltip-arrow-bottom {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 2px 2px 4px 0 rgba(31, 28, 28, 0.1); }
+
+/*# sourceMappingURL=example-tooltip.css.map */
