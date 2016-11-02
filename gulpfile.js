@@ -1,4 +1,4 @@
-var gulp = require("gulp");
+var gulp = require('gulp');
 var glob = require('glob');
 var browserify = require('browserify');
 var babelify = require('babelify');
