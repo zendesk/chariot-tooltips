@@ -1,4 +1,7 @@
 .chariot-tooltip {
+  // Keep this otherwise tooltip height is unpredictable
+  position: absolute;
+
   .left {
     float: left;
   }

@@ -71,13 +71,12 @@ var chariot = new Chariot({
           position: 'bottom', // 'top' | 'left' | 'bottom' | 'right'
           title: 'Know your customer',
           text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
-          // anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
           attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
           arrowLength: 20,
           xOffsetTooltip: 110,
-          // offsetArrow: 110
-          offsetArrow: 110
+          offsetArrow: 110,
+          className: 'tooltip-class1 tooltip-class2'
         }
       },
       // Step #2 illustrates the ability to highlight select two selectors
@@ -90,7 +89,6 @@ var chariot = new Chariot({
           position: 'top',
           title: 'Tooltip #2',
           text: 'Two selectors being highlighted.',
-          // xOffsetTooltip: -50,
           anchorElement: "topRight"
         }
       },
@@ -103,50 +101,12 @@ var chariot = new Chariot({
           position: 'right',
           title: 'Tooltip #3',
           text: 'Placeholder text.',
-          // anchorElement: "bottomLeft",
           yOffsetTooltip: 50,
           xOffsetTooltip: 20,
           offsetArrow: 50
-
-        }
-      },
-      /*
-      // This step shows how a missing selector will cause a tutorial to end
-      {
-        selectors: {
-          bottomLeft: ".bottom-left",
-          notExistent: ".where-am-i"
-        },
-        tooltip: {
-          position: 'bottom',
-          title: 'Tooltip #3',
-          text: 'Placeholder text.',
-          anchorElement: "bottomLeft",
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          }
-        }
-      },
-      // This step is skipped entirely because of the last step
-      {
-        selectors: {
-          topRight: ".top-right"
-        },
-        tooltip: {
-          position: 'left',
-          title: 'Tooltip #4',
-          text: 'This tooltip is skipped because tooltip #3 config had an invalid selector.',
-          anchorElement: "topRight",
-          cta: 'Next',
-          subtext: function(currentStep, totalSteps) {
-            return `${currentStep} of ${totalSteps}`;
-          }
         }
       }
-      */
     ],
-    // shouldOverlay: false,
     onComplete: function() {
       console.log('onComplete called from configuration');
     },
