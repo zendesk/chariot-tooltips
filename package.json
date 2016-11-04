@@ -6,7 +6,9 @@
   "repository": "https://github.com/zendesk/chariot",
   "devDependencies": {
     "babel": "^6.5.2",
+    "babel-loader": "^6.2.7",
     "babel-preset-latest": "^6.16.0",
+    "babel-register": "^6.18.0",
     "babelify": "^6.1.2",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
@@ -14,6 +16,11 @@
     "es5-shim": "^4.1.7",
     "es6-promise": "^2.3.0",
     "es6-shim": "^0.32.2",
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^2.1.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.5.0",
     "glob": "^5.0.13",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^2.3.1",
@@ -22,6 +29,7 @@
     "gulp-clean": "^0.3.1",
     "gulp-clean-css": "^2.0.13",
     "gulp-connect": "^2.2.0",
+    "gulp-eslint": "^3.0.1",
     "gulp-git": "^1.2.4",
     "gulp-insert": "^0.4.0",
     "gulp-jscs": "^2.0.0",
@@ -42,11 +50,20 @@
     "run-sequence": "^1.1.1",
     "sinon": "^1.15.4",
     "testem": "^0.8.5",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2",
+    "webpack-stream": "^3.2.0"
   },
   "dependencies": {
     "lodash.debounce": "^3.1.1",
     "query-parse": "^0.1.1"
+  },
+  "eslintConfig": {
+    "extends": "airbnb",
+    "plugins": [
+      "import"
+    ]
   },
   "scripts": {
     "jscs-fix": "node_modules/.bin/jscs lib/** test/** -x",

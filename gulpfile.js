@@ -1,37 +1,40 @@
-var gulp = require('gulp');
-var glob = require('glob');
-var browserify = require('browserify');
-var babelify = require('babelify');
-var source = require('vinyl-source-stream');
-var connect = require('gulp-connect');
-var run = require('gulp-run');
-var mocha = require('gulp-mocha');
-var testem = require('gulp-testem');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var uglify = require('gulp-uglify');
-var clean = require('gulp-clean');
-var cleanCSS = require('gulp-clean-css');
-var runSequence = require('run-sequence');
-var rename = require('gulp-rename');
-var shell = require('gulp-shell');
-var jscs = require('gulp-jscs');
-var bump = require('gulp-bump');
-var prompt = require('gulp-prompt');
-var git = require('gulp-git');
-var fs = require('fs');
-var insert = require('gulp-insert');
+const gulp = require('gulp');
+const glob = require('glob');
+const browserify = require('browserify');
+const babelify = require('babelify');
+const source = require('vinyl-source-stream');
+const connect = require('gulp-connect');
+const run = require('gulp-run');
+const mocha = require('gulp-mocha');
+const testem = require('gulp-testem');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const uglify = require('gulp-uglify');
+const clean = require('gulp-clean');
+const cleanCSS = require('gulp-clean-css');
+const runSequence = require('run-sequence');
+const rename = require('gulp-rename');
+const shell = require('gulp-shell');
+const jscs = require('gulp-jscs');
+const bump = require('gulp-bump');
+const prompt = require('gulp-prompt');
+const git = require('gulp-git');
+const fs = require('fs');
+const insert = require('gulp-insert');
 
 const babel = require('gulp-babel');
 const del = require('del');
 const exec = require('child_process').exec;
+const eslint = require('gulp-eslint');
 
-var projectName = 'chariot';
+const projectName = 'chariot';
 
 const paths = {
   allSrcJs: 'lib/**/*.js',
   distDir: 'dist',
-  releaseDir: 'release'
+  releaseDir: 'release',
+  gulpFile: 'gulpfile.babel.js',
+  webpackFile: 'webpack.config.babel.js'
 };
 
 gulp.task("default", ['js', 'sass']);
@@ -42,7 +45,7 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 
 gulp.task('js', function() {
   return browserify({
-    entries: './lib/index.js',
+    entries: './lib/index.js'
     // debug: true
   })
     .transform(babelify)
@@ -61,8 +64,8 @@ gulp.task('sass', function() {
     .pipe(sass().on('error', sass.logError))
     .pipe(rename(projectName + '.css'))
     .pipe(autoprefixer({
-        browsers: ['last 3 versions'],
-        cascade: false
+      browsers: ['last 3 versions'],
+      cascade: false
     }))
     .pipe(gulp.dest('./dist/stylesheets'))
     .pipe(connect.reload())
@@ -82,7 +85,7 @@ gulp.task('connect', ['js', 'sass', 'watch'], function() {
 });
 
 gulp.task('test', function() {
-  return gulp.src(['test/**/*.js'], {read: false})
+  return gulp.src(['test/**/*.js'], { read: false })
     .pipe(mocha({
       compilers: {
         js: babel
@@ -130,11 +133,11 @@ gulp.task('style-fix', function () {
     .pipe(gulp.dest('./'));
 });
 
-function getVersion(){
+function getVersion() {
   return JSON.parse(fs.readFileSync('package.json', 'utf8')).version;
 }
 
-gulp.task('release', function(cb){
+gulp.task('release', function(cb) {
   return runSequence(
     'bump',
     'build-release',
@@ -143,7 +146,7 @@ gulp.task('release', function(cb){
     );
 });
 
-gulp.task('git-tag', function(cb){
+gulp.task('git-tag', function(cb) {
   var version = getVersion();
   return gulp.src(["release", "package.json", "npm-shrinkwrap.json", "bower.json"])
     .pipe(git.commit('bump version'))
@@ -152,7 +155,7 @@ gulp.task('git-tag', function(cb){
         type: 'input',
         name: 'message',
         message: "A simple message for tagging v" + version + ":"
-      }, function(res){
+      }, function(res) {
         var message = res.message;
         return git.tag("v" + version, message, {args: '-a'}, function(err){
           if (!err) {
@@ -218,15 +221,15 @@ gulp.task('copy-dist', function(){
     .pipe(gulp.dest('release/'));
 })
 
-gulp.task('js-minify', ['js'], function(){
+gulp.task('js-minify', ['js'], function() {
   return gulp.src('./dist/javascripts/' + projectName + '.js')
     .pipe(uglify())
     .pipe(rename(projectName + '.min.js'))
     .pipe(gulp.dest('./dist/javascripts'));
 })
-gulp.task('css-minify', ['sass'], function(){
+gulp.task('css-minify', ['sass'], function() {
   return gulp.src('./dist/stylesheets/**/*')
-    .pipe(cleanCSS({compatibility: 'ie8'}))
+    .pipe(cleanCSS({ compatibility: 'ie8' }))
     .pipe(rename(projectName + '.min.css'))
     .pipe(gulp.dest('./dist/stylesheets'));
 })
@@ -236,23 +239,34 @@ gulp.task('clean', function () {
 });
 
 var versionBumpType;
-gulp.task('bump-prompt', function(cb){
+gulp.task('bump-prompt', function(cb) {
   return gulp.src(['./bower.json', './package.json', './npm-shrinkwrap.json'])
     .pipe(prompt.prompt({
       type: 'checkbox',
       name: 'bump',
       message: 'What would you like to bump? Choose one, or leave empty to skip',
       choices: ['patch', 'minor', 'major']
-    }, function(res){
+    }, function(res) {
       if (res.bump.length > 1) {
         throw Error("Y U NO FOLLOW INSTRUCTIONS!");
       }
       versionBumpType = res.bump[0]
     }));
 })
-gulp.task('bump', ['bump-prompt'], function(){
+
+gulp.task('bump', ['bump-prompt'], function() {
   return gulp.src(['./bower.json', './package.json', './npm-shrinkwrap.json'])
-    .pipe(bump({type: versionBumpType}))
+    .pipe(bump({ type: versionBumpType }))
     .pipe(gulp.dest('./'));
 });
 
+gulp.task('lint', () =>
+  gulp.src([
+    paths.allSrcJs,
+    paths.gulpFile,
+    paths.webpackFile
+  ])
+  .pipe(eslint())
+  .pipe(eslint.format())
+  .pipe(eslint.failAfterError())
+);
