@@ -48,10 +48,21 @@ describe('Chariot', function() {
     });
   });
 
-  describe('#createTutorial', function() {
+  describe('#Chariot.createTutorial', function() {
     it('returns a tutorial with a valid config', function() {
       let tutorial = Chariot.createTutorial(config[tutorialName], delegate);
       expect(tutorial).to.not.equal(null);
+    });
+  });
+
+  describe('#Chariot.startTutorial', function() {
+    it('returns and starts a tutorial with a valid config', function() {
+      let stub = { start: () => '' };
+      sinon.stub(Chariot, 'createTutorial').returns(stub);
+      sinon.stub(stub, 'start');
+      let tutorial = Chariot.startTutorial(config[tutorialName], delegate);
+      expect(tutorial).to.equal(stub);
+      expect(stub.start.called).to.be.true;
     });
   });
 });
