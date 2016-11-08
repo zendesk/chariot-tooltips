@@ -170,22 +170,16 @@ $(function() {
   });
 
   $('.create-tutorial-link').click(function() {
-    var tutorial = Chariot.createTutorial({
-      steps: [
-        {
-          selectors: {
-            link: ".create-tutorial-link"
-          },
-          tooltip: {
-            position: 'right',
-            title: 'Launch tutorials ad-hoc without a massive up-front configuration',
-            text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
-          }
+    Chariot.startTutorial([
+      {
+        selectors: ".create-tutorial-link",
+        tooltip: {
+          position: 'right',
+          title: 'Launch tutorials ad-hoc without a massive up-front configuration',
+          text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
         }
-      ],
-      useTransparentOverlayStrategy: true
-    }, delegate);
-    tutorial.start();
+      }
+    ], delegate);
   });
 });
 </script>
