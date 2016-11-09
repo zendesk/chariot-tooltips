@@ -40,6 +40,10 @@
   a {
     color: white;
   }
+  .far-below {
+    margin-top: 1000px;
+    background: green;
+  }
 </style>
 
 </head>
@@ -48,12 +52,14 @@
   <div><a href="#" class="add-history-link">1. Add history</a></div>
   <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
   <div><a href="#" class="create-tutorial-link">3. Create tutorial without chariot instance</a></div>
-<div class='outer'>
-  <div class="inner top-left"><button>Top Left</button></div>
-  <div class="inner top-right"><button>Top Right</button></div>
-  <div class="inner bottom-left"><button>Bottom Left</button></div>
-</div>
 
+  <div class='outer'>
+    <div class="inner top-left"><button>Top Left</button></div>
+    <div class="inner top-right"><button>Top Right</button></div>
+    <div class="inner bottom-left"><button>Bottom Left</button></div>
+  </div>
+
+  <div class="inner far-below"><button>Far Below</button></div>
 <script>
 
 var delegate = this;
@@ -162,35 +168,35 @@ function sleepFor(sleepDuration, message) {
 
 function willBeginTutorial(tutorial) {
   console.log("delegate - willBeginTutorial\n  tutorial:" + tutorial);
-  return sleepFor(1000, "willBeginTutorial promise resolved");
+  return sleepFor(0, "willBeginTutorial promise resolved");
 }
 function willBeginStep(step, stepIndex, tutorial) {
   console.log("delegate - willBeginStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return sleepFor(1000, "willBeginStep promise resolved");
+  return sleepFor(0, "willBeginStep promise resolved");
 }
 function willShowOverlay(overlay, stepIndex, tutorial) {
   console.log("delegate - willShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return sleepFor(1000, "willShowOverlay promise resolved");
+  return sleepFor(0, "willShowOverlay promise resolved");
 }
 function didShowOverlay(overlay, stepIndex, tutorial) {
   console.log("delegate - didShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return sleepFor(1000, "didShowOverlay promise resolved");
+  return sleepFor(0, "didShowOverlay promise resolved");
 }
 function willRenderTooltip(tooltip, stepIndex, tutorial) {
   console.log("delegate - willRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return sleepFor(1000, "willRenderTooltip promise resolved");
+  return sleepFor(0, "willRenderTooltip promise resolved");
 }
 function didRenderTooltip(tooltip, stepIndex, tutorial) {
   console.log("delegate - didRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return sleepFor(1000, "didRenderTooltip promise resolved");
+  return sleepFor(0, "didRenderTooltip promise resolved");
 }
 function didFinishStep(step, stepIndex, tutorial) {
   console.log("delegate - didFinishStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
-  return sleepFor(1000, "didFinishStep promise resolved");
+  return sleepFor(0, "didFinishStep promise resolved");
 }
 function didFinishTutorial(tutorial, forced) {
   console.log("delegate - didFinishTutorial\n  tutorial:" + tutorial + " forced:" + forced);
-  return sleepFor(1000, "didFinishTutorial promise resolved");
+  return sleepFor(0, "didFinishTutorial promise resolved");
 }
 
 $(function() {
@@ -215,7 +221,8 @@ $(function() {
             text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
           },
         }
-      ]
+      ],
+      useTransparentOverlayStrategy: true
     }, delegate);
     tutorial.start();
   });
