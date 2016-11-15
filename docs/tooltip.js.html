@@ -26,7 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { TOOLTIP_Z_INDEX } from './constants';
+            <pre class="prettyprint source linenums"><code>import Constants from './constants';
 import Style from './style';
 
 // distance between arrow tip and edge of tooltip, not including border
@@ -40,13 +40,15 @@ const DEFAULT_ARROW_LENGTH = 11;
  * @property {string} position - Relatively positions the tooltip to the anchor
  *   element. Possible values: 'top' | 'left' | 'bottom' | 'right'
  * @property {string} [anchorElement] - Optional if the corresponding Step
- *  contains only one selector. anchorElement can be either
+ *  contains only one selector. &lt;code>anchorElement&lt;/code> can be either
  *  (1) a key from StepConfiguration.selectors above, or
  *  (2) a CSS selector
- * @property {number} [xOffsetTooltip] - Value in pixels to offset the x-coordinate of
- *  the tooltip.
- * @property {number} [yOffsetTooltip] - Value in pixels to offset the y-coordinate of
- *  the tooltip.
+ * @property {string} [className] - One or more space-separated classes to be
+ *  added to the class attribute of each tooltip.
+ * @property {number} [xOffsetTooltip] - Value in pixels to offset the
+ *  x-coordinate of the tooltip.
+ * @property {number} [yOffsetTooltip] - Value in pixels to offset the
+ *  y-coordinate of the tooltip.
  * @property {number} [offsetArrow] - Value in pixels to offset the arrow.
  * If the position is top or bootom, this still offset the x coord. If
  * left or right it will offset the y coord. If undefined or 0, arrow is centered.
@@ -82,7 +84,6 @@ const DEFAULT_ARROW_LENGTH = 11;
  */
 
 class Tooltip {
-
   /**
    * @constructor
    * @param {TooltipConfiguration} config - The configuration for this tooltip
@@ -112,17 +113,18 @@ class Tooltip {
         break;
     }
 
+    this.className = config.className;
     this.xOffsetTooltip = config.xOffsetTooltip ? parseInt(config.xOffsetTooltip) : 0;
     this.yOffsetTooltip = config.yOffsetTooltip ? parseInt(config.yOffsetTooltip) : 0;
 
     this.offsetArrow = config.offsetArrow ? parseInt(config.offsetArrow) : 0;
 
     this.arrowClass = arrowClass;
-    this.z_index = TOOLTIP_Z_INDEX;
+    this.appearAnimationClass = 'animate-appear-' + this.position;
 
     this.width = parseInt(config.width);
     this.height = parseInt(config.height);
-    let selectorKeys = Object.keys(this.step.selectors);
+    const selectorKeys = Object.keys(this.step.selectors);
     if (selectorKeys.length > 1 &amp;&amp; !config.anchorElement) {
       throw new Error('anchorElement is not optional when more than one ' +
         'selector exists:\n' + this);
@@ -135,21 +137,23 @@ class Tooltip {
     this.arrowLength = config.arrowLength || DEFAULT_ARROW_LENGTH;
   }
 
-  currentStep() {
-    return this.tutorial.currentStep(this.step);
+  currentStepNum() {
+    return this.tutorial.stepNum(this.step);
   }
 
   render() {
-    let $tooltip = this.$tooltip = this._createTooltipTemplate();
+    const $tooltip = this.$tooltip = this._createTooltipTemplate();
+
+    // Hide the tooltip first, in case we need to scroll into view first
+    $tooltip.css({ opacity: 0 });
     $('body').append($tooltip);
 
-    let $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
-
+    const $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
     this._position($tooltip, $tooltipArrow);
 
-    // Add event handlers
+    // Add button event handler
     $('.chariot-btn-row button').click(() => {
-      this.next();
+      this._animateTooltipDisappear($tooltip);
     });
   }
 
@@ -166,22 +170,22 @@ class Tooltip {
   }
 
   toString() {
-    return `[Tooltip - currentStep: ${this.currentStep()}, Step: ${this.step},` +
+    return `[Tooltip - currentStep: ${this.currentStepNum()}, Step: ${this.step},` +
       ` text: ${this.text}]`;
   }
 
   //// PRIVATE
 
   _createTooltipTemplate() {
-    let currentStep = this.tutorial.currentStep(this.step);
-    let totalSteps = this.tutorial.steps.length;
+    const currentStep = this.currentStepNum();
+    const totalSteps = this.tutorial.steps.length;
     this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
     this.subtext = this.config.subtext ||
       (() => `${currentStep} of ${totalSteps}`);
-    let subtextMarkup = this._subtextMarkup();
-    let buttonFloat = subtextMarkup === '' ? 'center' : 'right';
-    let template = `
-      &lt;div class="chariot-tooltip chariot-step-${currentStep}">
+    const subtextMarkup = this._subtextMarkup();
+    const buttonFloat = subtextMarkup === '' ? 'center' : 'right';
+    const template = `
+      &lt;div class="${this._classNames()}">
         ${this._arrowMarkup()}
         &lt;div class="chariot-tooltip-content">${this._iconMarkup()}&lt;/div>
         &lt;h1 class="chariot-tooltip-header">${this.title}&lt;/h1>
@@ -191,12 +195,19 @@ class Tooltip {
           &lt;button class="btn btn-inverse ${buttonFloat}">${this.cta}&lt;/button>
         &lt;/div>
       &lt;/div>`;
-    let $template = $(template);
+    const $template = $(template);
 
     // Add default data attributes
     this.attr['data-step-order'] = currentStep;
     $template.attr(this.attr);
     return $template;
+  }
+
+  _classNames() {
+    const currentStep = this.currentStepNum();
+    const defaultClassNames = `chariot-tooltip chariot-step-${currentStep}`;
+    if (!this.className) return defaultClassNames;
+    return `${defaultClassNames} ${this.className}`;
   }
 
   _iconMarkup() {
@@ -209,7 +220,7 @@ class Tooltip {
   _subtextMarkup() {
     if (!this.subtext) return '';
     return `&lt;span class='chariot-tooltip-subtext'>
-      ${this.subtext(this.currentStep(), this.tutorial.steps.length)}
+      ${this.subtext(this.currentStepNum(), this.tutorial.steps.length)}
     &lt;/span>`;
   }
 
@@ -221,6 +232,18 @@ class Tooltip {
   _position($tooltip, $tooltipArrow) {
     this._positionTooltip($tooltip);
     this._positionArrow($tooltip, $tooltipArrow);
+
+    // Animate scrolling to the tooltip if it's not completely visible
+    if (this.tutorial.animateScrolling &amp;&amp; !this._isElementInViewport($tooltip)) {
+      $("html, body").animate({
+        scrollTop: $tooltip.offset().top + $tooltip.height() / 2 - document.body.clientHeight / 2,
+        scrollLeft: $tooltip.offset().left + $tooltip.width() / 2 - document.body.clientWidth / 2
+      }, this.tutorial.scrollAnimationDuration, () => {
+        this._animateTooltipAppear($tooltip);
+      });
+    } else {
+      this._animateTooltipAppear($tooltip);
+    }
   }
 
   _positionTooltip($tooltip) {
@@ -242,7 +265,7 @@ class Tooltip {
     let tooltipStyles = {
       top: top,
       left: left,
-      'z-index': this.z_index,
+      'z-index': Constants.TOOLTIP_Z_INDEX,
       position: 'absolute'
     };
     $tooltip.css(tooltipStyles);
@@ -263,7 +286,7 @@ class Tooltip {
 
     let arrowEdgeStyle = `${arrowEdge}px`;
     let arrowStyles = {
-      'z-index': this.z_index + 1,
+      'z-index': Constants.TOOLTIP_Z_INDEX + 1,
       width: arrowEdgeStyle,
       height: arrowEdgeStyle
     };
@@ -309,15 +332,53 @@ class Tooltip {
     $tooltipArrow.css(arrowStyles);
   }
 
+  _isElementInViewport($el) {
+    const rect = $el[0].getBoundingClientRect();
+
+    return (
+        rect.top >= 0 &amp;&amp;
+        rect.left >= 0 &amp;&amp;
+        rect.bottom &lt;= (window.innerHeight || document.documentElement.clientHeight) &amp;&amp; /*or $(window).height() */
+        rect.right &lt;= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+    );
+  }
+
+  _animateTooltipAppear($tooltip) {
+    // Reveal the tooltip again
+    $tooltip.css({ opacity: 1 });
+    if (!this.tutorial.animateTooltips) {
+      return;
+    }
+    $tooltip.addClass(this.appearAnimationClass)
+      .one('animationend', (e) => {
+        $(e.currentTarget).removeClass(this.appearAnimationClass);
+      });
+  }
+
+  _animateTooltipDisappear($tooltip) {
+    if (!this.tutorial.animateTooltips) {
+      this.next();
+      return;
+    }
+
+    $tooltip
+      .addClass(this.appearAnimationClass)
+      .css({ 'animation-direction': 'reverse' })
+      .on('animationend', () => {
+        this.next();
+      });
+  }
+
   _getAnchorElement() {
     // Look for already cloned elements first
     let clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
     if (clonedSelectedElement) return clonedSelectedElement;
+    const anchorElement = this.step.selectors[this.anchorElement];
+    // Try fetching from selectors
+    let $element = $(anchorElement);
     // Try fetching from DOM
-    let $element = $(this.anchorElement);
     if ($element.length === 0) {
-      // Try fetching from selectors
-      $element = $(this.step.selectors[this.anchorElement]);
+      $element = $(this.anchorElement);
     }
     if ($element.length === 0) {
       console.log("Anchor element not found: " + this.anchorElement);
@@ -341,13 +402,13 @@ export default Tooltip;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Chariot.html">Chariot</a></li><li><a href="Overlay.html">Overlay</a></li><li><a href="Step.html">Step</a></li><li><a href="Tooltip.html">Tooltip</a></li><li><a href="Tutorial.html">Tutorial</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Dec 08 2015 16:09:53 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 16:43:34 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

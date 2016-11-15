@@ -28,9 +28,7 @@
 
 <header>
     
-        <h2>
-        
-        </h2>
+        <h2></h2>
         
     
 </header>
@@ -200,7 +198,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line13">line 13</a>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -218,12 +216,8 @@
 
             
                 
+<h4 class="name" id="ChariotDelegate">ChariotDelegate</h4>
 
-    
-
-    <h4 class="name" id="didRenderTooltip"><span class="type-signature"></span>didRenderTooltip<span class="signature">(tutorial, tutorial, forced, step, stepIndex, tutorial, step, stepIndex, tutorial, overlay, stepIndex, tutorial, overlay, stepIndex, tutorial, tooltip, stepIndex, tutorial, tooltip, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
-
-    
 
 
 
@@ -231,535 +225,6 @@
     The delegate optionally responds to lifecycle callbacks from Chariot.
 </div>
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object
-
-Called once after a tutorial is finished.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>forced</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Indicates whether tutorial was forced to end
-
-Called once before each step begins.
-Return a promise here if you have async callbacks you want resolved before
-continuing.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>step</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Step</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The current Step object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stepIndex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of current Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object corresponding to this Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>step</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Step</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The current Step object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stepIndex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of current Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object corresponding to this Step
-
-Called once before each overlay is shown.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>overlay</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Overlay</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The current Overlay object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stepIndex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of current Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object corresponding to this Step
-
-Called once after each overlay is shown.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>overlay</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Overlay</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The current Overlay object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stepIndex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of current Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object corresponding to this Step
-
-Called once before each tooltip is rendered.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tooltip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tooltip</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The current Tooltip object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stepIndex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of current Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object corresponding to this Step
-
-Called once after each tooltip is rendered.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tooltip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tooltip</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The current Tooltip object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stepIndex</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of current Step</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tutorial</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Tutorial</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The Tutorial object corresponding to this Step</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -811,12 +276,19 @@ Called once after each tooltip is rendered.</td>
             <td class="description last">The object that responds to the
  following lifecycle callbacks.
 
-willBeginTutorial -> (willBeginStep -> willRenderOverlay -> didShowOverlay
--> willRenderTooltip -> didRenderTooltip -> didFinishStep) (repeat # steps)
--> didFinishTutorial
-
-
-Called once before a tutorial begins.</td>
+<ol>
+  <li>willBeginTutorial</li>
+  <li>The following are repeated for each step.</li>
+  <ol>
+    <li>willBeginStep</li>
+    <li>willRenderOverlay</li>
+    <li>didShowOverlay</li>
+    <li>willRenderTooltip</li>
+    <li>didRenderTooltip</li>
+    <li>didFinishStep</li>
+  </ol>
+  <li>didFinishTutorial</li>
+</ol></td>
         </tr>
 
     
@@ -855,7 +327,174 @@ Called once before a tutorial begins.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line22">line 22</a>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="didFinishStep"><span class="type-signature"></span>didFinishStep<span class="signature">(step, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once after each step is finished.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>step</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Step.html">Step</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current Step object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stepIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Index of current Step</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object corresponding to this Step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -883,9 +522,561 @@ Called once before a tutorial begins.</td>
         
 <div class="param-desc">
     [promise] Return a promise if you have async callbacks
-that must be resolved before continuing.
+  that must be resolved before continuing.
+</div>
 
-Called once after each step is finished.
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="didFinishTutorial"><span class="type-signature"></span>didFinishTutorial<span class="signature">(tutorial, forced)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once after a tutorial is finished.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>forced</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Indicates whether tutorial was forced to end</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line51">line 51</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="didRenderTooltip"><span class="type-signature"></span>didRenderTooltip<span class="signature">(tooltip, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once after each tooltip is rendered.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tooltip</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tooltip.html">Tooltip</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current Tooltip object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stepIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Index of current Step</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object corresponding to this Step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line110">line 110</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    [promise] Return a promise if you have async callbacks
+  that must be resolved before continuing.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="didShowOverlay"><span class="type-signature"></span>didShowOverlay<span class="signature">(overlay, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once after each overlay is shown.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>overlay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Overlay.html">Overlay</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current Overlay object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stepIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Index of current Step</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object corresponding to this Step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    [promise] Return a promise if you have async callbacks
+  that must be resolved before continuing.
 </div>
 
 
@@ -914,8 +1105,9 @@ Called once after each step is finished.
 
 
 <div class="description">
-    The step configuration is where you specify which elements of the page will
-be cloned and placed over the overlay.
+    The step configuration is where you specify which elements of the page
+will be cloned and placed over the overlay. These elements are the
+what appear as highlighted to the user.
 </div>
 
 
@@ -988,6 +1180,12 @@ be cloned and placed over the overlay.
             
                 
 <span class="param-type">Object.&lt;string, string></span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+|
+
+<span class="param-type">string</span>
 
 
             
@@ -1005,11 +1203,14 @@ be cloned and placed over the overlay.
 
             
 
-            <td class="description last">Contains arbitrarily-named
- keys with CSS selector values. These keys can be referenced from
- TooltipConfiguration.anchorElement.
- Note: Specifying a selector that lives within another specified selector will
- result in unpredictable behavior.</td>
+            <td class="description last">Object with arbitrarily-named keys and CSS selector values.
+ These keys can then be referenced from <code>TooltipConfiguration.anchorElement.</code>
+ Or, an array of selector strings if named keys are not required.
+ Or, a string if only one selector is required.<br/>
+ Notes: Specifying a selector that targets another specified selector
+ will result in unpredictable behavior.<br/>
+ Specifying multiple selectors will effectively cause
+ <code>Tutorial.useTransparentOverlayStrategy == false.</code></td>
         </tr>
 
     
@@ -1192,7 +1393,7 @@ be cloned and placed over the overlay.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line40">line 40</a>
+        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -1368,7 +1569,7 @@ be cloned and placed over the overlay.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line48">line 48</a>
+        <a href="tooltip.js.html">tooltip.js</a>, <a href="tooltip.js.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -1518,9 +1719,41 @@ provided, which can be configured
             
 
             <td class="description last">Optional if the corresponding Step
- contains only one selector. anchorElement can be either
+ contains only one selector. <code>anchorElement</code> can be either
  (1) a key from StepConfiguration.selectors above, or
  (2) a CSS selector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>className</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">One or more space-separated classes to be
+ added to the class attribute of each tooltip.</td>
         </tr>
 
     
@@ -1551,8 +1784,8 @@ provided, which can be configured
 
             
 
-            <td class="description last">Value in pixels to offset the x-coordinate of
- the tooltip.</td>
+            <td class="description last">Value in pixels to offset the
+ x-coordinate of the tooltip.</td>
         </tr>
 
     
@@ -1583,8 +1816,8 @@ provided, which can be configured
 
             
 
-            <td class="description last">Value in pixels to offset the y-coordinate of
- the tooltip.</td>
+            <td class="description last">Value in pixels to offset the
+ y-coordinate of the tooltip.</td>
         </tr>
 
     
@@ -1935,27 +2168,32 @@ left or right it will offset the y coord. If undefined or 0, arrow is centered.<
 
 
 <div class="description">
-    The tutorial configuration is where the steps of a tutorial are specified,
+    <p>The tutorial configuration is where the steps of a tutorial are specified,
 and also allows customization of the overlay style.
-Notes on implementation:
-The elements defined in each step of a tutorial via
-StepConfiguration.selectors are highlighted using transparent overlays.
-These elements areare overlaid using one of two strategies:
-1. Semi-transparent overlay with a transparent section cut out over the
-   element
-2. Selected elements are cloned and placed above a transparent overlay
+If optional configuration parameters are not required, the steps property
+array can be passed in directly as the configuration.</p>
 
-#1 is more performant, but issues arise when an element is not rectangularly-
+<p>Notes on implementation:</p>
+<p>The elements defined in each step of a tutorial via
+StepConfiguration.selectors are highlighted using transparent overlays.</p>
+<p>These elements areare overlaid using one of two strategies:</p>
+<ol>
+  <li>Semi-transparent overlay with a transparent section cut out over the
+   element</li>
+  <li>Selected elements are cloned and placed above a transparent overlay</li>
+</ol>
+
+<p>#1 is more performant, but issues arise when an element is not rectangularly-
 shaped, or when it has `:before` or `:after`
 pseudo-selectors that insert new DOM elements that protrude out of the
-main element.
-#2 is slower because of deep CSS style cloning, but it will correctly render
-the entire element in question, regardless of shape or size.
-However, there are edge cases where Firefox
-will not clone CSS `margin` attribute of children elements.
+main element.</p>
+<p>#2 is slower because of deep CSS style cloning, but it will correctly render
+the entire element in question, regardless of shape or size.</p>
+</p>However, there are edge cases where Firefox
+will not clone CSS <code>margin</code> attribute of children elements.
 In those cases, the delegate callbacks should be utilized to fix.
 Note however, that #2 is always chosen if multiple selectors are specified in
-StepConfiguration.selectors.
+StepConfiguration.selectors.</p>
 </div>
 
 
@@ -1990,6 +2228,78 @@ StepConfiguration.selectors.
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>steps</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#StepConfiguration">StepConfiguration</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">An array of step configurations (see below).
+ Note that this property can be passed as the configuration if the
+ optional params below are not used.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>zIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    20
+                
+                </td>
+            
+
+            <td class="description last">Sets the base z-index value used by this tutorial</td>
+        </tr>
+
     
 
         <tr>
@@ -2069,39 +2379,6 @@ overlay that normally appears over the page and behind the tooltips.</td>
 
         <tr>
             
-                <td class="name"><code>steps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;<a href="global.html#StepConfiguration">StepConfiguration</a>></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">An array of step configurations (see below).</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>onComplete</code></td>
             
 
@@ -2168,17 +2445,74 @@ once the tutorial has gone through all steps.</td>
                 </td>
             
 
-            <td class="description last">Setting to true will use an
- implementation that does not rely on cloning highlighted elements.
- Note: This value is ignored if a step contains multiple selectors.
- useTransparentOverlayStrategy is named as such because</td>
+            <td class="description last"><p>
+ Setting to true will use an implementation that does not rely on
+ cloning highlighted elements.<br/>
+ Note: This value is ignored if multiple selectors are
+ specified in <code>StepConfiguration.selectors</code>.</p>
+ <p><code>useTransparentOverlayStrategy</code> focuses on an element by
+ resizing a transparent overlay to match its dimensions and changes the
+ borders to be colored to obscure the main UI.<p>
+
+    <h4>Strategy Details</h4>
+    <p>
+      By default, a tutorial is displayed with a semi-transparent overlay
+      that hides background content and highlights the selected element(s) for the
+      current step of the tutorial.
+    </p>
+    This is achieved by one of two exclusive strategies:
+    <ol>
+      <li>
+        An overlay div with a semi-transparent border but with a transparent center
+        equal in size to the selected element.<br/>
+        Example: A 50x50 div is the selected element, so the overlay's transparent center
+        is 50x50, and its semi-transparent border fills the rest of the viewport.
+      </li>
+      <li>
+        A completely semi-transparent overlay fills the entire viewport, and the
+        selected element(s) is cloned and placed on top of this overlay, using
+        <code>z-index</code>.
+      </li>
+    </ol>
+
+    <p>Both strategies have pros & cons.</p>
+    1. Clone strategy (default)
+    <p>
+      <strong>Pros:</strong> It will correctly render the entire element in question,
+      regardless of shape or size.
+    </p>
+    <p>
+      <strong>Cons:</strong> Slow because of the deep-cloning involved with CSS styling. The more
+      children elements that exist, the slower each step will take to render.
+      (This can be improved over time by pre-caching the next step in advance.)
+      There are also edge cases where Firefox will not clone the
+      CSS `margin` attribute of children elements.
+      <br/>
+      In those cases, the callbacks <code>Step.beforeCallback</code> and
+      <code>Step.afterCallback</code> can be used to properly restore the margin.
+    </p>
+
+    2. Background overlay with transparent center and semi-transparent border
+    <p>
+      <strong>Pros:</strong>: More performant than the clone strategy because styles are not being cloned.
+    </p>
+    <p>
+      <strong>Cons:</strong> When an element is not rectangular in shape, or
+      when it has <code>:before</code> or <code>:after</code> pseudo-selectors
+      that insert new DOM elements that protrude out of the main element,
+      the transparent center will either reveal or occlude sections of
+      the element.
+    </p>
+
+    NOTE: The clone strategy is always chosen if multiple selectors are
+    specified in <code>StepConfiguration.selectors</code>.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>animated</code></td>
+                <td class="name"><code>animateTooltips</code></td>
             
 
             <td class="type">
@@ -2203,13 +2537,92 @@ once the tutorial has gone through all steps.</td>
             
                 <td class="default">
                 
-                    false
+                    true
                 
                 </td>
             
 
-            <td class="description last">(TODO) Enables spotlight-like
- transitions between steps.</td>
+            <td class="description last">Enables tooltip bouncing at the
+ beginning and end of each step.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>animateScrolling</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>If the next tooltip is not completely within the client bounds, this
+ property animates the scrolling of the viewport until the next tooltip
+ is centered.</p>
+ <p>If false, the viewport is not scrolled.</p</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>scrollAnimationDuration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    500
+                
+                </td>
+            
+
+            <td class="description last">Specifies the duration
+ of the scroll animation above, in milliseconds.
+ Ignored if <code>animateScrolling</code> is false.</td>
         </tr>
 
     
@@ -2248,7 +2661,7 @@ once the tutorial has gone through all steps.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line6">line 6</a>
+        <a href="tutorial.js.html">tutorial.js</a>, <a href="tutorial.js.html#line9">line 9</a>
     </li></ul></dd>
     
 
@@ -2261,6 +2674,739 @@ once the tutorial has gone through all steps.</td>
 
 
 
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="willBeginStep"><span class="type-signature"></span>willBeginStep<span class="signature">(step, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once before each step begins.
+Return a promise here if you have async callbacks you want resolved before
+continuing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>step</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Step.html">Step</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current Step object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stepIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Index of current Step</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object corresponding to this Step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    [promise] Return a promise if you have async callbacks
+  that must be resolved before continuing.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="willBeginTutorial"><span class="type-signature"></span>willBeginTutorial<span class="signature">(tutorial)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once before a tutorial begins.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line45">line 45</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="willRenderTooltip"><span class="type-signature"></span>willRenderTooltip<span class="signature">(tooltip, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once before each tooltip is rendered.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tooltip</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tooltip.html">Tooltip</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current Tooltip object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stepIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Index of current Step</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object corresponding to this Step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line100">line 100</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    [promise] Return a promise if you have async callbacks
+  that must be resolved before continuing.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="willShowOverlay"><span class="type-signature"></span>willShowOverlay<span class="signature">(overlay, stepIndex, tutorial)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Called once before each overlay is shown.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>overlay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Overlay.html">Overlay</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The current Overlay object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stepIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Index of current Step</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tutorial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Tutorial.html">Tutorial</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Tutorial object corresponding to this Step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="chariot.js.html">chariot.js</a>, <a href="chariot.js.html#line80">line 80</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    [promise] Return a promise if you have async callbacks
+  that must be resolved before continuing.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -2278,13 +3424,13 @@ once the tutorial has gone through all steps.</td>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Chariot.html">Chariot</a></li><li><a href="Overlay.html">Overlay</a></li><li><a href="Step.html">Step</a></li><li><a href="Tooltip.html">Tooltip</a></li><li><a href="Tutorial.html">Tutorial</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Dec 08 2015 16:09:53 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 16:43:34 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>

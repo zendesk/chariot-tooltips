@@ -21,15 +21,15 @@ do, they fail to consider when parent containers already have the CSS
 
 # Features
 
-- Tutorial kicked off by query parameter in the URL or programmatically
-- Overlay hides background and clones your key elements over it
-- `z-index` is taken care of
 - Programmatic API and lifecycle callbacks
+- Overlay obscures the background, and your key elements are cloned over it
+- `z-index` is taken care of
+- Tooltips are animated into view
 - Browser support includes every sane browser and IE9+
 
 # Usage
 
-chariot.js works in global, CommonJS and AMD contexts.
+`chariot.js` works in global, CommonJS and AMD contexts.
 
 Visit the [demo page](http://chariot.zendesk.com) for usage examples.
 
@@ -42,15 +42,19 @@ documentation at
 Or go to the example site: http://chariot.zendesk.com/docs
 
 # Development
+Checkout the `development` branch.
+	git checkout development
+
 Install node packages.
 
+	yarn install # if you use yarn, otherwise
 	npm install
 
 Install the gulp cli.
 
 	npm install -g gulp
 
-To run a simple server:
+To run a webserver:
 
 	gulp connect
 
@@ -71,7 +75,7 @@ To update the generated docs:
 
 	gulp js-doc
 
-# Test
+# Testing
 
 ## Command Line
 To run test in command line, run:
@@ -85,14 +89,14 @@ If you want to test the same test suite in multiple browsers, run:
 
 The browsers to test can be configured in `testem.yml`, currently it is configured to test in all major browsers (Firefox, Safari, Chrome) and PhantomJS.
 
-## Build
+# Build
 Run the following to build `chariot.js` into thd `/dist` directory.
 
 	gulp
 
 *Do not check in the `dist` directory. Release on github will contain the tarballs with compiled js/css.*
 
-## Release
+# Release
 
 When you have merge in all your changes from your branch. Run the following **IN MASTER**:
 
@@ -102,48 +106,14 @@ This gulp task will
 
 1. Bump version in package.json, bower.json
 1. Auto-generate documentation with js-doc
-1. Package release into the ```release/``` folder
+1. Package release into the `release/` folder
 1. Commit the version bump changes in package.json, bower.json
 1. Push the bump changes
 1. Tag with the new version
 
 After releasing, update the relevant files in your project which uses ChariotJS.
 Update version in bower/npm, or copy release/chariot.[min.]js,
-release/chariot.[min.]css into your project's ```vendor/``` folder.
-
-# Implementation details
-
-By default, a tutorial is displayed with a semi-transparent overlay
-that hides background content and highlights the selected element(s) for the
-current step of the tutorial.
-This is achieved by one of two exclusive strategies:
-1. An overlay div with a semi-transparent border but with a transparent center
-equal in size to the selected element.
-Example: A 50x50 div is the selected element, so the overlay's transparent center
-is 50x50, and its semi-transparent border fills the rest of the viewport.
-1. A complete semi-transparent overlay fills the entire viewport, and the
-selected element is cloned and placed on top of this overlay, using z-index.
-
-Both strategies have pros & cons.
-1. Background overlay with transparent center and semi-transparent border
-- Pros: More performant than the clone strategy because styles are not being cloned.
-- Cons: When an element is not rectangular in shape, or
-when it has `:before` or `:after` pseudo-selectors that insert new DOM elements
-that protrude out of the main element, the transparent center will either
-reveal or occlude sections of the element.
-2. Clone strategy
-- Pros: It will correctly render the entire element in question,
-regardless of shape or size.
-- Cons: Slow because of the deep-cloning involved with CSS styling. The more
-children elements that exist, the slower each step will take to render.
-(This can be improved over time by pre-caching the next step in advance.)
-There are also edge cases where Firefox will not clone the
-CSS `margin` attribute of children elements.
-In those cases, the callbacks Step.beforeCallback and Step.afterCallback
-can be used to properly restore the margin.
-
-NOTE: The clone strategy is always chosen if multiple selectors are
-specified in StepConfiguration.selectors.
+release/chariot.[min.]css into your project's `vendor/` folder.
 
 # Copyright and License
 
