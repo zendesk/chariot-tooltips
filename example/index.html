@@ -121,7 +121,7 @@ var chariot = new Chariot({
 }, delegate);
 
 function sleepFor(sleepDuration, message) {
-  return new Promise(resolve => {
+  return new Promise(function(resolve) {
     setTimeout(resolve, sleepDuration);
     console.log(message);
   });
