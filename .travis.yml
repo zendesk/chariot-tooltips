@@ -1,8 +1,9 @@
 language: node_js
 node_js:
-  - '6.6.0'
+  - '6'
 cache: yarn
 script:
   - npm run jscs
+  - npm rebuild node-sass
   - node_modules/.bin/gulp compile-test
-  - npm run ci
+  - node_modules/.bin/testem ci
