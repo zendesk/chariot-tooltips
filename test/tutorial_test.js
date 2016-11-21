@@ -43,7 +43,6 @@ describe('Tutorial', function() {
         tutorial = new Tutorial({ steps: [stepFixture, stepFixture, stepFixture] });
         tutorial.currentStep = tutorial.getStep(0);
         tearDownSpy = sinon.spy(tutorial.currentStep, 'tearDown');
-        // endSpy = sinon.stub(tutorial, 'end');
       });
 
       it('tears down current step and advances to step when step arg is an integer', function() {

@@ -1,6 +1,7 @@
 language: node_js
 node_js:
   - '6.6.0'
+cache: yarn
 script:
   - npm run jscs
   - node_modules/.bin/gulp compile-test
