@@ -1,23 +1,25 @@
 require('es5-shim');
 require('es6-shim');
 
-let configFixture = {
-  tutorialName: {
-    steps: [
-      {
-        selectors: {
-          assignee: "test"
-        },
-        tooltip: {
-          position: 'left'
-        }
-      }
-    ]
+const stepFixture = {
+  selectors: {
+    assignee: "test"
+  },
+  tooltip: {
+    position: 'left'
   }
+};
+
+const tutorialFixture = {
+  steps: [stepFixture]
+};
+
+const configFixture = {
+  tutorialName: tutorialFixture
 };
 
 export default {
   fixtures: {
-    configFixture
+    configFixture, tutorialFixture, stepFixture
   }
 };

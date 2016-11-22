@@ -25,7 +25,7 @@ describe('Tooltip', function() {
     },
     step = { selectors: {} },
     tutorial = new Object({
-      currentStep: () => 1,
+      stepNum: () => 1,
       steps: [step]
     }),
     tooltip = null;

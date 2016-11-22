@@ -5,7 +5,7 @@ import Tutorial from '../lib/tutorial';
 import Style from '../lib/style';
 import chai from 'chai';
 import sinon from 'sinon';
-let expect = chai.expect;
+const expect = chai.expect;
 
 
 describe('Step', function() {
