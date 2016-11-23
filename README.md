@@ -1,11 +1,4 @@
-<pre>
-   ___    _                         _              _
-  / __|  | |_     __ _      _ _    (_)     ___    | |_
- | (__   | ' \   / _` |    | '_|   | |    / _ \   |  _|
-  \___|  |_||_|  \__,_|   _|_|_   _|_|_   \___/   _\__|
-_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|_|"""""|
-"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'"`-0-0-'
-</pre>
+![example image](example/chariot_screenshot.png)
 
 # Chariot
 > Walkthroughs so easy, you might as well be flying in a chariot.
@@ -17,117 +10,51 @@ background overlay to bring focus to the elements you care about.
 
 Visit the [live demo](http://chariot.zendesk.com).
 
-Or run the project locally, and navigate to
-[http://localhost:8080/example/index.html](http://localhost:8080/example/index.html) (refer to [Development](#development)).
-
 # Motivation
-We believe that tooltips are better at drawing focus to highlighted elements
-on a website when the background is dimmed out.
+Tooltips are better at drawing focus to highlighted elements on a website
+when the background is dimmed out.
 
 Existing tooltip overlay solutions don't use overlay backgrounds, or if they
 do, they fail to consider when parent containers already have the CSS
 `z-index` property set.
-
 (A child element's `z-index` cannot override it's parent's `z-index`).
 
 # Features
 
-- Tutorial kicked off by query parameter in the URL or programmatically
-- Overlay hides background and clones your key elements over it
+- Programmatic API and lifecycle callbacks
+- Overlay obscures the background, and your key elements are cloned over it
 - `z-index` is taken care of
-- Programmatic API and configurable callbacks
-- Browser support includes every sane browser and IE9+.
+- Tooltips are animated into view
+- Browser support includes every sane browser and IE9+
 
 # Usage
 
-chariot.js works in global, CommonJS and AMD contexts.
+`chariot.js` works in global, CommonJS and AMD contexts.
 
-1. First, initialize chariot with tutorial configurations.
+Visit the [demo page](http://chariot.zendesk.com) for usage examples.
 
-	```js
-	var config = {
-	  example: {
-	    steps: [
-	    	{
-	        	selectors: { header: "header" },
-		        tooltip: {
-		          position: 'bottom',
-		          title: 'Chariot in action',
-		          text: 'Chariot highlights element(s), like the header here, ' +
-		            "over a semi-transparent overlay, "
-		            "and creates a tooltip, like the one you're reading now.<br/>",
-		          iconUrl: '/images/chariot.svg'
-		        },
-      	    	}, {
-		        selectors: { code: "div#example1" },
-		        tooltip: {
-		          position: 'right',
-		          title: 'Easy to configure',
-		          text: 'This is all the code required to create this two step' +
-		            'tutorial.<br/>' +
-		            'Notice how the URL changed? This tutorial is named example ' +
-		            'in the configuration.<br/>This is how chariot is launched.',
-		        }
-    		}
-	    }]
-	  }
-	};
-	var chariot = new Chariot(config);
-	```
+# API
 
-2. Launch a tutorial.
-
-	1. Once configured, navigate to the current URL with an appended query parameter `tutorial`, setting
-the value to the name of a tutorial defined in your configuration.
-
-	`http://www.example.com?tutorial=example`
-
-	2. or, start a tutorial programmatically:
-	`chariot.startTutorial('example');`
-
-The above example (taken from the demo) should display a chariot tooltip like this:
-![example image](example/chariot_screenshot.png)
-
-
-## Configuration
-
-Here's an example on how to configure Chariot:
-
-[Example configuration](example/config.example.js)
-
-## API
-
-If you're already running the project locally, you can view the JSDoc-formatted
+If you're running the project locally, you can view the JSDoc-formatted
 documentation at
 [http://localhost:8080/docs/global.html](http://localhost:8080/docs/global.html).
 
-
-#### new Chariot(config)
-
-Creates the chariot instance with a required configuration of tutorials.
-Read the [example configuration](example/config.example.js) for more information.
-
-#### chariot.startTutorial(name, onComplete)
-
-Starts the tutorial with the given name, as specified in configuration.
-An optional onComplete callback can be provided,
-called once the tutorial has gone through all steps.
-Note that Chariot can be started via the `tutorial` URL query parameter as well.
-
-#### chariot.endTutorial()
-
-Ends the current tutorial.
+Or go to the example site: http://chariot.zendesk.com/docs
 
 # Development
+Checkout the `development` branch.
+	git checkout development
+
 Install node packages.
 
+	yarn install # if you use yarn, otherwise
 	npm install
 
 Install the gulp cli.
 
 	npm install -g gulp
 
-To run a simple server:
+To run a webserver:
 
 	gulp connect
 
@@ -148,7 +75,7 @@ To update the generated docs:
 
 	gulp js-doc
 
-# Test
+# Testing
 
 ## Command Line
 To run test in command line, run:
@@ -177,55 +104,16 @@ When you have merge in all your changes from your branch. Run the following **IN
 
 This gulp task will
 
-1. Bump version in package.json, npm-shrinkwrap.json, bower.json
+1. Bump version in package.json, bower.json
 1. Auto-generate documentation with js-doc
-1. Package release into the ```release/``` folder
-1. Commit the version bump changes in package.json npm-shrinkwrap bower.json
+1. Package release into the `release/` folder
+1. Commit the version bump changes in package.json, bower.json
 1. Push the bump changes
 1. Tag with the new version
 
 After releasing, update the relevant files in your project which uses ChariotJS.
 Update version in bower/npm, or copy release/chariot.[min.]js,
-release/chariot.[min.]css into your project's ```vendor/``` folder.
-
-# Implementation
-
-Chariot uses the hashchange event to determine if a tutorial query parameter
-is present, then starts the corresponding tutorial.
-Chariot can also be started progammatically with the
-`.startTutorial(name)` method.
-
-By default, a tutorial is displayed with a semi-transparent overlay
-that hides background content and highlights the selected element(s) for the
-current step of the tutorial.
-This is achieved via two exclusive strategies:
-1. An overlay div with a semi-transparent border but with a transparent center
-equal in size to the selected element.
-Example: A 50x50 div is the selected element, so the overlay's transparent center
-is 50x50, and its semi-transparent border fills the rest of the viewport.
-1. A complete semi-transparent overlay fills the entire viewport, and the
-selected element is cloned and placed on top of this overlay, using z-index.
-
-Both strategies have pros & cons.
-1. Overlay has a transparent center
-- Pros: More performant than strategy 2 because styles are not being cloned.
-- Cons: When an element is not rectangular in shape, or
-when it has `:before` or `:after` pseudo-selectors that insert new DOM elements
-that protrude out of the main element, the transparent center will either
-reveal or occlude sections of the element.
-2. Clone strategy
-- Pros: It will correctly render the entire element in question,
-regardless of shape or size.
-- Cons: Slow because of the deep-cloning involved with CSS styling. The more
-children elements that exist, the slower each step will take to render.
-(This can be improved over time by pre-caching the next step in advance.)
-There are also edge cases where Firefox will not clone the
-CSS `margin` attribute of children elements.
-In those cases, the callbacks Step.beforeCallback and Step.afterCallback
-can be used to properly restore the margin.
-
-NOTE: The cloen strategy is always chosen if multiple selectors are
-specified in StepConfiguration.selectors.
+release/chariot.[min.]css into your project's `vendor/` folder.
 
 # Copyright and License
 

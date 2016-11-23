@@ -26,15 +26,17 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/*global
+            <pre class="prettyprint source linenums"><code>/* global
 history, location
 */
 
-/* Please refer to /example/config.example.js to see how config is structured */
+/* Please refer to example page to see how a typical configuration is structured */
 
 import Tutorial from './tutorial';
 import QueryParse from 'query-parse';
+
 require('./ie-shim');
+
 let initialState = true;
 
 class Chariot {
@@ -53,20 +55,35 @@ class Chariot {
    * @property {Object} delegate - The object that responds to the
    *  following lifecycle callbacks.
    *
-   * willBeginTutorial -> (willBeginStep -> willRenderOverlay -> didShowOverlay
-   * -> willRenderTooltip -> didRenderTooltip -> didFinishStep) (repeat # steps)
-   * -> didFinishTutorial
-   *
-   *
+   * &lt;ol>
+   *   &lt;li>willBeginTutorial&lt;/li>
+   *   &lt;li>The following are repeated for each step.&lt;/li>
+   *   &lt;ol>
+   *     &lt;li>willBeginStep&lt;/li>
+   *     &lt;li>willRenderOverlay&lt;/li>
+   *     &lt;li>didShowOverlay&lt;/li>
+   *     &lt;li>willRenderTooltip&lt;/li>
+   *     &lt;li>didRenderTooltip&lt;/li>
+   *     &lt;li>didFinishStep&lt;/li>
+   *   &lt;/ol>
+   *   &lt;li>didFinishTutorial&lt;/li>
+   * &lt;/ol>
+   */
+
+  /**
    * Called once before a tutorial begins.
    * @callback willBeginTutorial
    * @param {Tutorial} tutorial - The Tutorial object
-   *
+   */
+
+  /**
    * Called once after a tutorial is finished.
    * @callback didFinishTutorial tutorial
    * @param {Tutorial} tutorial - The Tutorial object
    * @param {boolean} forced - Indicates whether tutorial was forced to end
-   *
+   */
+
+  /**
    * Called once before each step begins.
    * Return a promise here if you have async callbacks you want resolved before
    * continuing.
@@ -75,38 +92,57 @@ class Chariot {
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
    * @returns {Promise} [promise] Return a promise if you have async callbacks
-   * that must be resolved before continuing.
-   *
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once after each step is finished.
    * @callback didFinishStep
    * @param {Step} step - The current Step object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once before each overlay is shown.
    * @callback willShowOverlay
    * @param {Overlay} overlay - The current Overlay object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once after each overlay is shown.
    * @callback didShowOverlay
    * @param {Overlay} overlay - The current Overlay object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once before each tooltip is rendered.
    * @callback willRenderTooltip
    * @param {Tooltip} tooltip - The current Tooltip object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once after each tooltip is rendered.
    * @callback didRenderTooltip
    * @param {Tooltip} tooltip - The current Tooltip object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
    */
 
   /**
@@ -121,7 +157,6 @@ class Chariot {
     this.delegate = delegate;
     this.tutorials = {};
     this._readConfig(config);
-    this._listenForPushState();
   }
 
   /**
@@ -144,7 +179,7 @@ class Chariot {
     if (this.currentTutorial()) {
       return;
     }
-    let tutorial = this.tutorials[name];
+    const tutorial = this.tutorials[name];
     tutorial.start();
     return tutorial;
   }
@@ -154,7 +189,7 @@ class Chariot {
    * @returns {undefined}
    */
   endTutorial() {
-    let tutorial = this.currentTutorial();
+    const tutorial = this.currentTutorial();
     tutorial.end(true);
   }
 
@@ -180,6 +215,19 @@ class Chariot {
     return new Tutorial(config, '', delegate);
   }
 
+  /**
+   * Static method for creating and starting a Tutorial object without needing
+   * to instantiate chariot with a large configuration and named tutorials.
+   * @param {TutorialConfiguration} config - The tutorial configuration
+   * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
+   *  lifecycle callbacks
+   */
+  static startTutorial(config, delegate) {
+    const tutorial = this.createTutorial(config, delegate);
+    tutorial.start();
+    return tutorial;
+  }
+
   toString() {
     return `[Chariot - config: ${this.config}, tutorials: {this.tutorials}]`;
   }
@@ -193,68 +241,6 @@ class Chariot {
     for (let tutorialName in config) {
       this.tutorials[tutorialName] = new Tutorial(
         config[tutorialName], tutorialName, this.delegate);
-    }
-  }
-
-  _listenForPushState() {
-    // override pushState to listen for url
-    // sample url to listen for: agent/tickets/1?tutorial=ticketing
-    let processGetParams = () => {
-      let parameter = QueryParse.toObject(window.location.search);
-      let match = location.hash.match(/\?.*tutorial=([^&amp;]*)/)
-      let tutorialName = parameter['?tutorial'] || (match ? match[1] : null);
-      if (tutorialName) {
-        this.startTutorial(tutorialName);
-      }
-    };
-
-    let pushState = history.pushState;
-    history.pushState = function(state) {
-      initialState = false;
-      let res = null;
-      if (typeof pushState === 'function') {
-        res = pushState.apply(history, arguments);
-      }
-      processGetParams();
-      return res;
-    };
-
-    let replaceState = history.replaceState;
-    history.replaceState = function(state) {
-      initialState = false;
-      let res = null;
-      if (typeof replaceState === 'function') {
-        res = replaceState.apply(history, arguments);
-      }
-      processGetParams();
-      return res;
-    };
-
-    window.addEventListener('hashchange', argument => {
-      let tutorial = this.currentTutorial();
-      if (tutorial) {
-        tutorial.tearDown();
-      }
-      processGetParams();
-    });
-
-    let popState = window.onpopstate;
-    window.onpopstate = () => {
-      if (initialState) return;
-      let res = null;
-      if (typeof popState === 'function') {
-        res = popState.apply(arguments);
-      }
-      let tutorial = this.currentTutorial();
-      if (tutorial) {
-        tutorial.tearDown();
-      }
-      processGetParams();
-      return res;
-    };
-
-    if (!navigator.userAgent.match(/msie 9/i)) {
-      processGetParams();
     }
   }
 }
@@ -271,13 +257,13 @@ default Chariot;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Chariot.html">Chariot</a></li><li><a href="Overlay.html">Overlay</a></li><li><a href="Step.html">Step</a></li><li><a href="Tooltip.html">Tooltip</a></li><li><a href="Tutorial.html">Tutorial</a></li></ul><h3><a href="global.html">Global</a></h3>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Tue Dec 08 2015 16:09:53 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Nov 22 2016 16:43:34 GMT-0800 (PST)
 </footer>
 
 <script> prettyPrint(); </script>
