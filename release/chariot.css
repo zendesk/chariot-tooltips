@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.16 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v2.0.0 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -18,14 +18,7 @@
  * limitations under the License.
  */
 .chariot-tooltip {
-  box-shadow: 0 0 5px 0 rgba(31, 28, 28, 0.3);
-  background-color: #fff;
-  border: 1px solid #ddd;
-  padding: 30px;
-  width: 220px;
-  position: absolute;
-  text-align: center;
-  color: #999; }
+  position: absolute; }
   .chariot-tooltip .left {
     float: left; }
   .chariot-tooltip .right {
@@ -33,71 +26,68 @@
   .chariot-tooltip .center {
     margin-left: auto;
     margin-right: auto; }
-  .chariot-tooltip .chariot-tooltip-icon {
-    width: 52px;
-    height: 52px;
-    margin: auto; }
-    .chariot-tooltip .chariot-tooltip-icon img {
-      width: 52px;
-      height: 52px; }
-  .chariot-tooltip .chariot-tooltip-header {
-    font-size: 18px;
-    line-height: 18px;
-    font-weight: 500;
-    color: #555;
-    padding: 5px 0; }
-  .chariot-tooltip .chariot-tooltip-content {
-    padding: 5px 0; }
-    .chariot-tooltip .chariot-tooltip-content p {
-      font-size: 14px;
-      font-weight: 300;
-      color: #999;
-      padding-bottom: 15px; }
-  .chariot-tooltip .chariot-btn-row {
-    padding-top: 5px; }
-    .chariot-tooltip .chariot-btn-row .btn {
-      font-size: 13px;
-      font-weight: 400;
-      color: #fff;
-      background-color: #78A300;
-      border-radius: 3px;
-      height: 36px;
-      padding: 0 20px;
-      border: none; }
-      .chariot-tooltip .chariot-btn-row .btn:hover {
-        background-color: #78A300; }
-    .chariot-tooltip .chariot-btn-row .chariot-tooltip-subtext {
-      float: left;
-      color: #ddd;
-      font-size: 13px;
-      padding-top: 10px; }
   .chariot-tooltip-arrow {
-    background: #fff;
-    width: 15px;
-    height: 15px;
     position: absolute;
-    -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-    -webkit-transform-origin: 50% 50% 0;
     -ms-transform-origin: 50% 50% 0;
     transform-origin: 50% 50% 0; }
-  .chariot-tooltip-arrow-left {
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    box-shadow: -2px 2px 2px 0 rgba(31, 28, 28, 0.1); }
-  .chariot-tooltip-arrow-right {
-    border-right: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-    box-shadow: 2px -2px 2px 0 rgba(31, 28, 28, 0.1); }
-  .chariot-tooltip-arrow-top {
-    border-left: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-    box-shadow: -2px -2px 4px 0 rgba(31, 28, 28, 0.1); }
-  .chariot-tooltip-arrow-bottom {
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 2px 2px 4px 0 rgba(31, 28, 28, 0.1); }
+
+.animate-appear-top {
+  animation: appear-top 0.4s ease-in;
+  animation-fill-mode: forwards; }
+
+.animate-appear-right {
+  animation: appear-right 0.4s ease-in;
+  animation-fill-mode: forwards; }
+
+.animate-appear-bottom {
+  animation: appear-bottom 0.4s ease-in;
+  animation-fill-mode: forwards; }
+
+.animate-appear-left {
+  animation: appear-left 0.4s ease-in;
+  animation-fill-mode: forwards; }
+
+@keyframes appear-top {
+  0% {
+    margin-top: -10px;
+    opacity: 0; }
+  50% {
+    margin-top: 5px; }
+  100% {
+    margin-top: 0px;
+    opacity: 1; } }
+
+@keyframes appear-right {
+  0% {
+    margin-left: 10px;
+    opacity: 0; }
+  50% {
+    margin-left: -5px; }
+  100% {
+    margin-left: 0px;
+    opacity: 1; } }
+
+@keyframes appear-bottom {
+  0% {
+    margin-top: 10px;
+    opacity: 0; }
+  50% {
+    margin-top: -5px; }
+  100% {
+    margin-top: 0px;
+    opacity: 1; } }
+
+@keyframes appear-left {
+  0% {
+    margin-left: -10px;
+    opacity: 0; }
+  50% {
+    margin-left: 5px; }
+  100% {
+    margin-left: 0px;
+    opacity: 1; } }
 
 .chariot-overlay {
   position: absolute;

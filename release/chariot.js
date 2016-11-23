@@ -1,5 +1,5 @@
 /**
- * Chariot v1.0.16 - A JavaScript library for creating beautiful in product tutorials
+ * Chariot v2.0.0 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot
  *
@@ -18,11 +18,11 @@
  * limitations under the License.
  */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*global
+/* global
 history, location
 */
 
-/* Please refer to /example/config.example.js to see how config is structured */
+/* Please refer to example page to see how a typical configuration is structured */
 
 'use strict';
 
@@ -45,6 +45,7 @@ var _queryParse = require('query-parse');
 var _queryParse2 = _interopRequireDefault(_queryParse);
 
 require('./ie-shim');
+
 var initialState = true;
 
 var Chariot = (function () {
@@ -63,20 +64,35 @@ var Chariot = (function () {
    * @property {Object} delegate - The object that responds to the
    *  following lifecycle callbacks.
    *
-   * willBeginTutorial -> (willBeginStep -> willRenderOverlay -> didShowOverlay
-   * -> willRenderTooltip -> didRenderTooltip -> didFinishStep) (repeat # steps)
-   * -> didFinishTutorial
-   *
-   *
+   * <ol>
+   *   <li>willBeginTutorial</li>
+   *   <li>The following are repeated for each step.</li>
+   *   <ol>
+   *     <li>willBeginStep</li>
+   *     <li>willRenderOverlay</li>
+   *     <li>didShowOverlay</li>
+   *     <li>willRenderTooltip</li>
+   *     <li>didRenderTooltip</li>
+   *     <li>didFinishStep</li>
+   *   </ol>
+   *   <li>didFinishTutorial</li>
+   * </ol>
+   */
+
+  /**
    * Called once before a tutorial begins.
    * @callback willBeginTutorial
    * @param {Tutorial} tutorial - The Tutorial object
-   *
+   */
+
+  /**
    * Called once after a tutorial is finished.
    * @callback didFinishTutorial tutorial
    * @param {Tutorial} tutorial - The Tutorial object
    * @param {boolean} forced - Indicates whether tutorial was forced to end
-   *
+   */
+
+  /**
    * Called once before each step begins.
    * Return a promise here if you have async callbacks you want resolved before
    * continuing.
@@ -85,55 +101,57 @@ var Chariot = (function () {
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
    * @returns {Promise} [promise] Return a promise if you have async callbacks
-   * that must be resolved before continuing.
-   *
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once after each step is finished.
    * @callback didFinishStep
    * @param {Step} step - The current Step object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once before each overlay is shown.
    * @callback willShowOverlay
    * @param {Overlay} overlay - The current Overlay object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once after each overlay is shown.
    * @callback didShowOverlay
    * @param {Overlay} overlay - The current Overlay object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once before each tooltip is rendered.
    * @callback willRenderTooltip
    * @param {Tooltip} tooltip - The current Tooltip object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
+   */
+
+  /**
    * Called once after each tooltip is rendered.
    * @callback didRenderTooltip
    * @param {Tooltip} tooltip - The current Tooltip object
    * @param {int} stepIndex - Index of current Step
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this Step
-   *
-   * These delegate methods are called during browser navigation events.
-   * Routing libraries might use one or more of these methods to implement
-   * routing for single page applications. The default handler for these events
-   * force quits the current tutorial. If you choose to override any of these
-   * methods, you will be responsibile for calling tutorial.end()
-   *
-   * Called when handling browser popState events.
-   * @callback handlePopState
-   *
-   * Called when handling browser pushState events.
-   * @callback handlePushState
-   *
-   * Called when handling browser replaceState events.
-   * @callback handleReplaceState
-   *
-   * Called when handling browser hashChange events.
-   * @callback handleHashChange
+   * @returns {Promise} [promise] Return a promise if you have async callbacks
+   *   that must be resolved before continuing.
    */
 
   /**
@@ -151,7 +169,6 @@ var Chariot = (function () {
     this.delegate = delegate;
     this.tutorials = {};
     this._readConfig(config);
-    this._listenForPushState();
   }
 
   /**
@@ -233,76 +250,25 @@ var Chariot = (function () {
         this.tutorials[tutorialName] = new _tutorial2['default'](config[tutorialName], tutorialName, this.delegate);
       }
     }
-  }, {
-    key: '_listenForPushState',
-    value: function _listenForPushState() {
-      var _this = this,
-          _arguments = arguments;
-
-      // override pushState to listen for url
-      // sample url to listen for: agent/tickets/1?tutorial=ticketing
-      var processGetParams = function processGetParams() {
-        var parameter = _queryParse2['default'].toObject(window.location.search);
-        var match = location.hash.match(/\?.*tutorial=([^&]*)/);
-        var tutorialName = parameter['?tutorial'] || (match ? match[1] : null);
-        if (tutorialName) {
-          _this.startTutorial(tutorialName);
-        }
-      };
-
-      var pushState = history.pushState;
-      history.pushState = function (state) {
-        initialState = false;
-        var res = null;
-        if (typeof pushState === 'function') {
-          res = pushState.apply(history, arguments);
-        }
-        processGetParams();
-        return res;
-      };
-
-      var replaceState = history.replaceState;
-      history.replaceState = function (state) {
-        initialState = false;
-        var res = null;
-        if (typeof replaceState === 'function') {
-          res = replaceState.apply(history, arguments);
-        }
-        processGetParams();
-        return res;
-      };
-
-      window.addEventListener('hashchange', function (argument) {
-        var tutorial = _this.currentTutorial();
-        if (tutorial) {
-          tutorial.tearDown();
-        }
-        processGetParams();
-      });
-
-      var popState = window.onpopstate;
-      window.onpopstate = function () {
-        if (initialState) return;
-        var res = null;
-        if (typeof popState === 'function') {
-          res = popState.apply(_arguments);
-        }
-        var tutorial = _this.currentTutorial();
-        if (tutorial) {
-          tutorial.tearDown();
-        }
-        processGetParams();
-        return res;
-      };
-
-      if (!navigator.userAgent.match(/msie 9/i)) {
-        processGetParams();
-      }
-    }
   }], [{
     key: 'createTutorial',
     value: function createTutorial(config, delegate) {
       return new _tutorial2['default'](config, '', delegate);
+    }
+
+    /**
+     * Static method for creating and starting a Tutorial object without needing
+     * to instantiate chariot with a large configuration and named tutorials.
+     * @param {TutorialConfiguration} config - The tutorial configuration
+     * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
+     *  lifecycle callbacks
+     */
+  }, {
+    key: 'startTutorial',
+    value: function startTutorial(config, delegate) {
+      var tutorial = this.createTutorial(config, delegate);
+      tutorial.start();
+      return tutorial;
     }
   }]);
 
@@ -312,7 +278,7 @@ var Chariot = (function () {
 exports['default'] = Chariot;
 module.exports = exports['default'];
 
-},{"./ie-shim":3,"./tutorial":10,"query-parse":18}],2:[function(require,module,exports){
+},{"./ie-shim":3,"./tutorial":9,"query-parse":14}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -402,123 +368,6 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 },{"./chariot":1}],5:[function(require,module,exports){
-/*global
-history
-*/
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var NavigationHandler = (function () {
-  function NavigationHandler(currentTutorial, delegate) {
-    _classCallCheck(this, NavigationHandler);
-
-    this.tutorial = currentTutorial;
-    this.delegate = delegate;
-  }
-
-  _createClass(NavigationHandler, [{
-    key: 'setup',
-    value: function setup() {
-      // default handler for any browser navigation events
-      var handlerFn = function handlerFn() {
-        return currentTutorial.end(true);
-      };
-
-      // get custom eventHandler for each event
-      var hashChangeFn = this.delegate.handleHashChange || handlerFn;
-      var popStateFn = this.delegate.handlePopState || handlerFn;
-      var pushStateFn = this.delegate.handlePushState || handlerFn;
-      var replaceStateFn = this.delegate.handleReplaceState || handlerFn;
-
-      this._onHashChange(hashChangeFn);
-      this._onPopState(popStateFn);
-      this._onPushState(pushStateFn);
-      this._onReplaceState(replaceStateFn);
-    }
-  }, {
-    key: '_wrapFunction',
-    value: function _wrapFunction(origFn, fn) {
-      var _this = this,
-          _arguments = arguments;
-
-      // wrap the function with a tryInvoke call to call original function if one exists
-      return function () {
-        var retval = _this._tryInvokeWithArgs(origFn, _arguments);
-        fn.apply(_this, _arguments);
-        return retval;
-      };
-    }
-  }, {
-    key: '_tryInvokeWithArgs',
-    value: function _tryInvokeWithArgs(fn, args) {
-      var scope = arguments.length <= 2 || arguments[2] === undefined ? window : arguments[2];
-
-      var retval = null;
-      if (typeof fn === 'function') {
-        retval = fn.apply(scope, args);
-      }
-      return retval;
-    }
-  }, {
-    key: '_onHashChange',
-    value: function _onHashChange(fn) {
-      this.hashChangeListener = fn;
-      window.addEventListener('hashchange', fn);
-    }
-  }, {
-    key: '_onReplaceState',
-    value: function _onReplaceState(fn) {
-      this.origReplaceState = history.replaceState;
-      var wrappedFn = this._wrapFunction(this.origReplaceState, fn, history);
-      history.replaceState = wrappedFn;
-    }
-  }, {
-    key: '_onPopState',
-    value: function _onPopState(fn) {
-      this.origPopState = window.onpopstate;
-      var wrappedFn = this._wrapFunction(this.origPopState, fn);
-      window.onpopstate = wrappedFn;
-    }
-  }, {
-    key: '_onPushState',
-    value: function _onPushState(fn) {
-      this.origPushState = history.pushState;
-      var wrappedFn = this._wrapFunction(this.origPushState, fn, history);
-      history.pushState = wrappedFn;
-    }
-  }, {
-    key: 'tearDown',
-    value: function tearDown() {
-      window.onpopstate = this.origPopState;
-      this.origPopState = null;
-
-      history.replaceState = this.origReplaceState;
-      this.origReplaceState = null;
-
-      history.pushState = this.origPushState;
-      this.origPushState = null;
-
-      if (this.hashChangeListener) {
-        window.removeEventListener('hashchange', this.hashChangeListener);
-        this.hashChangeListener = null;
-      }
-    }
-  }]);
-
-  return NavigationHandler;
-})();
-
-exports['default'] = NavigationHandler;
-module.exports = exports['default'];
-
-},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -539,8 +388,6 @@ var Overlay = (function () {
 
   /**
    * @constructor
-   * @public
-   * isVisible(), resize()
    *
    */
 
@@ -549,7 +396,7 @@ var Overlay = (function () {
 
     this.shouldOverlay = config.shouldOverlay === undefined ? true : config.shouldOverlay;
     this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
-    this.useTransparentOverlayStrategy = config.useTransparentOverlayStrategy;
+    this.useTransparentOverlayStrategy = !!config.useTransparentOverlayStrategy;
     this._resizeHandler = null;
   }
 
@@ -660,7 +507,9 @@ var Overlay = (function () {
     value: function _createTransparentOverlay() {
       var $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
       $transparentOverlay.css({
-        'z-index': _constants2['default'].CLONE_Z_INDEX + 1
+        'z-index': _constants2['default'].CLONE_Z_INDEX + 1,
+        width: document.body.scrollWidth,
+        height: document.body.scrollHeight
       });
       return $transparentOverlay;
     }
@@ -670,8 +519,8 @@ var Overlay = (function () {
     key: '_resizeOverlayToFullScreen',
     value: function _resizeOverlayToFullScreen() {
       this.$overlay.css({
-        width: '100%',
-        height: '100%'
+        width: document.body.scrollWidth,
+        height: document.body.scrollHeight
       });
     }
 
@@ -713,7 +562,7 @@ var Overlay = (function () {
 exports['default'] = Overlay;
 module.exports = exports['default'];
 
-},{"./constants":2}],7:[function(require,module,exports){
+},{"./constants":2}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -749,16 +598,21 @@ var Promise = require('es6-promise').Promise;
 
 var Step = (function () {
 
-  /** The step configuration is where you specify which elements of the page will
-   * be cloned and placed over the overlay.
+  /** The step configuration is where you specify which elements of the page
+   * will be cloned and placed over the overlay. These elements are the
+   * what appear as highlighted to the user.
    *
    * @typedef StepConfiguration
    * @property {TooltipConfiguration} tooltip - Tooltip configuration.
-   * @property {Object.<string, string>} [selectors] - Contains arbitrarily-named
-   *  keys with CSS selector values. These keys can be referenced from
-   *  TooltipConfiguration.anchorElement.
-   *  Note: Specifying a selector that lives within another specified selector will
-   *  result in unpredictable behavior.
+   * @property {Object.<string, string>|string[]|string} [selectors] -
+   *  Object with arbitrarily-named keys and CSS selector values.
+   *  These keys can then be referenced from <code>TooltipConfiguration.anchorElement.</code>
+   *  Or, an array of selector strings if named keys are not required.
+   *  Or, a string if only one selector is required.<br/>
+   *  Notes: Specifying a selector that targets another specified selector
+   *  will result in unpredictable behavior.<br/>
+   *  Specifying multiple selectors will effectively cause
+   *  <code>Tutorial.useTransparentOverlayStrategy == false.</code>
    */
 
   /**
@@ -775,16 +629,36 @@ var Step = (function () {
   function Step(config, index, tutorial, overlay, delegate) {
     if (config === undefined) config = {};
 
+    var _this = this;
+
     _classCallCheck(this, Step);
 
     this.tutorial = tutorial;
     this.index = index;
     this.overlay = overlay;
     this.delegate = delegate || {};
-    if (!config.selectors || !Object.keys(config.selectors).length) {
+
+    if (!config.selectors) {
       throw new Error('selectors must be present in Step configuration\n' + this);
+    } else if (typeof config.selectors === 'string') {
+      this.selectors = { 0: config.selectors };
+    } else if (Object.prototype.toString.call(config.selectors) === '[object Object]') {
+      if (!Object.keys(config.selectors).length) {
+        throw new Error('selectors must be present in Step configuration\n' + this);
+      }
+      this.selectors = config.selectors;
+    } else if (Array.isArray(config.selectors)) {
+      (function () {
+        var selectorsMap = {};
+        config.selectors.forEach(function (val, idx) {
+          selectorsMap[idx] = val;
+        });
+        _this.selectors = selectorsMap;
+      })();
+    } else {
+      throw new Error('selectors must be an object, array, or string');
     }
-    this.selectors = config.selectors;
+
     this._resizeTimeout = null;
 
     this._elementMap = {};
@@ -798,79 +672,79 @@ var Step = (function () {
   _createClass(Step, [{
     key: 'render',
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
       Promise.resolve().then(function () {
-        if (_this.delegate.willBeginStep) {
-          return _this.delegate.willBeginStep(_this, _this.index, _this.tutorial);
+        if (_this2.delegate.willBeginStep) {
+          return _this2.delegate.willBeginStep(_this2, _this2.index, _this2.tutorial);
         }
       }).then(function () {
-        if (_this.delegate.willShowOverlay) {
-          return _this.delegate.willShowOverlay(_this.overlay, _this.index, _this.tutorial);
+        if (_this2.delegate.willShowOverlay) {
+          return _this2.delegate.willShowOverlay(_this2.overlay, _this2.index, _this2.tutorial);
         }
       }).then(function () {
         // Show a temporary background overlay while we wait for elements
-        _this.overlay.showBackgroundOverlay();
-        return _this._waitForElements();
+        _this2.overlay.showBackgroundOverlay();
+        return _this2._waitForElements();
       }).then(function () {
         // Render the overlay
-        if (_this.overlay.isTransparentOverlayStrategy() && Object.keys(_this.selectors).length === 1) {
-          _this._singleTransparentOverlayStrategy();
+        if (_this2.overlay.isTransparentOverlayStrategy() && Object.keys(_this2.selectors).length === 1) {
+          _this2._singleTransparentOverlayStrategy();
         } else {
-          _this._clonedElementStrategy();
+          _this2._clonedElementStrategy();
         }
       }).then(function () {
-        if (_this.delegate.didShowOverlay) {
-          return _this.delegate.didShowOverlay(_this.overlay, _this.index, _this.tutorial);
+        if (_this2.delegate.didShowOverlay) {
+          return _this2.delegate.didShowOverlay(_this2.overlay, _this2.index, _this2.tutorial);
         }
       }).then(function () {
-        if (_this.delegate.willRenderTooltip) {
-          return _this.delegate.willRenderTooltip(_this.tooltip, _this.index, _this.tutorial);
+        if (_this2.delegate.willRenderTooltip) {
+          return _this2.delegate.willRenderTooltip(_this2.tooltip, _this2.index, _this2.tutorial);
         }
       }).then(function () {
-        _this._renderTooltip();
-        if (_this.delegate.didRenderTooltip) {
-          return _this.delegate.didRenderTooltip(_this.tooltip, _this.index, _this.tutorial);
+        _this2._renderTooltip();
+        if (_this2.delegate.didRenderTooltip) {
+          return _this2.delegate.didRenderTooltip(_this2.tooltip, _this2.index, _this2.tutorial);
         }
       }).then(function () {
         // Resize the overlay in case the tooltip extended the width/height of DOM
-        _this.overlay.resize();
+        _this2.overlay.resize();
 
         // Setup resize handler
-        _this._resizeHandler = (0, _lodashDebounce2['default'])(function () {
-          for (var selectorName in _this.selectors) {
-            var elementInfo = _this._elementMap[selectorName];
+        _this2._resizeHandler = (0, _lodashDebounce2['default'])(function () {
+          for (var selectorName in _this2.selectors) {
+            var elementInfo = _this2._elementMap[selectorName];
             if (elementInfo.clone) {
               var $element = elementInfo.element;
               var $clone = elementInfo.clone;
               _style2['default'].clearCachedStylesForElement($element);
-              _this._applyComputedStyles($clone, $element);
-              _this._positionClone($clone, $element);
+              _this2._applyComputedStyles($clone, $element);
+              _this2._positionClone($clone, $element);
             }
           }
-          _this.tooltip.reposition();
-          _this.overlay.resize();
+          _this2.tooltip.reposition();
+          _this2.overlay.resize();
         }, 50);
-        $(window).on('resize', _this._resizeHandler);
+        $(window).on('resize', _this2._resizeHandler);
       })['catch'](function (error) {
         console.log(error);
-        _this.tutorial.tearDown();
+        _this2.tutorial.tearDown();
       });
     }
   }, {
     key: 'next',
     value: function next() {
-      var _this2 = this;
+      var _this3 = this;
 
       Promise.resolve().then(function () {
-        if (_this2.delegate.didFinishStep) {
-          return _this2.delegate.didFinishStep(_this2, _this2.index, _this2.tutorial);
+        if (_this3.delegate.didFinishStep) {
+          return _this3.delegate.didFinishStep(_this3, _this3.index, _this3.tutorial);
         }
       }).then(function () {
-        _this2.tutorial.next(_this2);
+        _this3.tutorial.next();
       })['catch'](function (error) {
         console.log(error);
-        _this2.tutorial.next(_this2);
+        _this3.tutorial.next();
       });
     }
   }, {
@@ -941,13 +815,13 @@ var Step = (function () {
   }, {
     key: '_waitForElements',
     value: function _waitForElements() {
-      var _this3 = this;
+      var _this4 = this;
 
       var promises = [];
 
       var _loop = function (selectorName) {
         var promise = new Promise(function (resolve, reject) {
-          _this3._waitForElement(selectorName, 0, resolve, reject);
+          _this4._waitForElement(selectorName, 0, resolve, reject);
         });
         promises.push(promise);
       };
@@ -961,7 +835,7 @@ var Step = (function () {
   }, {
     key: '_waitForElement',
     value: function _waitForElement(selectorName, numAttempts, resolve, reject) {
-      var _this4 = this;
+      var _this5 = this;
 
       var selector = this.selectors[selectorName];
       var element = $(selector);
@@ -971,7 +845,7 @@ var Step = (function () {
           reject('Selector not found: ' + selector);
         } else {
           window.setTimeout(function () {
-            _this4._waitForElement(selectorName, numAttempts, resolve, reject);
+            _this5._waitForElement(selectorName, numAttempts, resolve, reject);
           }, DOM_QUERY_DELAY);
         }
       } else {
@@ -985,22 +859,22 @@ var Step = (function () {
   }, {
     key: '_computeStyles',
     value: function _computeStyles($element) {
-      var _this5 = this;
+      var _this6 = this;
 
       _style2['default'].getComputedStylesFor($element[0]);
       $element.children().toArray().forEach(function (child) {
-        _this5._computeStyles($(child));
+        _this6._computeStyles($(child));
       });
     }
   }, {
     key: '_cloneElements',
     value: function _cloneElements(selectors) {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.overlay.isVisible()) return;
 
       setTimeout(function () {
-        _this6.tutorial.prepare();
+        _this7.tutorial.prepare();
       }, 0);
       for (var selectorName in selectors) {
         var clone = this._cloneElement(selectorName);
@@ -1025,7 +899,7 @@ var Step = (function () {
   }, {
     key: '_applyComputedStyles',
     value: function _applyComputedStyles($clone, $element) {
-      var _this7 = this;
+      var _this8 = this;
 
       if (!$element.is(":visible")) {
         return;
@@ -1034,7 +908,7 @@ var Step = (function () {
       _style2['default'].cloneStyles($element, $clone);
       var clonedChildren = $clone.children().toArray();
       $element.children().toArray().forEach(function (child, index) {
-        _this7._applyComputedStyles($(clonedChildren[index]), $(child));
+        _this8._applyComputedStyles($(clonedChildren[index]), $(child));
       });
     }
   }, {
@@ -1054,7 +928,7 @@ var Step = (function () {
 exports['default'] = Step;
 module.exports = exports['default'];
 
-},{"./constants":2,"./style":8,"./tooltip":9,"es6-promise":15,"lodash.debounce":16}],8:[function(require,module,exports){
+},{"./constants":2,"./style":7,"./tooltip":8,"es6-promise":10,"lodash.debounce":12}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1211,7 +1085,7 @@ var Style = (function () {
 exports['default'] = Style;
 module.exports = exports['default'];
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1230,10 +1104,9 @@ var _constants2 = _interopRequireDefault(_constants);
 
 var _style = require('./style');
 
-// distance between arrow tip and edge of tooltip, not including border
-
 var _style2 = _interopRequireDefault(_style);
 
+// distance between arrow tip and edge of tooltip, not including border
 var DEFAULT_ARROW_LENGTH = 11;
 
 /** The tooltip configuration allows you to specify which anchor element will
@@ -1244,13 +1117,15 @@ var DEFAULT_ARROW_LENGTH = 11;
  * @property {string} position - Relatively positions the tooltip to the anchor
  *   element. Possible values: 'top' | 'left' | 'bottom' | 'right'
  * @property {string} [anchorElement] - Optional if the corresponding Step
- *  contains only one selector. anchorElement can be either
+ *  contains only one selector. <code>anchorElement</code> can be either
  *  (1) a key from StepConfiguration.selectors above, or
  *  (2) a CSS selector
- * @property {number} [xOffsetTooltip] - Value in pixels to offset the x-coordinate of
- *  the tooltip.
- * @property {number} [yOffsetTooltip] - Value in pixels to offset the y-coordinate of
- *  the tooltip.
+ * @property {string} [className] - One or more space-separated classes to be
+ *  added to the class attribute of each tooltip.
+ * @property {number} [xOffsetTooltip] - Value in pixels to offset the
+ *  x-coordinate of the tooltip.
+ * @property {number} [yOffsetTooltip] - Value in pixels to offset the
+ *  y-coordinate of the tooltip.
  * @property {number} [offsetArrow] - Value in pixels to offset the arrow.
  * If the position is top or bootom, this still offset the x coord. If
  * left or right it will offset the y coord. If undefined or 0, arrow is centered.
@@ -1286,7 +1161,6 @@ var DEFAULT_ARROW_LENGTH = 11;
  */
 
 var Tooltip = (function () {
-
   /**
    * @constructor
    * @param {TooltipConfiguration} config - The configuration for this tooltip
@@ -1319,12 +1193,14 @@ var Tooltip = (function () {
         break;
     }
 
+    this.className = config.className;
     this.xOffsetTooltip = config.xOffsetTooltip ? parseInt(config.xOffsetTooltip) : 0;
     this.yOffsetTooltip = config.yOffsetTooltip ? parseInt(config.yOffsetTooltip) : 0;
 
     this.offsetArrow = config.offsetArrow ? parseInt(config.offsetArrow) : 0;
 
     this.arrowClass = arrowClass;
+    this.appearAnimationClass = 'animate-appear-' + this.position;
 
     this.width = parseInt(config.width);
     this.height = parseInt(config.height);
@@ -1341,9 +1217,9 @@ var Tooltip = (function () {
   }
 
   _createClass(Tooltip, [{
-    key: 'currentStep',
-    value: function currentStep() {
-      return this.tutorial.currentStep(this.step);
+    key: 'currentStepNum',
+    value: function currentStepNum() {
+      return this.tutorial.stepNum(this.step);
     }
   }, {
     key: 'render',
@@ -1351,15 +1227,17 @@ var Tooltip = (function () {
       var _this = this;
 
       var $tooltip = this.$tooltip = this._createTooltipTemplate();
+
+      // Hide the tooltip first, in case we need to scroll into view first
+      $tooltip.css({ opacity: 0 });
       $('body').append($tooltip);
 
       var $tooltipArrow = this.$tooltipArrow = $('.chariot-tooltip-arrow');
-
       this._position($tooltip, $tooltipArrow);
 
-      // Add event handlers
+      // Add button event handler
       $('.chariot-btn-row button').click(function () {
-        _this.next();
+        _this._animateTooltipDisappear($tooltip);
       });
     }
   }, {
@@ -1379,7 +1257,7 @@ var Tooltip = (function () {
   }, {
     key: 'toString',
     value: function toString() {
-      return '[Tooltip - currentStep: ' + this.currentStep() + ', Step: ' + this.step + ',' + (' text: ' + this.text + ']');
+      return '[Tooltip - currentStep: ' + this.currentStepNum() + ', Step: ' + this.step + ',' + (' text: ' + this.text + ']');
     }
 
     //// PRIVATE
@@ -1387,7 +1265,7 @@ var Tooltip = (function () {
   }, {
     key: '_createTooltipTemplate',
     value: function _createTooltipTemplate() {
-      var currentStep = this.tutorial.currentStep(this.step);
+      var currentStep = this.currentStepNum();
       var totalSteps = this.tutorial.steps.length;
       this.cta = this.config.cta || (currentStep != totalSteps ? 'Next' : 'Done');
       this.subtext = this.config.subtext || function () {
@@ -1395,13 +1273,21 @@ var Tooltip = (function () {
       };
       var subtextMarkup = this._subtextMarkup();
       var buttonFloat = subtextMarkup === '' ? 'center' : 'right';
-      var template = '\n      <div class="chariot-tooltip chariot-step-' + currentStep + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
+      var template = '\n      <div class="' + this._classNames() + '">\n        ' + this._arrowMarkup() + '\n        <div class="chariot-tooltip-content">' + this._iconMarkup() + '</div>\n        <h1 class="chariot-tooltip-header">' + this.title + '</h1>\n        <div class="chariot-tooltip-content"><p>' + this.text + '</p></div>\n        <div class="chariot-btn-row">\n          ' + subtextMarkup + '\n          <button class="btn btn-inverse ' + buttonFloat + '">' + this.cta + '</button>\n        </div>\n      </div>';
       var $template = $(template);
 
       // Add default data attributes
       this.attr['data-step-order'] = currentStep;
       $template.attr(this.attr);
       return $template;
+    }
+  }, {
+    key: '_classNames',
+    value: function _classNames() {
+      var currentStep = this.currentStepNum();
+      var defaultClassNames = 'chariot-tooltip chariot-step-' + currentStep;
+      if (!this.className) return defaultClassNames;
+      return defaultClassNames + ' ' + this.className;
     }
   }, {
     key: '_iconMarkup',
@@ -1413,7 +1299,7 @@ var Tooltip = (function () {
     key: '_subtextMarkup',
     value: function _subtextMarkup() {
       if (!this.subtext) return '';
-      return '<span class=\'chariot-tooltip-subtext\'>\n      ' + this.subtext(this.currentStep(), this.tutorial.steps.length) + '\n    </span>';
+      return '<span class=\'chariot-tooltip-subtext\'>\n      ' + this.subtext(this.currentStepNum(), this.tutorial.steps.length) + '\n    </span>';
     }
   }, {
     key: '_arrowMarkup',
@@ -1424,8 +1310,22 @@ var Tooltip = (function () {
   }, {
     key: '_position',
     value: function _position($tooltip, $tooltipArrow) {
+      var _this2 = this;
+
       this._positionTooltip($tooltip);
       this._positionArrow($tooltip, $tooltipArrow);
+
+      // Animate scrolling to the tooltip if it's not completely visible
+      if (this.tutorial.animateScrolling && !this._isElementInViewport($tooltip)) {
+        $("html, body").animate({
+          scrollTop: $tooltip.offset().top + $tooltip.height() / 2 - document.body.clientHeight / 2,
+          scrollLeft: $tooltip.offset().left + $tooltip.width() / 2 - document.body.clientWidth / 2
+        }, this.tutorial.scrollAnimationDuration, function () {
+          _this2._animateTooltipAppear($tooltip);
+        });
+      } else {
+        this._animateTooltipAppear($tooltip);
+      }
     }
   }, {
     key: '_positionTooltip',
@@ -1511,16 +1411,54 @@ var Tooltip = (function () {
       $tooltipArrow.css(arrowStyles);
     }
   }, {
+    key: '_isElementInViewport',
+    value: function _isElementInViewport($el) {
+      var rect = $el[0].getBoundingClientRect();
+
+      return rect.top >= 0 && rect.left >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+      ;
+    }
+  }, {
+    key: '_animateTooltipAppear',
+    value: function _animateTooltipAppear($tooltip) {
+      var _this3 = this;
+
+      // Reveal the tooltip again
+      $tooltip.css({ opacity: 1 });
+      if (!this.tutorial.animateTooltips) {
+        return;
+      }
+      $tooltip.addClass(this.appearAnimationClass).one('animationend', function (e) {
+        $(e.currentTarget).removeClass(_this3.appearAnimationClass);
+      });
+    }
+  }, {
+    key: '_animateTooltipDisappear',
+    value: function _animateTooltipDisappear($tooltip) {
+      var _this4 = this;
+
+      if (!this.tutorial.animateTooltips) {
+        this.next();
+        return;
+      }
+
+      $tooltip.addClass(this.appearAnimationClass).css({ 'animation-direction': 'reverse' }).on('animationend', function () {
+        _this4.next();
+      });
+    }
+  }, {
     key: '_getAnchorElement',
     value: function _getAnchorElement() {
       // Look for already cloned elements first
       var clonedSelectedElement = this.step.getClonedElement(this.anchorElement);
       if (clonedSelectedElement) return clonedSelectedElement;
+      var anchorElement = this.step.selectors[this.anchorElement];
+      // Try fetching from selectors
+      var $element = $(anchorElement);
       // Try fetching from DOM
-      var $element = $(this.anchorElement);
       if ($element.length === 0) {
-        // Try fetching from selectors
-        $element = $(this.step.selectors[this.anchorElement]);
+        $element = $(this.anchorElement);
       }
       if ($element.length === 0) {
         console.log("Anchor element not found: " + this.anchorElement);
@@ -1540,7 +1478,7 @@ var Tooltip = (function () {
 exports['default'] = Tooltip;
 module.exports = exports['default'];
 
-},{"./constants":2,"./style":8}],10:[function(require,module,exports){
+},{"./constants":2,"./style":7}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1561,54 +1499,120 @@ var _overlay = require('./overlay');
 
 var _overlay2 = _interopRequireDefault(_overlay);
 
-var _navigation_handler = require('./navigation_handler');
-
-var _navigation_handler2 = _interopRequireDefault(_navigation_handler);
-
 var _constants = require('./constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
 var Promise = require('es6-promise').Promise;
 
+var DEFAULT_SCROLL_ANIMATION_DURATION = 500;
+
 var Tutorial = (function () {
   /**
-   * The tutorial configuration is where the steps of a tutorial are specified,
+   * <p>The tutorial configuration is where the steps of a tutorial are specified,
    * and also allows customization of the overlay style.
-   * Notes on implementation:
-   * The elements defined in each step of a tutorial via
-   * StepConfiguration.selectors are highlighted using transparent overlays.
-   * These elements areare overlaid using one of two strategies:
-   * 1. Semi-transparent overlay with a transparent section cut out over the
-   *    element
-   * 2. Selected elements are cloned and placed above a transparent overlay
+   * If optional configuration parameters are not required, the steps property
+   * array can be passed in directly as the configuration.</p>
    *
-   * #1 is more performant, but issues arise when an element is not rectangularly-
+   * <p>Notes on implementation:</p>
+   * <p>The elements defined in each step of a tutorial via
+   * StepConfiguration.selectors are highlighted using transparent overlays.</p>
+   * <p>These elements areare overlaid using one of two strategies:</p>
+   * <ol>
+   *   <li>Semi-transparent overlay with a transparent section cut out over the
+   *    element</li>
+   *   <li>Selected elements are cloned and placed above a transparent overlay</li>
+   * </ol>
+   *
+   * <p>#1 is more performant, but issues arise when an element is not rectangularly-
    * shaped, or when it has `:before` or `:after`
    * pseudo-selectors that insert new DOM elements that protrude out of the
-   * main element.
-   * #2 is slower because of deep CSS style cloning, but it will correctly render
-   * the entire element in question, regardless of shape or size.
-   * However, there are edge cases where Firefox
-   * will not clone CSS `margin` attribute of children elements.
+   * main element.</p>
+   * <p>#2 is slower because of deep CSS style cloning, but it will correctly render
+   * the entire element in question, regardless of shape or size.</p>
+   * </p>However, there are edge cases where Firefox
+   * will not clone CSS <code>margin</code> attribute of children elements.
    * In those cases, the delegate callbacks should be utilized to fix.
    * Note however, that #2 is always chosen if multiple selectors are specified in
-   * StepConfiguration.selectors.
+   * StepConfiguration.selectors.</p>
    *
    * @typedef TutorialConfiguration
+   * @property {StepConfiguration[]} steps - An array of step configurations (see below).
+   *  Note that this property can be passed as the configuration if the
+   *  optional params below are not used.
    * @property {integer} [zIndex=20] - Sets the base z-index value used by this tutorial
    * @property {boolean} [shouldOverlay=true] - Setting to false will disable the
    * overlay that normally appears over the page and behind the tooltips.
    * @property {string} [overlayColor='rgba(255,255,255,0.7)'] - Overlay CSS color
-   * @property {StepConfiguration[]} steps - An array of step configurations (see below).
    * @property {Tutorial-onCompleteCallback} [onComplete] - Callback that is called
    * once the tutorial has gone through all steps.
-   * @property {boolean} [useTransparentOverlayStrategy=false] - Setting to true will use an
-   *  implementation that does not rely on cloning highlighted elements.
-   *  Note: This value is ignored if a step contains multiple selectors.
-   *  useTransparentOverlayStrategy is named as such because
-   * @property {boolean} [animated=false] - (TODO) Enables spotlight-like
-   *  transitions between steps.
+   * @property {boolean} [useTransparentOverlayStrategy=false] - <p>
+   *  Setting to true will use an implementation that does not rely on
+   *  cloning highlighted elements.<br/>
+   *  Note: This value is ignored if multiple selectors are
+   *  specified in <code>StepConfiguration.selectors</code>.</p>
+   *  <p><code>useTransparentOverlayStrategy</code> focuses on an element by
+   *  resizing a transparent overlay to match its dimensions and changes the
+   *  borders to be colored to obscure the main UI.<p>
+     <h4>Strategy Details</h4>
+    <p>
+      By default, a tutorial is displayed with a semi-transparent overlay
+      that hides background content and highlights the selected element(s) for the
+      current step of the tutorial.
+    </p>
+    This is achieved by one of two exclusive strategies:
+    <ol>
+      <li>
+        An overlay div with a semi-transparent border but with a transparent center
+        equal in size to the selected element.<br/>
+        Example: A 50x50 div is the selected element, so the overlay's transparent center
+        is 50x50, and its semi-transparent border fills the rest of the viewport.
+      </li>
+      <li>
+        A completely semi-transparent overlay fills the entire viewport, and the
+        selected element(s) is cloned and placed on top of this overlay, using
+        <code>z-index</code>.
+      </li>
+    </ol>
+     <p>Both strategies have pros & cons.</p>
+    1. Clone strategy (default)
+    <p>
+      <strong>Pros:</strong> It will correctly render the entire element in question,
+      regardless of shape or size.
+    </p>
+    <p>
+      <strong>Cons:</strong> Slow because of the deep-cloning involved with CSS styling. The more
+      children elements that exist, the slower each step will take to render.
+      (This can be improved over time by pre-caching the next step in advance.)
+      There are also edge cases where Firefox will not clone the
+      CSS `margin` attribute of children elements.
+      <br/>
+      In those cases, the callbacks <code>Step.beforeCallback</code> and
+      <code>Step.afterCallback</code> can be used to properly restore the margin.
+    </p>
+     2. Background overlay with transparent center and semi-transparent border
+    <p>
+      <strong>Pros:</strong>: More performant than the clone strategy because styles are not being cloned.
+    </p>
+    <p>
+      <strong>Cons:</strong> When an element is not rectangular in shape, or
+      when it has <code>:before</code> or <code>:after</code> pseudo-selectors
+      that insert new DOM elements that protrude out of the main element,
+      the transparent center will either reveal or occlude sections of
+      the element.
+    </p>
+     Note: The clone strategy is always chosen if multiple selectors are
+    specified in <code>StepConfiguration.selectors</code>.
+     * @property {boolean} [animateTooltips=true] - Enables tooltip bouncing at the
+   *  beginning and end of each step.
+   * @property {boolean} [animateScrolling=true] -
+   *  <p>If the next tooltip is not completely within the client bounds, this
+   *  property animates the scrolling of the viewport until the next tooltip
+   *  is centered.</p>
+   *  <p>If false, the viewport is not scrolled.</p
+   * @property {integer} [scrollAnimationDuration=500] - Specifies the duration
+   *  of the scroll animation above, in milliseconds.
+   *  Ignored if <code>animateScrolling</code> is false.
    */
 
   /**
@@ -1624,22 +1628,40 @@ var Tutorial = (function () {
 
     _classCallCheck(this, Tutorial);
 
-    if (typeof config.steps !== 'object') {
-      throw new Error('steps must be an array.\n' + this);
-      return;
-    }
     this.name = name;
-    this.zIndex = config.zIndex;
     this.delegate = delegate || {};
-    this.useTransparentOverlayStrategy = config.useTransparentOverlayStrategy || false;
     this.steps = [];
-    this.overlay = new _overlay2['default'](config);
-    config.steps.forEach(function (step, index) {
-      _this.steps.push(new _step2['default'](step, index, _this, _this.overlay, _this.delegate));
+
+    var configType = Object.prototype.toString.call(config);
+    var stepConfigs = undefined,
+        overlayConfig = undefined;
+    if (configType === '[object Array]') {
+      stepConfigs = config;
+      overlayConfig = {};
+      this.animateTooltips = true;
+      this.animateScrolling = true;
+      this.scrollAnimationDuration = DEFAULT_SCROLL_ANIMATION_DURATION;
+    } else if (configType === '[object Object]') {
+      if (!Array.isArray(config.steps)) {
+        throw new Error('steps must be an array.\n' + this);
+      }
+      this.zIndex = config.zIndex;
+      this.useTransparentOverlayStrategy = config.useTransparentOverlayStrategy;
+      this.animateTooltips = config.animateTooltips === undefined ? true : config.animateTooltips;
+      this.animateScrolling = config.animateScrolling === undefined ? true : config.animateScrolling;
+      this.scrollAnimationDuration = config.scrollAnimationDuration || DEFAULT_SCROLL_ANIMATION_DURATION;
+      stepConfigs = config.steps;
+      overlayConfig = config;
+    } else {
+      throw new Error('config must be an object or array');
+    }
+
+    this.overlay = new _overlay2['default'](overlayConfig);
+    stepConfigs.forEach(function (stepConfig, index) {
+      _this.steps.push(new _step2['default'](stepConfig, index, _this, _this.overlay, _this.delegate));
     });
     this._prepared = false;
     this._isActive = false;
-    this.navigationHandler = new _navigation_handler2['default'](this, this.delegate);
   }
 
   /**
@@ -1654,8 +1676,8 @@ var Tutorial = (function () {
     }
 
     /**
-     * Starts the tutorial and marks itself as inactive.
-     * @returns {undefined}
+     * Starts the tutorial and marks itself as active.
+     * @returns {Promise}
      */
   }, {
     key: 'start',
@@ -1665,9 +1687,6 @@ var Tutorial = (function () {
       if (this.zIndex !== null) {
         _constants2['default'].reload({ overlayZIndex: this.zIndex });
       }
-      if (this.navigationHandler) {
-        this.navigationHandler.setup();
-      }
       if (this.steps.length === 0) {
         throw new Error('steps should not be empty.\n' + this);
         return;
@@ -1676,16 +1695,22 @@ var Tutorial = (function () {
       this._isActive = true;
       // render overlay first to avoid willBeingTutorial delay overlay showing up
       this.overlay.render();
-      Promise.resolve().then(function () {
+      return Promise.resolve().then(function () {
         if (_this2.delegate.willBeginTutorial) {
           return _this2.delegate.willBeginTutorial(_this2);
         }
       }).then(function () {
-        _this2.steps[0].render();
+        _this2.currentStep = _this2.steps[0];
+        _this2.currentStep.render();
       })['catch'](function () {
         _this2.tearDown();
       });
     }
+
+    /**
+     * Prepares each step of the tutorial, to speedup rendering.
+     * @returns {undefined}
+     */
   }, {
     key: 'prepare',
     value: function prepare() {
@@ -1697,40 +1722,82 @@ var Tutorial = (function () {
         _this3._prepared = true;
       });
     }
+
+    /**
+     * Advances to the next step in the tutorial, or ends tutorial if no more
+     * steps.
+     *
+     * @param {integer|Step} [step] - If step is an integer, advances to that
+     *  step. If step is a Step instance, that step
+     *  If no argument is passed in, the current step's index is incremented to
+     *  determine the next step.
+     * @returns {undefined}
+     */
   }, {
     key: 'next',
-    value: function next(currentStep) {
-      var index = this.steps.indexOf(currentStep);
-      if (index < 0) {
-        throw new Error('currentStep not found');
-        return;
+    value: function next(step) {
+      var currentStepIndex = -1;
+      if (!step) {
+        currentStepIndex = this.steps.indexOf(this.currentStep);
+        if (currentStepIndex < 0) {
+          throw new Error('step not found');
+        } else if (currentStepIndex === this.steps.length - 1) {
+          this.end();
+          return;
+        }
       }
 
-      currentStep.tearDown();
-      if (index === this.steps.length - 1) {
-        this.end();
-      } else {
-        this.steps[index + 1].render();
+      if (this.currentStep) {
+        this.currentStep.tearDown();
       }
+
+      var nextStep = undefined;
+      if (step) {
+        if (typeof step === 'number') {
+          if (step < 0 || step >= this.steps.length) {
+            throw new Error('step is outside bounds of steps array (length: ' + this.steps.length + ')');
+          }
+          nextStep = this.steps[step];
+        } else if (Object.prototype.toString.call(step) === '[object Object]') {
+          nextStep = step;
+        } else {
+          throw new Error('step arg must be number or object');
+        }
+      } else {
+        nextStep = this.steps[currentStepIndex + 1];
+      }
+
+      this.currentStep = nextStep;
+      nextStep.render();
     }
+
+    /**
+     * Returns the one-indexed (human-friendly) step number.
+     *
+     * @param {Step} step - The step instance for which we want the index
+     * @returns {integer} stepNum - The one-indexed step number
+     */
   }, {
-    key: 'currentStep',
-    value: function currentStep(step) {
+    key: 'stepNum',
+    value: function stepNum(step) {
       if (step === null) return null;
       return this.steps.indexOf(step) + 1;
     }
+
+    /**
+     * Tears down the internal overlay and tears down each individual step
+     * Nulls out internal references.
+     * @returns {undefined}
+     */
   }, {
     key: 'tearDown',
     value: function tearDown() {
-      if (this.navigationHandler) {
-        this.navigationHandler.tearDown();
-        this.navigationHandler = null;
-      }
       this._prepared = false;
       this.overlay.tearDown();
       this.steps.forEach(function (step) {
         step.tearDown();
       });
+      this.currentStep = null;
     }
 
     /**
@@ -1782,278 +1849,7 @@ var Tutorial = (function () {
 exports['default'] = Tutorial;
 module.exports = exports['default'];
 
-},{"./constants":2,"./navigation_handler":5,"./overlay":6,"./step":7,"es6-promise":15}],11:[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            currentQueue[queueIndex].run();
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],12:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-},{}],13:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-var stringifyPrimitive = function(v) {
-  switch (typeof v) {
-    case 'string':
-      return v;
-
-    case 'boolean':
-      return v ? 'true' : 'false';
-
-    case 'number':
-      return isFinite(v) ? v : '';
-
-    default:
-      return '';
-  }
-};
-
-module.exports = function(obj, sep, eq, name) {
-  sep = sep || '&';
-  eq = eq || '=';
-  if (obj === null) {
-    obj = undefined;
-  }
-
-  if (typeof obj === 'object') {
-    return map(objectKeys(obj), function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-      if (isArray(obj[k])) {
-        return map(obj[k], function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-      } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-      }
-    }).join(sep);
-
-  }
-
-  if (!name) return '';
-  return encodeURIComponent(stringifyPrimitive(name)) + eq +
-         encodeURIComponent(stringifyPrimitive(obj));
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-function map (xs, f) {
-  if (xs.map) return xs.map(f);
-  var res = [];
-  for (var i = 0; i < xs.length; i++) {
-    res.push(f(xs[i], i));
-  }
-  return res;
-}
-
-var objectKeys = Object.keys || function (obj) {
-  var res = [];
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-  }
-  return res;
-};
-
-},{}],14:[function(require,module,exports){
-'use strict';
-
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
-
-},{"./decode":12,"./encode":13}],15:[function(require,module,exports){
+},{"./constants":2,"./overlay":5,"./step":6,"es6-promise":10}],10:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -3029,7 +2825,146 @@ exports.encode = exports.stringify = require('./encode');
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":11}],16:[function(require,module,exports){
+},{"_process":13}],11:[function(require,module,exports){
+/**
+ * lodash 3.9.1 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]';
+
+/** Used to detect host constructors (Safari > 5). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/**
+ * Checks if `value` is object-like.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
+}
+
+/** Used for native method references. */
+var objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var fnToString = Function.prototype.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objToString = objectProto.toString;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = object == null ? undefined : object[key];
+  return isNative(value) ? value : undefined;
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in older versions of Chrome and Safari which return 'function' for regexes
+  // and Safari 8 equivalents which return 'object' for typed array constructors.
+  return isObject(value) && objToString.call(value) == funcTag;
+}
+
+/**
+ * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(1);
+ * // => false
+ */
+function isObject(value) {
+  // Avoid a V8 JIT bug in Chrome 19-20.
+  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+/**
+ * Checks if `value` is a native function.
+ *
+ * @static
+ * @memberOf _
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+ * @example
+ *
+ * _.isNative(Array.prototype.push);
+ * // => true
+ *
+ * _.isNative(_);
+ * // => false
+ */
+function isNative(value) {
+  if (value == null) {
+    return false;
+  }
+  if (isFunction(value)) {
+    return reIsNative.test(fnToString.call(value));
+  }
+  return isObjectLike(value) && reIsHostCtor.test(value);
+}
+
+module.exports = getNative;
+
+},{}],12:[function(require,module,exports){
 /**
  * lodash 3.1.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -3265,146 +3200,189 @@ function isObject(value) {
 
 module.exports = debounce;
 
-},{"lodash._getnative":17}],17:[function(require,module,exports){
-/**
- * lodash 3.9.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
+},{"lodash._getnative":11}],13:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
 
-/** `Object#toString` result references. */
-var funcTag = '[object Function]';
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
 
-/** Used to detect host constructors (Safari > 5). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
+var cachedSetTimeout;
+var cachedClearTimeout;
 
-/**
- * Checks if `value` is object-like.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
 }
 
-/** Used for native method references. */
-var objectProto = Object.prototype;
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
 
-/** Used to resolve the decompiled source of functions. */
-var fnToString = Function.prototype.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objToString = objectProto.toString;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  fnToString.call(hasOwnProperty).replace(/[\\^$.*+?()[\]{}|]/g, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = object == null ? undefined : object[key];
-  return isNative(value) ? value : undefined;
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
 }
 
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in older versions of Chrome and Safari which return 'function' for regexes
-  // and Safari 8 equivalents which return 'object' for typed array constructors.
-  return isObject(value) && objToString.call(value) == funcTag;
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
 }
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
 
-/**
- * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(1);
- * // => false
- */
-function isObject(value) {
-  // Avoid a V8 JIT bug in Chrome 19-20.
-  // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
+function noop() {}
 
-/**
- * Checks if `value` is a native function.
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
- * @example
- *
- * _.isNative(Array.prototype.push);
- * // => true
- *
- * _.isNative(_);
- * // => false
- */
-function isNative(value) {
-  if (value == null) {
-    return false;
-  }
-  if (isFunction(value)) {
-    return reIsNative.test(fnToString.call(value));
-  }
-  return isObjectLike(value) && reIsHostCtor.test(value);
-}
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
 
-module.exports = getNative;
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
 
-},{}],18:[function(require,module,exports){
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],14:[function(require,module,exports){
 var querystring = require('querystring');
 
 var qp = {
@@ -3430,4 +3408,183 @@ var qp = {
 
 //
 module.exports = qp;
-},{"querystring":14}]},{},[4]);
+},{"querystring":17}],15:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],16:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],17:[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":15,"./encode":16}]},{},[4]);
