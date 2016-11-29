@@ -26,7 +26,7 @@ $directions: top, right, bottom, left;
 
 @each $direction in $directions {
   .animate-appear-#{$direction} {
-    animation: appear-#{$direction} 0.4s ease-in;
+    animation: appear-#{$direction} 0.4s ease-in-out;
     animation-fill-mode: forwards;
   }
 }
@@ -49,8 +49,8 @@ $directions: top, right, bottom, left;
       margin-#{$margin-direction}: #{10 * $reverse}px;
       opacity: 0;
     }
-    50% {
-      margin-#{$margin-direction}: #{-5 * $reverse}px;
+    40% {
+      margin-#{$margin-direction}: #{-2.5 * $reverse}px;
     }
     100% {
       margin-#{$margin-direction}: 0px;
