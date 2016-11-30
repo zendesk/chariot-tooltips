@@ -1,0 +1,189 @@
+<html>
+<head>
+<script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="/dist/javascripts/chariot.js"></script>
+<link rel="stylesheet" type="text/css" href="/dist/stylesheets/chariot.css">
+<link rel="stylesheet" type="text/css" href="example-tooltip.css">
+
+<style>
+  body {
+    background: black;
+  }
+	.outer {
+		position: relative;
+		top: 20%;
+		left: 30%;
+		z-index: 3;
+		width: 500px;
+		height: 500px;
+		background: red;
+	}
+	.inner {
+    float: left;
+	 	width: 250px;
+		height: 250px;
+
+	}
+  .inner button {
+    padding: 20px;
+    width: 100px;
+    height: 100px;
+  }
+  .top-left {
+    background: blue;
+  }
+  .top-right {
+    background: yellow;
+  }
+  .bottom-left {
+    background: pink;
+  }
+  a {
+    color: white;
+  }
+  .far-below {
+    margin-top: 1000px;
+    background: green;
+  }
+</style>
+
+</head>
+
+<body>
+  <div><a href="#" class="add-history-link">1. Add history</a></div>
+  <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
+  <div><a href="#" class="create-tutorial-link">3. Create tutorial without chariot instance</a></div>
+
+  <div class='outer'>
+    <div class="inner top-left"><button>Top Left</button></div>
+    <div class="inner top-right"><button>Top Right</button></div>
+    <div class="inner bottom-left"><button>Bottom Left</button></div>
+  </div>
+
+  <div class="inner far-below"><button>Far Below</button></div>
+<script>
+
+var delegate = this;
+
+var chariot = new Chariot({
+  ticketing: {
+    steps: [
+      // Step #1 illustrates the basic content of a tooltip
+      {
+        selectors: {
+          topLeft: ".top-left"
+        },
+        tooltip: {
+          position: 'bottom', // 'top' | 'left' | 'bottom' | 'right'
+          title: 'Know your customer',
+          text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
+          iconUrl: '/assets/images/agent@2x.png',
+          attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
+          arrowLength: 20,
+          xOffsetTooltip: 110,
+          offsetArrow: 110,
+          className: 'tooltip-class1 tooltip-class2'
+        }
+      },
+      // Step #2 illustrates the ability to highlight select two selectors
+      {
+        selectors: {
+          topRight: ".top-right",
+          bottomLeft: ".bottom-left"
+        },
+        tooltip: {
+          position: 'top',
+          title: 'Tooltip #2',
+          text: 'Two selectors being highlighted.',
+          anchorElement: "topRight"
+        }
+      },
+      // This step illustrates how a tooltip can be offset
+      {
+        selectors: {
+          bottomLeft: ".bottom-left"
+        },
+        tooltip: {
+          position: 'right',
+          title: 'Tooltip #3',
+          text: 'Placeholder text.',
+          yOffsetTooltip: 50,
+          xOffsetTooltip: 20,
+          offsetArrow: 50
+        }
+      }
+    ],
+    onComplete: function() {
+      console.log('onComplete called from configuration');
+    },
+    useTransparentOverlayStrategy: true
+  }
+}, delegate);
+
+function sleepFor(sleepDuration, message) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, sleepDuration);
+    console.log(message);
+  });
+}
+
+function willBeginTutorial(tutorial) {
+  console.log("delegate - willBeginTutorial\n  tutorial:" + tutorial);
+  return sleepFor(0, "willBeginTutorial promise resolved");
+}
+function willBeginStep(step, stepIndex, tutorial) {
+  console.log("delegate - willBeginStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return sleepFor(0, "willBeginStep promise resolved");
+}
+function willShowOverlay(overlay, stepIndex, tutorial) {
+  console.log("delegate - willShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return sleepFor(0, "willShowOverlay promise resolved");
+}
+function didShowOverlay(overlay, stepIndex, tutorial) {
+  console.log("delegate - didShowOverlay\n  overlay:" + overlay + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return sleepFor(0, "didShowOverlay promise resolved");
+}
+function willRenderTooltip(tooltip, stepIndex, tutorial) {
+  console.log("delegate - willRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return sleepFor(0, "willRenderTooltip promise resolved");
+}
+function didRenderTooltip(tooltip, stepIndex, tutorial) {
+  console.log("delegate - didRenderTooltip\n  tooltip:" + tooltip + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return sleepFor(0, "didRenderTooltip promise resolved");
+}
+function didFinishStep(step, stepIndex, tutorial) {
+  console.log("delegate - didFinishStep\n  step:" + step + "\n  stepIndex:" + stepIndex + "\n  tutorial:" + tutorial);
+  return sleepFor(0, "didFinishStep promise resolved");
+}
+function didFinishTutorial(tutorial, forced) {
+  console.log("delegate - didFinishTutorial\n  tutorial:" + tutorial + " forced:" + forced);
+  return sleepFor(0, "didFinishTutorial promise resolved");
+}
+
+$(function() {
+  $('.add-history-link').click(function() {
+    history.pushState({}, "page 2", "index.html?tutorial=ticketing");
+  });
+
+  $('.start-tutorial-link').click(function() {
+    chariot.startTutorial('ticketing');
+  });
+
+  $('.create-tutorial-link').click(function() {
+    Chariot.startTutorial([
+      {
+        selectors: ".create-tutorial-link",
+        tooltip: {
+          position: 'right',
+          title: 'Launch tutorials ad-hoc without a massive up-front configuration',
+          text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
+        }
+      }
+    ], delegate);
+  });
+});
+</script>
+</body>
+
+
+</html>
