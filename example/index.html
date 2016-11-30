@@ -41,26 +41,19 @@
   a {
     color: white;
   }
-  .far-below {
-    margin-top: 1000px;
-    background: green;
-  }
 </style>
 
 </head>
 
 <body>
-  <div><a href="#" class="add-history-link">1. Add history</a></div>
   <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
   <div><a href="#" class="create-tutorial-link">3. Create tutorial without chariot instance</a></div>
+<div class='outer'>
+  <div class="inner top-left"><button>Top Left</button></div>
+  <div class="inner top-right"><button>Top Right</button></div>
+  <div class="inner bottom-left"><button>Bottom Left</button></div>
+</div>
 
-  <div class='outer'>
-    <div class="inner top-left"><button>Top Left</button></div>
-    <div class="inner top-right"><button>Top Right</button></div>
-    <div class="inner bottom-left"><button>Bottom Left</button></div>
-  </div>
-
-  <div class="inner far-below"><button>Far Below</button></div>
 <script>
 
 var delegate = this;
@@ -77,6 +70,7 @@ var chariot = new Chariot({
           position: 'bottom', // 'top' | 'left' | 'bottom' | 'right'
           title: 'Know your customer',
           text: 'Find out who sent the ticket. Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.Find out who sent the ticket.',
+          // anchorElement: "topLeft",
           iconUrl: '/assets/images/agent@2x.png',
           attr: { 'id': 'know_your_customer', 'data-track-id': 'know_your_customer' },
           arrowLength: 20,
@@ -95,6 +89,7 @@ var chariot = new Chariot({
           position: 'top',
           title: 'Tooltip #2',
           text: 'Two selectors being highlighted.',
+          // xOffsetTooltip: -50,
           anchorElement: "topRight"
         }
       },
@@ -107,21 +102,64 @@ var chariot = new Chariot({
           position: 'right',
           title: 'Tooltip #3',
           text: 'Placeholder text.',
+          // anchorElement: "bottomLeft",
           yOffsetTooltip: 50,
           xOffsetTooltip: 20,
           offsetArrow: 50
+
+        }
+      },
+      {
+        selectors:  ".bottom-left",
+        tooltip: {
+          position: 'left',
+          title: 'Tooltip #4',
+          text: 'Placeholder text.'
         }
       }
+      /*
+      // This step shows how a missing selector will cause a tutorial to end
+      {
+        selectors: {
+          bottomLeft: ".bottom-left",
+          notExistent: ".where-am-i"
+        },
+        tooltip: {
+          position: 'bottom',
+          title: 'Tooltip #3',
+          text: 'Placeholder text.',
+          anchorElement: "bottomLeft",
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
+        }
+      },
+      // This step is skipped entirely because of the last step
+      {
+        selectors: {
+          topRight: ".top-right"
+        },
+        tooltip: {
+          position: 'left',
+          title: 'Tooltip #4',
+          text: 'This tooltip is skipped because tooltip #3 config had an invalid selector.',
+          anchorElement: "topRight",
+          cta: 'Next',
+          subtext: function(currentStep, totalSteps) {
+            return `${currentStep} of ${totalSteps}`;
+          }
+        }
+      }
+      */
     ],
-    onComplete: function() {
-      console.log('onComplete called from configuration');
-    },
-    useTransparentOverlayStrategy: true
+    // shouldOverlay: false,
+    useTransparentOverlayStrategy: true,
   }
 }, delegate);
 
 function sleepFor(sleepDuration, message) {
-  return new Promise(function(resolve) {
+  return new Promise(resolve => {
     setTimeout(resolve, sleepDuration);
     console.log(message);
   });
@@ -161,25 +199,26 @@ function didFinishTutorial(tutorial, forced) {
 }
 
 $(function() {
-  $('.add-history-link').click(function() {
-    history.pushState({}, "page 2", "index.html?tutorial=ticketing");
-  });
-
   $('.start-tutorial-link').click(function() {
     chariot.startTutorial('ticketing');
   });
 
   $('.create-tutorial-link').click(function() {
-    Chariot.startTutorial([
-      {
-        selectors: ".create-tutorial-link",
-        tooltip: {
-          position: 'right',
-          title: 'Launch tutorials ad-hoc without a massive up-front configuration',
-          text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
+    var tutorial = Chariot.createTutorial({
+      steps: [
+        {
+          selectors: {
+            link: ".create-tutorial-link"
+          },
+          tooltip: {
+            position: 'right',
+            title: 'Launch tutorials ad-hoc without a massive up-front configuration',
+            text: 'Dynamically create tutorials and launch them without needing to instantiate chariot first.'
+          }
         }
-      }
-    ], delegate);
+      ]
+    }, delegate);
+    tutorial.start();
   });
 });
 </script>
