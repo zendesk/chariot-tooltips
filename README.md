@@ -117,6 +117,6 @@ release/chariot.[min.]css into your project's `vendor/` folder.
 
 # Copyright and License
 
-Copyright 2014, Zendesk Inc. Licensed under the Apache License Version 2.0, http://www.apache.org/licenses/LICENSE-2.0
+Copyright 2016, Zendesk Inc. Licensed under the Apache License Version 2.0, http://www.apache.org/licenses/LICENSE-2.0
 
 

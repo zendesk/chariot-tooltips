@@ -1,9 +1,11 @@
 {
-  "name": "Chariot",
-  "main": "dist/chariot.js",
+  "name": "chariot-tooltips",
+  "main": "dist/javascripts/chariot.js",
   "description": "A JavaScript library for creating beautiful in product tutorials",
-  "version": "2.0.1",
+  "version": "1.0.0",
   "repository": "https://github.com/zendesk/chariot",
+  "engines": { "node" : ">=6" },
+  "author": "Herbert Siojo <herbert.siojo@gmail.com>",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-loader": "^6.2.7",
