@@ -148,7 +148,7 @@ gulp.task('release', function(cb) {
 
 gulp.task('git-tag', function(cb) {
   var version = getVersion();
-  return gulp.src(["release", "package.json", "npm-shrinkwrap.json", "bower.json"])
+  return gulp.src(["release", "package.json", "bower.json"])
     .pipe(git.commit('bump version'))
     .pipe(
       prompt.prompt({

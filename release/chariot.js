@@ -1,9 +1,9 @@
 /**
- * Chariot v2.0.1 - A JavaScript library for creating beautiful in product tutorials
+ * chariot-tooltips v1.0.0 - A JavaScript library for creating beautiful in product tutorials
  *
- * https://github.com/zendesk/chariot
+ * https://github.com/zendesk/chariot-tooltips
  *
- * Copyright 2015 Zendesk Inc.
+ * Copyright 2016 Zendesk Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+
  */
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /* global
@@ -350,8 +351,6 @@ var _chariot = require('./chariot');
 
 var _chariot2 = _interopRequireDefault(_chariot);
 
-window.Chariot = _chariot2['default'];
-
 /**
  * Export for various environments.
  */
@@ -364,7 +363,7 @@ if (typeof module !== 'undefined' && module.exports) {
     return _chariot2['default'];
   });
 } else {
-  root.Chariot = _chariot2['default'];
+  window.Chariot = _chariot2['default'];
 }
 
 },{"./chariot":1}],5:[function(require,module,exports){

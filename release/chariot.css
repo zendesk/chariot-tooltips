@@ -1,9 +1,9 @@
 /**
- * Chariot v2.0.1 - A JavaScript library for creating beautiful in product tutorials
+ * chariot-tooltips v1.0.0 - A JavaScript library for creating beautiful in product tutorials
  *
- * https://github.com/zendesk/chariot
+ * https://github.com/zendesk/chariot-tooltips
  *
- * Copyright 2015 Zendesk Inc.
+ * Copyright 2016 Zendesk Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+
  */
 .chariot-tooltip {
   position: absolute; }
