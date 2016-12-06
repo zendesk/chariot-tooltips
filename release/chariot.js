@@ -18,38 +18,34 @@
  * limitations under the License.
 
  */
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/* global
-history, location
-*/
-
-/* Please refer to example page to see how a typical configuration is structured */
-
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.chariot = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     history, location
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+/* Please refer to example page to see how a typical configuration is structured */
 
 var _tutorial = require('./tutorial');
 
 var _tutorial2 = _interopRequireDefault(_tutorial);
 
-var _queryParse = require('query-parse');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _queryParse2 = _interopRequireDefault(_queryParse);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 require('./ie-shim');
 
 var initialState = true;
 
-var Chariot = (function () {
+var Chariot = function () {
   /**
    * The master Chariot configuration dictionary can consist of multiple
    *  tutorial configurations.
@@ -162,7 +158,6 @@ var Chariot = (function () {
    * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
    *  lifecycle callbacks
    */
-
   function Chariot(config, delegate) {
     _classCallCheck(this, Chariot);
 
@@ -178,6 +173,7 @@ var Chariot = (function () {
    *  lifecycle callbacks
    */
 
+
   _createClass(Chariot, [{
     key: 'setDelegate',
     value: function setDelegate(delegate) {
@@ -191,6 +187,7 @@ var Chariot = (function () {
      * @returns {Tutorial} tutorial - The Tutorial object, or undefined if
      *  another tutorial is currently active.
      */
+
   }, {
     key: 'startTutorial',
     value: function startTutorial(name) {
@@ -206,6 +203,7 @@ var Chariot = (function () {
      * Ends the current tutorial.
      * @returns {undefined}
      */
+
   }, {
     key: 'endTutorial',
     value: function endTutorial() {
@@ -217,6 +215,7 @@ var Chariot = (function () {
      * Returns the current tutorial, if any.
      * @returns {Tutorial} tutorial - The current tutorial, or null if none active
      */
+
   }, {
     key: 'currentTutorial',
     value: function currentTutorial() {
@@ -233,6 +232,7 @@ var Chariot = (function () {
      * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
      *  lifecycle callbacks
      */
+
   }, {
     key: 'toString',
     value: function toString() {
@@ -244,17 +244,17 @@ var Chariot = (function () {
   }, {
     key: '_readConfig',
     value: function _readConfig(config) {
-      if (!config || typeof config !== 'object') {
+      if (!config || (typeof config === 'undefined' ? 'undefined' : _typeof(config)) !== 'object') {
         throw new Error('Config must contains a tutorials hash.\n' + this);
       }
       for (var tutorialName in config) {
-        this.tutorials[tutorialName] = new _tutorial2['default'](config[tutorialName], tutorialName, this.delegate);
+        this.tutorials[tutorialName] = new _tutorial2.default(config[tutorialName], tutorialName, this.delegate);
       }
     }
   }], [{
     key: 'createTutorial',
     value: function createTutorial(config, delegate) {
-      return new _tutorial2['default'](config, '', delegate);
+      return new _tutorial2.default(config, '', delegate);
     }
 
     /**
@@ -264,6 +264,7 @@ var Chariot = (function () {
      * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
      *  lifecycle callbacks
      */
+
   }, {
     key: 'startTutorial',
     value: function startTutorial(config, delegate) {
@@ -274,25 +275,25 @@ var Chariot = (function () {
   }]);
 
   return Chariot;
-})();
+}();
 
-exports['default'] = Chariot;
+exports.default = Chariot;
 module.exports = exports['default'];
 
-},{"./ie-shim":3,"./tutorial":9,"query-parse":14}],2:[function(require,module,exports){
+},{"./ie-shim":3,"./tutorial":8}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Constant = (function () {
+var Constant = function () {
   function Constant() {
-    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     _classCallCheck(this, Constant);
 
@@ -304,7 +305,7 @@ var Constant = (function () {
   _createClass(Constant, [{
     key: "reload",
     value: function reload() {
-      var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       this.OVERLAY_Z_INDEX = options.overlayZIndex || 20;
       this.CLONE_Z_INDEX = this.OVERLAY_Z_INDEX + 1;
@@ -313,17 +314,17 @@ var Constant = (function () {
   }]);
 
   return Constant;
-})();
+}();
 
-exports["default"] = new Constant();
+exports.default = new Constant();
 module.exports = exports["default"];
 
 },{}],3:[function(require,module,exports){
+"use strict";
+
 // this shim is to fix IE & Firefox's problem where
 // getComputedStyle(<element>).cssText returns an empty string rather than a
 // string of computed CSS styles for the element
-"use strict";
-
 if (typeof navigator !== "undefined" && navigator.userAgent.match(/msie|windows|firefox/i)) {
   Node.prototype.getComputedCSSText = function () {
     var s = [];
@@ -345,51 +346,26 @@ if (typeof navigator !== "undefined" && navigator.userAgent.match(/msie|windows|
 },{}],4:[function(require,module,exports){
 'use strict';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _chariot = require('./chariot');
-
-var _chariot2 = _interopRequireDefault(_chariot);
-
-/**
- * Export for various environments.
- */
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = _chariot2['default'];
-} else if (typeof exports !== 'undefined') {
-  exports.Chariot = _chariot2['default'];
-} else if (typeof define === 'function' && define.amd) {
-  define([], function () {
-    return _chariot2['default'];
-  });
-} else {
-  window.Chariot = _chariot2['default'];
-}
-
-},{"./chariot":1}],5:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _constants = require('./constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var Overlay = (function () {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Overlay = function () {
 
   /**
    * @constructor
    *
    */
-
   function Overlay(config) {
     _classCallCheck(this, Overlay);
 
@@ -432,6 +408,7 @@ var Overlay = (function () {
      * background for the cloned elements involved in the tutorial.
      * This method is involved in the "clone element" strategy.
      */
+
   }, {
     key: 'showBackgroundOverlay',
     value: function showBackgroundOverlay() {
@@ -453,6 +430,7 @@ var Overlay = (function () {
      * Shows a transparent overlay to prevent user from interacting with cloned
      * elements.
      */
+
   }, {
     key: 'showTransparentOverlay',
     value: function showTransparentOverlay() {
@@ -464,6 +442,7 @@ var Overlay = (function () {
      * dimensions and changes the borders to be colored to obscure the main UI.
      * This method is involved in the "transparent overlay" strategy.
      */
+
   }, {
     key: 'focusOnElement',
     value: function focusOnElement($element) {
@@ -498,7 +477,7 @@ var Overlay = (function () {
     key: '_createOverlay',
     value: function _createOverlay() {
       var $overlay = $("<div class='chariot-overlay'></div>");
-      $overlay.css({ 'z-index': _constants2['default'].OVERLAY_Z_INDEX });
+      $overlay.css({ 'z-index': _constants2.default.OVERLAY_Z_INDEX });
       return $overlay;
     }
   }, {
@@ -506,7 +485,7 @@ var Overlay = (function () {
     value: function _createTransparentOverlay() {
       var $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
       $transparentOverlay.css({
-        'z-index': _constants2['default'].CLONE_Z_INDEX + 1,
+        'z-index': _constants2.default.CLONE_Z_INDEX + 1,
         width: document.body.scrollWidth,
         height: document.body.scrollHeight
       });
@@ -514,6 +493,7 @@ var Overlay = (function () {
     }
 
     // Used for clone element strategy
+
   }, {
     key: '_resizeOverlayToFullScreen',
     value: function _resizeOverlayToFullScreen() {
@@ -524,6 +504,7 @@ var Overlay = (function () {
     }
 
     // Used for transparent overlay strategy
+
   }, {
     key: '_resizeOverlayToElement',
     value: function _resizeOverlayToElement($element) {
@@ -556,27 +537,23 @@ var Overlay = (function () {
   }]);
 
   return Overlay;
-})();
+}();
 
-exports['default'] = Overlay;
+exports.default = Overlay;
 module.exports = exports['default'];
 
-},{"./constants":2}],6:[function(require,module,exports){
+},{"./constants":2}],5:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _lodash = require('lodash.debounce');
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-var _lodashDebounce = require('lodash.debounce');
-
-var _lodashDebounce2 = _interopRequireDefault(_lodashDebounce);
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _tooltip = require('./tooltip');
 
@@ -590,12 +567,16 @@ var _style = require('./style');
 
 var _style2 = _interopRequireDefault(_style);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var MAX_ATTEMPTS = 100;
 var DOM_QUERY_DELAY = 100;
 
 var Promise = require('es6-promise').Promise;
 
-var Step = (function () {
+var Step = function () {
 
   /** The step configuration is where you specify which elements of the page
    * will be cloned and placed over the overlay. These elements are the
@@ -624,11 +605,15 @@ var Step = (function () {
    * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
    *  lifecycle callbacks
    */
-
-  function Step(config, index, tutorial, overlay, delegate) {
-    if (config === undefined) config = {};
+  function Step() {
+    var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var index = arguments[1];
+    var tutorial = arguments[2];
 
     var _this = this;
+
+    var overlay = arguments[3];
+    var delegate = arguments[4];
 
     _classCallCheck(this, Step);
 
@@ -665,7 +650,7 @@ var Step = (function () {
       this._elementMap[selectorName] = {};
     }
 
-    this.tooltip = new _tooltip2['default'](config.tooltip, this, tutorial);
+    this.tooltip = new _tooltip2.default(config.tooltip, this, tutorial);
   }
 
   _createClass(Step, [{
@@ -710,13 +695,13 @@ var Step = (function () {
         _this2.overlay.resize();
 
         // Setup resize handler
-        _this2._resizeHandler = (0, _lodashDebounce2['default'])(function () {
+        _this2._resizeHandler = (0, _lodash2.default)(function () {
           for (var selectorName in _this2.selectors) {
             var elementInfo = _this2._elementMap[selectorName];
             if (elementInfo.clone) {
               var $element = elementInfo.element;
               var $clone = elementInfo.clone;
-              _style2['default'].clearCachedStylesForElement($element);
+              _style2.default.clearCachedStylesForElement($element);
               _this2._applyComputedStyles($clone, $element);
               _this2._positionClone($clone, $element);
             }
@@ -725,7 +710,7 @@ var Step = (function () {
           _this2.overlay.resize();
         }, 50);
         $(window).on('resize', _this2._resizeHandler);
-      })['catch'](function (error) {
+      }).catch(function (error) {
         console.log(error);
         _this2.tutorial.tearDown();
       });
@@ -741,7 +726,7 @@ var Step = (function () {
         }
       }).then(function () {
         _this3.tutorial.next();
-      })['catch'](function (error) {
+      }).catch(function (error) {
         console.log(error);
         _this3.tutorial.next();
       });
@@ -760,7 +745,7 @@ var Step = (function () {
       for (var selectorName in this.selectors) {
         var selector = this.selectors[selectorName];
         // Remove computed styles
-        _style2['default'].clearCachedStylesForElement($(selector));
+        _style2.default.clearCachedStylesForElement($(selector));
         var elementInfo = this._elementMap[selectorName];
         if (elementInfo.clone) {
           // Remove cloned elements
@@ -818,7 +803,7 @@ var Step = (function () {
 
       var promises = [];
 
-      var _loop = function (selectorName) {
+      var _loop = function _loop(selectorName) {
         var promise = new Promise(function (resolve, reject) {
           _this4._waitForElement(selectorName, 0, resolve, reject);
         });
@@ -860,7 +845,7 @@ var Step = (function () {
     value: function _computeStyles($element) {
       var _this6 = this;
 
-      _style2['default'].getComputedStylesFor($element[0]);
+      _style2.default.getComputedStylesFor($element[0]);
       $element.children().toArray().forEach(function (child) {
         _this6._computeStyles($(child));
       });
@@ -904,7 +889,7 @@ var Step = (function () {
         return;
       }
       $clone.addClass('chariot-clone');
-      _style2['default'].cloneStyles($element, $clone);
+      _style2.default.cloneStyles($element, $clone);
       var clonedChildren = $clone.children().toArray();
       $element.children().toArray().forEach(function (child, index) {
         _this8._applyComputedStyles($(clonedChildren[index]), $(child));
@@ -914,7 +899,7 @@ var Step = (function () {
     key: '_positionClone',
     value: function _positionClone($clone, $element) {
       $clone.css({
-        'z-index': _constants2['default'].CLONE_Z_INDEX,
+        'z-index': _constants2.default.CLONE_Z_INDEX,
         position: 'absolute'
       });
       $clone.offset($element.offset());
@@ -922,25 +907,25 @@ var Step = (function () {
   }]);
 
   return Step;
-})();
+}();
 
-exports['default'] = Step;
+exports.default = Step;
 module.exports = exports['default'];
 
-},{"./constants":2,"./style":7,"./tooltip":8,"es6-promise":10,"lodash.debounce":12}],7:[function(require,module,exports){
+},{"./constants":2,"./style":6,"./tooltip":7,"es6-promise":9,"lodash.debounce":11}],6:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var CHARIOT_COMPUTED_STYLE_CLASS_PREFIX = 'chariot_computed_styles';
 
-var Style = (function () {
+var Style = function () {
   function Style() {
     _classCallCheck(this, Style);
   }
@@ -1033,12 +1018,13 @@ var Style = (function () {
   }, {
     key: '_generateUniqueClassName',
     value: function _generateUniqueClassName() {
-      var prefix = arguments.length <= 0 || arguments[0] === undefined ? 'class' : arguments[0];
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'class';
 
       return prefix + '_' + Math.floor(Math.random() * 1000000);
     }
 
     // NOTE: unused currently
+
   }, {
     key: '_clonePseudoStyle',
     value: function _clonePseudoStyle($element, $clone, pseudoClass) {
@@ -1056,11 +1042,12 @@ var Style = (function () {
       (https://bugzilla.mozilla.org/show_bug.cgi?id=381328)
     - IE9 does not implement getComputedCSSText()
     */
+
   }, {
     key: '_cacheStyleFor',
     value: function _cacheStyleFor(element) {
       // check for IE getComputedCSSText()
-      var computedStyles = undefined;
+      var computedStyles = void 0;
       if (navigator.userAgent.match(/msie|windows|firefox/i)) {
         computedStyles = element.getComputedCSSText();
       } else {
@@ -1079,23 +1066,19 @@ var Style = (function () {
   }]);
 
   return Style;
-})();
+}();
 
-exports['default'] = Style;
+exports.default = Style;
 module.exports = exports['default'];
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _constants = require('./constants');
 
@@ -1104,6 +1087,10 @@ var _constants2 = _interopRequireDefault(_constants);
 var _style = require('./style');
 
 var _style2 = _interopRequireDefault(_style);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // distance between arrow tip and edge of tooltip, not including border
 var DEFAULT_ARROW_LENGTH = 11;
@@ -1159,7 +1146,7 @@ var DEFAULT_ARROW_LENGTH = 11;
  * @returns {string} markup - The HTML markup that represents the subtext
  */
 
-var Tooltip = (function () {
+var Tooltip = function () {
   /**
    * @constructor
    * @param {TooltipConfiguration} config - The configuration for this tooltip
@@ -1167,7 +1154,6 @@ var Tooltip = (function () {
    * @param {Tutorial} tutorial - The Tutorial object corresponding to this
    *  Tooltip
    */
-
   function Tooltip(config, step, tutorial) {
     _classCallCheck(this, Tooltip);
 
@@ -1336,12 +1322,12 @@ var Tooltip = (function () {
       this.borderRightWidth = parseInt($tooltip.css('border-right-width')) || 0;
       this.borderBottomWidth = parseInt($tooltip.css('border-bottom-width')) || 0;
       this.borderTopWidth = parseInt($tooltip.css('border-top-width')) || 0;
-      var top = _style2['default'].calculateTop($tooltip, $anchorElement, this.yOffsetTooltip, this.position, this.arrowLength + this.borderTopWidth + this.borderBottomWidth);
-      var left = _style2['default'].calculateLeft($tooltip, $anchorElement, this.xOffsetTooltip, this.position, this.arrowLength + this.borderLeftWidth + this.borderRightWidth);
+      var top = _style2.default.calculateTop($tooltip, $anchorElement, this.yOffsetTooltip, this.position, this.arrowLength + this.borderTopWidth + this.borderBottomWidth);
+      var left = _style2.default.calculateLeft($tooltip, $anchorElement, this.xOffsetTooltip, this.position, this.arrowLength + this.borderLeftWidth + this.borderRightWidth);
       var tooltipStyles = {
         top: top,
         left: left,
-        'z-index': _constants2['default'].TOOLTIP_Z_INDEX,
+        'z-index': _constants2.default.TOOLTIP_Z_INDEX,
         position: 'absolute'
       };
       $tooltip.css(tooltipStyles);
@@ -1352,6 +1338,7 @@ var Tooltip = (function () {
       If a tooltip is offset via xOffsetTooltip / yOffsetTooltip, the arrow will continue to
       point to center. You can change this via the offsetArrow property.
     */
+
   }, {
     key: '_positionArrow',
     value: function _positionArrow($tooltip, $tooltipArrow) {
@@ -1364,15 +1351,15 @@ var Tooltip = (function () {
 
       var arrowEdgeStyle = arrowEdge + 'px';
       var arrowStyles = {
-        'z-index': _constants2['default'].TOOLTIP_Z_INDEX + 1,
+        'z-index': _constants2.default.TOOLTIP_Z_INDEX + 1,
         width: arrowEdgeStyle,
         height: arrowEdgeStyle
       };
-      var top = undefined,
-          left = undefined,
-          min = undefined,
-          max = undefined,
-          borderWidth = undefined;
+      var top = void 0,
+          left = void 0,
+          min = void 0,
+          max = void 0,
+          borderWidth = void 0;
 
       var borderRadius = parseInt($tooltip.css('border-radius')) || 0;
 
@@ -1472,23 +1459,19 @@ var Tooltip = (function () {
   }]);
 
   return Tooltip;
-})();
+}();
 
-exports['default'] = Tooltip;
+exports.default = Tooltip;
 module.exports = exports['default'];
 
-},{"./constants":2,"./style":7}],9:[function(require,module,exports){
+},{"./constants":2,"./style":6}],8:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _step = require('./step');
 
@@ -1502,11 +1485,16 @@ var _constants = require('./constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var Promise = require('es6-promise').Promise;
+
 
 var DEFAULT_SCROLL_ANIMATION_DURATION = 500;
 
-var Tutorial = (function () {
+var Tutorial = function () {
   /**
    * <p>The tutorial configuration is where the steps of a tutorial are specified,
    * and also allows customization of the overlay style.
@@ -1621,7 +1609,6 @@ var Tutorial = (function () {
    * @param {ChariotDelegate} [delegate] - An optional delegate that responds to
    *  lifecycle callbacks
    */
-
   function Tutorial(config, name, delegate) {
     var _this = this;
 
@@ -1632,8 +1619,8 @@ var Tutorial = (function () {
     this.steps = [];
 
     var configType = Object.prototype.toString.call(config);
-    var stepConfigs = undefined,
-        overlayConfig = undefined;
+    var stepConfigs = void 0,
+        overlayConfig = void 0;
     if (configType === '[object Array]') {
       stepConfigs = config;
       overlayConfig = {};
@@ -1655,9 +1642,9 @@ var Tutorial = (function () {
       throw new Error('config must be an object or array');
     }
 
-    this.overlay = new _overlay2['default'](overlayConfig);
+    this.overlay = new _overlay2.default(overlayConfig);
     stepConfigs.forEach(function (stepConfig, index) {
-      _this.steps.push(new _step2['default'](stepConfig, index, _this, _this.overlay, _this.delegate));
+      _this.steps.push(new _step2.default(stepConfig, index, _this, _this.overlay, _this.delegate));
     });
     this._prepared = false;
     this._isActive = false;
@@ -1667,6 +1654,7 @@ var Tutorial = (function () {
    * Indicates if this tutorial is currently active.
    * return {boolean}
    */
+
 
   _createClass(Tutorial, [{
     key: 'isActive',
@@ -1678,13 +1666,14 @@ var Tutorial = (function () {
      * Starts the tutorial and marks itself as active.
      * @returns {Promise}
      */
+
   }, {
     key: 'start',
     value: function start() {
       var _this2 = this;
 
       if (this.zIndex !== null) {
-        _constants2['default'].reload({ overlayZIndex: this.zIndex });
+        _constants2.default.reload({ overlayZIndex: this.zIndex });
       }
       if (this.steps.length === 0) {
         throw new Error('steps should not be empty.\n' + this);
@@ -1701,7 +1690,7 @@ var Tutorial = (function () {
       }).then(function () {
         _this2.currentStep = _this2.steps[0];
         _this2.currentStep.render();
-      })['catch'](function () {
+      }).catch(function () {
         _this2.tearDown();
       });
     }
@@ -1710,6 +1699,7 @@ var Tutorial = (function () {
      * Prepares each step of the tutorial, to speedup rendering.
      * @returns {undefined}
      */
+
   }, {
     key: 'prepare',
     value: function prepare() {
@@ -1732,6 +1722,7 @@ var Tutorial = (function () {
      *  determine the next step.
      * @returns {undefined}
      */
+
   }, {
     key: 'next',
     value: function next(step) {
@@ -1750,7 +1741,7 @@ var Tutorial = (function () {
         this.currentStep.tearDown();
       }
 
-      var nextStep = undefined;
+      var nextStep = void 0;
       if (step) {
         if (typeof step === 'number') {
           if (step < 0 || step >= this.steps.length) {
@@ -1776,6 +1767,7 @@ var Tutorial = (function () {
      * @param {Step} step - The step instance for which we want the index
      * @returns {integer} stepNum - The one-indexed step number
      */
+
   }, {
     key: 'stepNum',
     value: function stepNum(step) {
@@ -1788,6 +1780,7 @@ var Tutorial = (function () {
      * Nulls out internal references.
      * @returns {undefined}
      */
+
   }, {
     key: 'tearDown',
     value: function tearDown() {
@@ -1803,6 +1796,7 @@ var Tutorial = (function () {
      * Retrieves the Step object at index.
      * @returns {Step} step
      */
+
   }, {
     key: 'getStep',
     value: function getStep(index) {
@@ -1817,12 +1811,13 @@ var Tutorial = (function () {
      *  end
      * @returns {undefined}
      */
+
   }, {
     key: 'end',
     value: function end() {
       var _this4 = this;
 
-      var forced = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+      var forced = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
       // Note: Order matters.
       this.tearDown();
@@ -1843,12 +1838,12 @@ var Tutorial = (function () {
   }]);
 
   return Tutorial;
-})();
+}();
 
-exports['default'] = Tutorial;
+exports.default = Tutorial;
 module.exports = exports['default'];
 
-},{"./constants":2,"./overlay":5,"./step":6,"es6-promise":10}],10:[function(require,module,exports){
+},{"./constants":2,"./overlay":4,"./step":5,"es6-promise":9}],9:[function(require,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -2824,7 +2819,7 @@ module.exports = exports['default'];
 
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":13}],11:[function(require,module,exports){
+},{"_process":12}],10:[function(require,module,exports){
 /**
  * lodash 3.9.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -2963,7 +2958,7 @@ function isNative(value) {
 
 module.exports = getNative;
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * lodash 3.1.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -3199,7 +3194,7 @@ function isObject(value) {
 
 module.exports = debounce;
 
-},{"lodash._getnative":11}],13:[function(require,module,exports){
+},{"lodash._getnative":10}],12:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3381,209 +3376,5 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],14:[function(require,module,exports){
-var querystring = require('querystring');
-
-var qp = {
-  toString: function (params) {
-    var str = '';
-    Object.keys(params).forEach(function (key) {
-      if (params[key] !== undefined) {
-        if (str !== '') {
-          str += '&';
-        }
-        
-        str += key + '=' + encodeURIComponent(params[key]);
-      }
-    });
-    
-    return str;
-  },
-  
-  toObject: function (str) {
-    return querystring.parse(str);
-  }
-};
-
-//
-module.exports = qp;
-},{"querystring":17}],15:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-},{}],16:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-var stringifyPrimitive = function(v) {
-  switch (typeof v) {
-    case 'string':
-      return v;
-
-    case 'boolean':
-      return v ? 'true' : 'false';
-
-    case 'number':
-      return isFinite(v) ? v : '';
-
-    default:
-      return '';
-  }
-};
-
-module.exports = function(obj, sep, eq, name) {
-  sep = sep || '&';
-  eq = eq || '=';
-  if (obj === null) {
-    obj = undefined;
-  }
-
-  if (typeof obj === 'object') {
-    return map(objectKeys(obj), function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-      if (isArray(obj[k])) {
-        return map(obj[k], function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-      } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-      }
-    }).join(sep);
-
-  }
-
-  if (!name) return '';
-  return encodeURIComponent(stringifyPrimitive(name)) + eq +
-         encodeURIComponent(stringifyPrimitive(obj));
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-function map (xs, f) {
-  if (xs.map) return xs.map(f);
-  var res = [];
-  for (var i = 0; i < xs.length; i++) {
-    res.push(f(xs[i], i));
-  }
-  return res;
-}
-
-var objectKeys = Object.keys || function (obj) {
-  var res = [];
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-  }
-  return res;
-};
-
-},{}],17:[function(require,module,exports){
-'use strict';
-
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
-
-},{"./decode":15,"./encode":16}]},{},[4]);
+},{}]},{},[1])(1)
+});

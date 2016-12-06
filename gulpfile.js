@@ -45,10 +45,10 @@ gulp.task('watch', ['js:watch', 'sass:watch']);
 
 gulp.task('js', function() {
   return browserify({
-    entries: './lib/index.js'
-    // debug: true
+    entries: './lib/chariot.js',
+    standalone: 'chariot'
   })
-    .transform(babelify)
+    .transform(babelify, { "presets": ["es2015"], "plugins": [ "add-module-exports" ] })
     .bundle()
     .pipe(source(projectName + '.js'))
     .pipe(gulp.dest('./dist/javascripts'))

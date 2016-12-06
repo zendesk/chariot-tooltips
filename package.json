@@ -4,14 +4,19 @@
   "description": "A JavaScript library for creating beautiful in product tutorials",
   "version": "1.0.0",
   "repository": "https://github.com/zendesk/chariot-tooltips",
-  "engines": { "node" : ">=6" },
+  "engines": {
+    "node": ">=6"
+  },
   "author": "Herbert Siojo <herbert.siojo@gmail.com>",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-loader": "^6.2.7",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
     "babel-preset-latest": "^6.16.0",
     "babel-register": "^6.18.0",
-    "babelify": "^6.1.2",
+    "babelify": "^7.0.0",
     "browserify": "^10.2.6",
     "chai": "^3.0.0",
     "del": "^2.2.2",
@@ -59,8 +64,7 @@
     "webpack-stream": "^3.2.0"
   },
   "dependencies": {
-    "lodash.debounce": "^3.1.1",
-    "query-parse": "^0.1.1"
+    "lodash.debounce": "^3.1.1"
   },
   "eslintConfig": {
     "extends": "airbnb",
