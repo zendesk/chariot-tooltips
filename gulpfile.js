@@ -240,7 +240,7 @@ gulp.task('clean', function () {
 
 var versionBumpType;
 gulp.task('bump-prompt', function(cb) {
-  return gulp.src(['./bower.json', './package.json', './npm-shrinkwrap.json'])
+  return gulp.src(['./package.json'])
     .pipe(prompt.prompt({
       type: 'checkbox',
       name: 'bump',
@@ -255,7 +255,7 @@ gulp.task('bump-prompt', function(cb) {
 })
 
 gulp.task('bump', ['bump-prompt'], function() {
-  return gulp.src(['./bower.json', './package.json', './npm-shrinkwrap.json'])
+  return gulp.src(['./package.json'])
     .pipe(bump({ type: versionBumpType }))
     .pipe(gulp.dest('./'));
 });
