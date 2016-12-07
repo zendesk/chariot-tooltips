@@ -1,5 +1,5 @@
 /**
- * chariot-tooltips v1.0.0 - A JavaScript library for creating beautiful in product tutorials
+ * chariot-tooltips v1.0.1 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot-tooltips
  *
@@ -486,8 +486,8 @@ var Overlay = function () {
       var $transparentOverlay = $("<div class='chariot-transparent-overlay'></div>");
       $transparentOverlay.css({
         'z-index': _constants2.default.CLONE_Z_INDEX + 1,
-        width: document.body.scrollWidth,
-        height: document.body.scrollHeight
+        width: this._documentWidth(),
+        height: this._documentHeight()
       });
       return $transparentOverlay;
     }
@@ -498,9 +498,23 @@ var Overlay = function () {
     key: '_resizeOverlayToFullScreen',
     value: function _resizeOverlayToFullScreen() {
       this.$overlay.css({
-        width: document.body.scrollWidth,
-        height: document.body.scrollHeight
+        width: this._documentWidth(),
+        height: this._documentHeight()
       });
+    }
+  }, {
+    key: '_documentWidth',
+    value: function _documentWidth() {
+      var body = document.body;
+      var html = document.documentElement;
+      return Math.max(html.scrollWidth, html.offsetWidth, html.clientWidth, body.scrollWidth, body.offsetWidth);
+    }
+  }, {
+    key: '_documentHeight',
+    value: function _documentHeight() {
+      var body = document.body;
+      var html = document.documentElement;
+      return Math.max(html.scrollHeight, html.offsetHeight, html.clientHeight, body.scrollHeight, body.offsetHeight);
     }
 
     // Used for transparent overlay strategy
