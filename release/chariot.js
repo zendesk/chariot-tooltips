@@ -1,5 +1,5 @@
 /**
- * chariot-tooltips v1.0.2 - A JavaScript library for creating beautiful in product tutorials
+ * chariot-tooltips v1.0.3 - A JavaScript library for creating beautiful in product tutorials
  *
  * https://github.com/zendesk/chariot-tooltips
  *
@@ -373,6 +373,7 @@ var Overlay = function () {
     this.overlayColor = config.overlayColor || 'rgba(255,255,255,0.8)';
     this.useTransparentOverlayStrategy = !!config.useTransparentOverlayStrategy;
     this._resizeHandler = null;
+    this.disableCloneInteraction = config.disableCloneInteraction === undefined ? true : config.disableCloneInteraction;
   }
 
   _createClass(Overlay, [{
@@ -391,9 +392,11 @@ var Overlay = function () {
       $body.append($overlay);
       this.$overlay = $overlay;
 
-      var $transparentOverlay = this._createTransparentOverlay();
-      $body.append($transparentOverlay);
-      this.$transparentOverlay = $transparentOverlay;
+      if (this.disableCloneInteraction) {
+        var $transparentOverlay = this._createTransparentOverlay();
+        $body.append($transparentOverlay);
+        this.$transparentOverlay = $transparentOverlay;
+      }
     }
   }, {
     key: 'isTransparentOverlayStrategy',
@@ -803,7 +806,9 @@ var Step = function () {
     value: function _clonedElementStrategy() {
       // Clone elements if multiple selectors
       this._cloneElements(this.selectors);
-      this.overlay.showTransparentOverlay();
+      if (this.overlay.disableCloneInteraction) {
+        this.overlay.showTransparentOverlay();
+      }
     }
   }, {
     key: '_renderTooltip',
@@ -904,6 +909,9 @@ var Step = function () {
       }
       $clone.addClass('chariot-clone');
       _style2.default.cloneStyles($element, $clone);
+      if (this.overlay.disableCloneInteraction) {
+        $clone.css('pointer-events', 'none');
+      }
       var clonedChildren = $clone.children().toArray();
       $element.children().toArray().forEach(function (child, index) {
         _this8._applyComputedStyles($(clonedChildren[index]), $(child));
@@ -1005,7 +1013,6 @@ var Style = function () {
         this._ieBoxModelStyleFix('width', $clone, cssText);
         this._ieBoxModelStyleFix('height', $clone, cssText);
       }
-      $clone.css('pointer-events', 'none');
       //this._clonePseudoStyle($element, $clone, 'before');
       //this._clonePseudoStyle($element, $clone, 'after');
     }
@@ -1545,6 +1552,8 @@ var Tutorial = function () {
    * @property {boolean} [shouldOverlay=true] - Setting to false will disable the
    * overlay that normally appears over the page and behind the tooltips.
    * @property {string} [overlayColor='rgba(255,255,255,0.7)'] - Overlay CSS color
+   * @property {boolean} [disableCloneInteraction=true] - Setting to false will allow the
+   * user to interact with the cloned element (eg. click on links)
    * @property {Tutorial-onCompleteCallback} [onComplete] - Callback that is called
    * once the tutorial has gone through all steps.
    * @property {boolean} [useTransparentOverlayStrategy=false] - <p>
