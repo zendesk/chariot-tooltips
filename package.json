@@ -2,7 +2,7 @@
   "name": "chariot-tooltips",
   "main": "release/chariot.js",
   "description": "A JavaScript library for creating beautiful in product tutorials",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "https://github.com/zendesk/chariot-tooltips",
   "engines": {
     "node": ">=6"
