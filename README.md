@@ -42,8 +42,6 @@ documentation at
 Or go to the example site: http://chariot.zendesk.com/docs
 
 # Development
-Checkout the `development` branch.
-	git checkout development
 
 Install node packages.
 
@@ -58,7 +56,7 @@ To run a webserver:
 
 	gulp connect
 
-This will start a simple server that serves `index.html` at
+This will start a simple server. A bare page `index.html` can be seen at
 [http://localhost:8080/example/index.html](http://localhost:8080/example/index.html),
  and loads `chariot.js` onto the page.
 The task will also watch your changes and reloads the page as the files are updated.
@@ -98,22 +96,23 @@ Run the following to build `chariot.js` into thd `/dist` directory.
 
 # Release
 
-When you have merge in all your changes from your branch. Run the following **IN MASTER**:
+When you have merged in your changes from your branch (via Github pull requests). Run the following `master`:
 
 	gulp release
 
 This gulp task will
 
-1. Bump version in package.json, bower.json
+1. Bump version in package.json
 1. Auto-generate documentation with js-doc
 1. Package release into the `release/` folder
-1. Commit the version bump changes in package.json, bower.json
+1. Commit the version bump changes in package.json
 1. Push the bump changes
 1. Tag with the new version
 
 After releasing, update the relevant files in your project which uses ChariotJS.
-Update version in bower/npm, or copy release/chariot.[min.]js,
-release/chariot.[min.]css into your project's `vendor/` folder.
+Update the version in your project's package.json, or
+copy the release/chariot.[min.]js, release/chariot.[min.]css files into your
+project's `vendor/` folder.
 
 # Copyright and License
 
