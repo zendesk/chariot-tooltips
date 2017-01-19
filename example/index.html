@@ -65,7 +65,7 @@
 
 var delegate = this;
 
-var chariot = new Chariot({
+var chariotInstance = new chariot({
   ticketing: {
     steps: [
       // Step #1 illustrates the basic content of a tooltip
@@ -166,11 +166,11 @@ $(function() {
   });
 
   $('.start-tutorial-link').click(function() {
-    chariot.startTutorial('ticketing');
+    chariotInstance.startTutorial('ticketing');
   });
 
   $('.create-tutorial-link').click(function() {
-    Chariot.startTutorial([
+    chariot.startTutorial([
       {
         selectors: ".create-tutorial-link",
         tooltip: {
