@@ -50,17 +50,26 @@ $shadow-color: rgba(31, 28, 28, 0.3);
     .btn {
       font-size: 13px;
       font-weight: 400;
-      color: $white;
-      background-color: #78A300;
+      color: #78A300;
+      background-color: transparent;
+      border: 1px solid #78A300;
       border-radius: 3px;
       height: 36px;
       padding: 0 20px;
+
+    }
+
+    .btn-next {
+      color: $white;
+      background-color: #78A300;
       border: none;
 
       &:hover {
         background-color: #78A300;
       }
+
     }
+
 
     .chariot-tooltip-subtext {
       float: left;
@@ -68,6 +77,10 @@ $shadow-color: rgba(31, 28, 28, 0.3);
       font-size: 13px;
       padding-top: 10px;
     }
+  }
+
+  .chariot-btn-row-subtext {
+    text-align: right;
   }
 
   &-arrow {
