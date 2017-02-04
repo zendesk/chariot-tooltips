@@ -50,9 +50,8 @@
 </head>
 
 <body>
-  <div><a href="#" class="add-history-link">1. Add history</a></div>
-  <div><a href="#" class="start-tutorial-link">2. Start tutorial without URL change</a></div>
-  <div><a href="#" class="create-tutorial-link">3. Create tutorial without chariot instance</a></div>
+  <div><a href="#" class="start-tutorial-link">1. Start tutorial from pre-configured instance</a></div>
+  <div><a href="#" class="create-tutorial-link">2. Create tutorial without chariot instance</a></div>
 
   <div class='outer'>
     <div class="inner top-left"><button>Top Left</button></div>
@@ -65,7 +64,7 @@
 
 var delegate = this;
 
-var chariot = new Chariot({
+var chariotInstance = new chariot({
   ticketing: {
     steps: [
       // Step #1 illustrates the basic content of a tooltip
@@ -161,16 +160,12 @@ function didFinishTutorial(tutorial, forced) {
 }
 
 $(function() {
-  $('.add-history-link').click(function() {
-    history.pushState({}, "page 2", "index.html?tutorial=ticketing");
-  });
-
   $('.start-tutorial-link').click(function() {
-    chariot.startTutorial('ticketing');
+    chariotInstance.startTutorial('ticketing');
   });
 
   $('.create-tutorial-link').click(function() {
-    Chariot.startTutorial([
+    chariot.startTutorial([
       {
         selectors: ".create-tutorial-link",
         tooltip: {

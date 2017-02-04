@@ -21,7 +21,8 @@ describe('Tooltip', function() {
       cta: 'Next',
       subtext: () => 'foobar',
       attr: {},
-      arrowLength: 10
+      arrowLength: 10,
+      className: 'css-class'
     },
     step = { selectors: {} },
     tutorial = new Object({
@@ -30,11 +31,35 @@ describe('Tooltip', function() {
     }),
     tooltip = null;
 
+  function createTooltip(config, step) {
+    return new Tooltip(config, step, tutorial);
+  }
+
   beforeEach(function() {
-    tooltip = new Tooltip(configuration, step, tutorial);
+    tooltip = createTooltip(configuration, step);
   });
 
-  context('constructor', function() {
+  describe('constructor', function() {
+    describe('with invalid config', function() {
+      it('throws error if position is missing', function() {
+        let invalidConfig = Object.assign({}, configuration);
+        delete invalidConfig.position;
+        expect(createTooltip.bind(invalidConfig, step)).to.throw(Error);
+      });
+
+      it('throws error if anchorElement is null with more than one selector', function() {
+        let invalidConfig = Object.assign({}, configuration);
+        delete invalidConfig.anchorElement;
+        const invalidStep = { selectors: ['foo', 'bar'] };
+        expect(createTooltip.bind(invalidConfig, invalidStep)).to.throw(Error);
+      });
+
+      it('throws error if subtext is not a function', function() {
+        let invalidConfig = Object.assign({}, configuration, { subtext: '' });
+        expect(createTooltip.bind(invalidConfig, step)).to.throw(Error);
+      });
+    });
+
     it('reads step', function() {
       expect(tooltip.step).to.equal(step);
     });
@@ -44,23 +69,35 @@ describe('Tooltip', function() {
     it('reads position', function() {
       expect(tooltip.position).to.equal(configuration.position);
     });
-    it('reads text', function() {
-      expect(tooltip.text).to.equal(configuration.text);
+    it('reads className', function() {
+      expect(tooltip.className).to.equal(configuration.className);
     });
     it('reads xOffsetTooltip', function() {
       expect(tooltip.xOffsetTooltip).to.equal(parseInt(configuration.xOffsetTooltip));
     });
-    it('reads xOffsetTooltip', function() {
+    it('reads yOffsetTooltip', function() {
       expect(tooltip.yOffsetTooltip).to.equal(parseInt(configuration.yOffsetTooltip));
     });
     it('reads offsetArrow', function() {
       expect(tooltip.offsetArrow).to.equal(parseInt(configuration.offsetArrow));
+    });
+    it('sets arrowClass', function() {
+      expect(tooltip.arrowClass).to.equal('chariot-tooltip-arrow-left');
     });
     it('reads width', function() {
       expect(tooltip.width).to.equal(parseInt(configuration.width));
     });
     it('reads height', function() {
       expect(tooltip.height).to.equal(parseInt(configuration.height));
+    });
+    it('reads anchorElement', function() {
+      expect(tooltip.anchorElement).to.equal(configuration.anchorElement);
+    });
+    it('reads text', function() {
+      expect(tooltip.text).to.equal(configuration.text);
+    });
+    it('reads subtext', function() {
+      expect(tooltip.subtext).to.equal(configuration.subtext);
     });
     it('reads iconUrl', function() {
       expect(tooltip.iconUrl).to.equal(configuration.iconUrl);
@@ -76,7 +113,7 @@ describe('Tooltip', function() {
     });
   });
 
-  context('render', function() {
+  describe('render', function() {
     it('sets css styles', function() {
       let css = sinon.stub().returns();
       let $markup = $('<div></div>');
@@ -94,7 +131,7 @@ describe('Tooltip', function() {
     });
   });
 
-  context('tearDown', function() {
+  describe('tearDown', function() {
     it('tearDown with null DOM element', function() {
       tooltip.$tooltip = null;
       expect(tooltip.tearDown.bind(tooltip)).not.to.throw(Error);
@@ -112,7 +149,7 @@ describe('Tooltip', function() {
     });
   });
 
-  context('_createTooltipTemplate', function() {
+  describe('_createTooltipTemplate', function() {
     let template = null;
 
     beforeEach(function() {

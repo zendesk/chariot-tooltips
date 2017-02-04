@@ -75,6 +75,7 @@
   "scripts": {
     "jscs-fix": "node_modules/.bin/jscs lib/** test/** -x",
     "jscs": "node_modules/.bin/jscs lib/** test/**",
-    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci"
+    "ci": "node_modules/.bin/gulp compile-test && node_modules/.bin/testem ci",
+    "test": "node_modules/.bin/mocha --compilers js:babel-register"
   }
 }
