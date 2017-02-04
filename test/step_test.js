@@ -26,27 +26,64 @@ describe('Step', function() {
     cta: 'Next'
   };
 
-  context('constructor', function() {
+  describe('constructor', function() {
     let chariot = {},
       step = null,
+      index = 0,
       tutorial = null,
       overlay = null;
 
+    function createStep(config, tutorial) {
+      return new Step(config, index, tutorial, overlay);
+    }
+
     before(function() {
       tutorial = new Tutorial({ steps: [] }, 'tutorialName');
-      step = new Step(stepConfiguration, 0, tutorial, overlay);
     });
 
-    it('reads selectors', function() {
-      expect(step.selectors).to.equal(stepConfiguration.selectors);
+    describe('with invalid config', function() {
+      it('throws error if selectors is missing', function() {
+        let invalidConfig = Object.assign({}, stepConfiguration);
+        delete invalidConfig.selectors;
+        expect(createStep.bind(invalidConfig, tutorial)).to.throw(Error);
+      });
+
+      it('throws error if selectors is null', function() {
+        let invalidConfig = Object.assign({}, stepConfiguration, { selectors: null });
+        expect(createStep.bind(invalidConfig, tutorial)).to.throw(Error);
+      });
+
+      it('throws error if selectors object has no keys', function() {
+        let invalidConfig = Object.assign({}, stepConfiguration, { selectors: {} });
+        expect(createStep.bind(invalidConfig, tutorial)).to.throw(Error);
+      });
+
+      it('throws error if any of the selector values is invalid', function() {
+        let invalidConfig = Object.assign({}, stepConfiguration, { selectors: ['valid', undefined] });
+        expect(createStep.bind(invalidConfig, tutorial)).to.throw(Error);
+      });
     });
 
-    it('reads tutorial', function() {
-      expect(step.tutorial).to.equal(tutorial);
+    describe('with valid arguments and configuration', function() {
+      before(function() {
+        step = createStep(stepConfiguration, tutorial);
+      });
+
+      it('reads index', function() {
+        expect(step.index).to.equal(index);
+      });
+
+      it('reads selectors', function() {
+        expect(step.selectors).to.equal(stepConfiguration.selectors);
+      });
+
+      it('reads tutorial', function() {
+        expect(step.tutorial).to.equal(tutorial);
+      });
     });
   });
 
-  context('getClonedElement', function() {
+  describe('getClonedElement', function() {
     let step = null,
       tutorial = {},
       overlay = null;
@@ -74,7 +111,7 @@ describe('Step', function() {
     });
   });
 
-  context('tearDown', function() {
+  describe('tearDown', function() {
     let chariot = {},
       step = null,
       tutorial = null,

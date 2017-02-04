@@ -80,6 +80,10 @@ To run test in command line, run:
 
 	gulp test
 
+or to run a single test file:
+
+	npm run test test/filename.js
+
 ## Browser
 If you want to test the same test suite in multiple browsers, run:
 

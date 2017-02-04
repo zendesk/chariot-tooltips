@@ -10,14 +10,34 @@ const stepFixture = fixtures.stepFixture;
 describe('Tutorial', function() {
   let tutorial;
 
-  it('reads config', function() {
-    tutorial = new Tutorial({ steps: [] }, 'test');
-    assert.equal(typeof tutorial, 'object');
+  function createTutorial(config) {
+    return new Tutorial(config, 'test');
+  }
+
+  describe('constructor', function() {
+    describe('with invalid config', function() {
+      it('throws error if config is not an object or array', function() {
+        let invalidConfig = '';
+        expect(createTutorial.bind(invalidConfig)).to.throw(Error);
+      });
+
+      it('throws error if steps is not an array', function() {
+        let invalidConfig = { steps: {} };
+        expect(createTutorial.bind(invalidConfig)).to.throw(Error);
+      });
+    });
+
+    it('reads config', function() {
+      // tutorial = new Tutorial({ steps: [] }, 'test');
+      tutorial = createTutorial({ steps: [] });
+      assert.equal(typeof tutorial, 'object');
+    });
   });
 
   describe('next', function() {
     before(function() {
-      tutorial = new Tutorial({ steps: [stepFixture, stepFixture, stepFixture] });
+      // tutorial = new Tutorial({ steps: [stepFixture, stepFixture, stepFixture] });
+      tutorial = createTutorial({ steps: [stepFixture, stepFixture, stepFixture] });
     });
 
     it('renders the next step when no args passed', function() {
@@ -40,7 +60,8 @@ describe('Tutorial', function() {
       let tearDownSpy, endSpy;
 
       before(function() {
-        tutorial = new Tutorial({ steps: [stepFixture, stepFixture, stepFixture] });
+        // tutorial = new Tutorial({ steps: [stepFixture, stepFixture, stepFixture] });
+        tutorial = createTutorial({ steps: [stepFixture, stepFixture, stepFixture] });
         tutorial.currentStep = tutorial.getStep(0);
         tearDownSpy = sinon.spy(tutorial.currentStep, 'tearDown');
       });
