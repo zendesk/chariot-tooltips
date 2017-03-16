@@ -31,14 +31,22 @@
     .chariot-tooltip .chariot-btn-row .btn {
       font-size: 13px;
       font-weight: 400;
-      color: #fff;
-      background-color: #78A300;
+      color: #78A300;
+      background-color: transparent;
+      border: 1px solid #78A300;
       border-radius: 3px;
       height: 36px;
       padding: 0 20px;
+      cursor: pointer; }
+    .chariot-tooltip .chariot-btn-row .btn-next {
+      color: #fff;
+      background-color: #78A300;
       border: none; }
-      .chariot-tooltip .chariot-btn-row .btn:hover {
-        background-color: #78A300; }
+    .chariot-tooltip .chariot-btn-row .btn-previous {
+      margin-right: 5px; }
+    .chariot-tooltip .chariot-btn-row .btn-previous:hover {
+      color: #fff;
+      background-color: #78A300; }
     .chariot-tooltip .chariot-btn-row .chariot-tooltip-subtext {
       float: left;
       color: #ddd;
@@ -62,5 +70,3 @@
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     box-shadow: 2px 2px 4px 0 rgba(31, 28, 28, 0.1); }
-
-/*# sourceMappingURL=example-tooltip.css.map */
