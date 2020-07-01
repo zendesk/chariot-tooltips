@@ -29,4 +29,5 @@ jobs:
         node-version: '6'
     - name: ${{ matrix.task }}
       run: |
+        npm install
         ${{ matrix.run }}
