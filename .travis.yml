@@ -1,9 +1,0 @@
-language: node_js
-node_js:
-  - '6'
-cache: yarn
-script:
-  - npm run jscs
-  - npm rebuild node-sass
-  - node_modules/.bin/gulp compile-test
-  - node_modules/.bin/testem ci

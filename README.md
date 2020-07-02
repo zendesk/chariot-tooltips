@@ -1,3 +1,4 @@
+![repo-checks](https://github.com/zendesk/chariot-tooltips/workflows/repo-checks/badge.svg)
 ![example image](example/chariot_screenshot.png)
 
 # Chariot
